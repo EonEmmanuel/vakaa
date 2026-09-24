@@ -1,0 +1,94 @@
+{
+  "Hero": {
+    "titleLine1": "CARRYING",
+    "titleLine2": "AFRICA.",
+    "titleLine3": "EVERYWHERE.",
+    "subtitle": "Luxury bags. African soul. Made by hand, made to last.",
+    "shopCollection": "SHOP THE COLLECTION",
+    "ourStory": "OUR STORY"
+  },
+  "Home": {
+    "pageTitle": "Luxury African Lifestyle & Handcrafted Fashion",
+    "description": "Discover VAKAA luxury handcrafted raffia bags, leather goods, and artisan-made accessories carrying African soul everywhere.",
+    "ogDescription": "Carrying Africa. Everywhere. Luxury handcrafted bags and accessories.",
+    "trust": {
+      "artisans": {
+        "title": "MADE BY AFRICAN ARTISANS",
+        "description": "Preserving tradition, empowering communities"
+      },
+      "materials": {
+        "title": "PREMIUM QUALITY MATERIALS",
+        "description": "Raffia, Leather, Ankara & Beads"
+      },
+      "payments": {
+        "title": "SECURE PAYMENTS",
+        "description": "Safe, fast & reliable"
+      },
+      "delivery": {
+        "title": "WORLDWIDE DELIVERY",
+        "description": "Bringing Africa to you"
+      }
+    },
+    "collections": {
+      "title": "SHOP OUR COLLECTION",
+      "viewAll": "VIEW ALL COLLECTIONS"
+    },
+    "promise": {
+      "eyebrow": "OUR PROMISE",
+      "title": "ROOTED IN CULTURE. DESIGNED FOR THE WORLD.",
+      "description": "We blend timeless African craftsmanship with contemporary design to create pieces that speak heritage and elevate your everyday.",
+      "cta": "LEARN OUR STORY"
+    },
+    "bestSellers": {
+      "title": "BEST SELLERS",
+      "viewAll": "VIEW ALL"
+    },
+    "artisansTeaser": {
+      "eyebrow": "HERITAGE MAKERS",
+      "title": "MEET THE HANDS BEHIND EVERY WEAVE.",
+      "description": "Every VAKAA piece is born in female-led artisan cooperatives across Ghana and West Africa. Master weavers preserve ancestral raffia techniques passed down through generations, earning sustainable living wages that transform local communities.",
+      "cta": "EXPLORE OUR ARTISANS",
+      "badge": "100% ETHICAL & FAIR WAGE"
+    },
+    "testimonials": {
+      "eyebrow": "CLIENT VOICES",
+      "title": "WORDS FROM THE TRIBE",
+      "subtitle": "Trusted and cherished by luxury collectors across 40+ countries worldwide.",
+      "verifiedBuyer": "Verified Buyer",
+      "quote1": "The craftsmanship on the Maa Tote is extraordinary. The raffia weave is tight and tactile, and the leather handles feel indestructible. It gets compliments wherever I travel.",
+      "author1": "Amara K.",
+      "location1": "London, UK",
+      "product1": "Maa Tote in Natural Raffia",
+      "quote2": "VAKAA represents everything luxury should be — cultural authenticity, zero compromise on quality, and true artisan empowerment. The Kemi bag is my daily staple.",
+      "author2": "Elena R.",
+      "location2": "Paris, France",
+      "product2": "Kemi Shoulder Bag",
+      "quote3": "Arrived in beautiful packaging with an artisan authenticity card. The Zuri Clutch is stunning in person; the brass clasp and rich gold tones elevate any evening look.",
+      "author3": "Zara M.",
+      "location3": "New York, USA",
+      "product3": "Zuri Gold Clutch"
+    },
+    "stats": {
+      "stat1Value": "10,000+",
+      "stat1Label": "Handcrafted Bags Carried Worldwide",
+      "stat2Value": "15+",
+      "stat2Label": "Artisan Women Cooperatives",
+      "stat3Value": "100%",
+      "stat3Label": "Ethical & Fair-Wage Certified",
+      "stat4Value": "4.9 / 5",
+      "stat4Label": "Global Verified Client Rating"
+    },
+    "community": {
+      "eyebrow": "COMMUNITY & STYLE",
+      "title": "CARRYING AFRICA. EVERYWHERE.",
+      "tagline": "Tag @vakaaofficial to be featured in our global gallery.",
+      "handle": "@vakaaofficial"
+    },
+    "newsletter": {
+      "title": "JOIN THE VAKAA TRIBE",
+      "description": "Be the first to know about new drops, exclusive offers and artisan stories.",
+      "placeholder": "Enter your email",
+      "button": "JOIN US"
+    }
+  }
+}

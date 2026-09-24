@@ -1,0 +1,22 @@
+{
+  "Sort": {
+    "nameAsc": "Nom : De A à Z",
+    "nameDesc": "Nom : De Z à A",
+    "priceAsc": "Prix : Du plus bas au plus haut",
+    "priceDesc": "Prix : Du plus haut au plus bas",
+    "placeholder": "Trier par"
+  },
+  "Filters": {
+    "title": "Filtres",
+    "clearAll": "Réinitialiser",
+    "filtersButton": "Filtres"
+  },
+  "Search": {
+    "title": "Recherche",
+    "pageTitle": "Rechercher des Créations",
+    "resultsFor": "Résultats de recherche pour « {query} »",
+    "resultsTitle": "Résultats de recherche pour « {query} »",
+    "metaDescription": "Découvrez les créations correspondant à « {query} » sur {siteName}",
+    "metaCatalogDescription": "Explorez le catalogue d'artisanat et maroquinerie de luxe {siteName}"
+  }
+}

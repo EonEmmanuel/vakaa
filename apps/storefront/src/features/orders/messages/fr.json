@@ -1,0 +1,25 @@
+{
+  "OrderStatus": {
+    "AddingItems": "Sélection des articles",
+    "ArrangingPayment": "Règlement en cours",
+    "PaymentAuthorized": "Paiement autorisé",
+    "PaymentSettled": "Commande réglée",
+    "PartiallyShipped": "Partiellement expédiée",
+    "Shipped": "Expédiée",
+    "PartiallyDelivered": "Partiellement livrée",
+    "Delivered": "Livrée",
+    "Cancelled": "Annulée"
+  },
+  "OrderConfirmation": {
+    "pageTitle": "Confirmation de Commande",
+    "orderConfirmed": "Commande Confirmée !",
+    "thankYou": "Merci pour votre confiance. Votre numéro de commande est le",
+    "emailConfirmation": "Un e-mail de confirmation détaillant vos pièces et le suivi d'expédition vous a été envoyé.",
+    "orderSummary": "Récapitulatif de Commande",
+    "qty": "Qté : {quantity}",
+    "total": "Total",
+    "shippingAddress": "Adresse de Livraison",
+    "continueShopping": "Poursuivre mes achats",
+    "viewOrders": "Consulter mes Commandes"
+  }
+}

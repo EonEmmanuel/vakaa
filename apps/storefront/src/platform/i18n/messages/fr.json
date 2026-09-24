@@ -1,0 +1,25 @@
+{
+  "Common": {
+    "loading": "Chargement...",
+    "sending": "Envoi...",
+    "sku": "SKU",
+    "siteDescription": "Découvrez l'excellence chez {siteName}. Créations artisanales d'exception, finitions de prestige et livraison sécurisée."
+  },
+  "Errors": {
+    "fieldsRequired": "Tous les champs sont obligatoires",
+    "passwordsMismatch": "Les mots de passe ne correspondent pas",
+    "unexpectedError": "Une erreur inattendue est survenue. Veuillez réessayer.",
+    "emailPasswordRequired": "L'adresse e-mail et le mot de passe sont requis",
+    "verifyEmailFirst": "Veuillez vérifier votre adresse e-mail avant de vous connecter.",
+    "invalidCredentials": "E-mail ou mot de passe incorrect.",
+    "emailRequired": "L'adresse e-mail est obligatoire",
+    "firstLastNameRequired": "Le prénom et le nom sont obligatoires",
+    "passwordEmailRequired": "Le mot de passe et la nouvelle adresse e-mail sont obligatoires",
+    "invalidEmail": "Veuillez saisir une adresse e-mail valide",
+    "failedUpdateCustomer": "Échec de la mise à jour des informations",
+    "newPasswordMustDiffer": "Le nouveau mot de passe doit être différent du mot de passe actuel",
+    "failedPasswordReset": "Échec de la demande de réinitialisation du mot de passe",
+    "verificationTokenRequired": "Le jeton de vérification est obligatoire",
+    "failedAddToCart": "Impossible d'ajouter l'article au panier"
+  }
+}

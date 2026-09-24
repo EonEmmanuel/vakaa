@@ -1,0 +1,94 @@
+{
+  "Hero": {
+    "titleLine1": "CARRYING",
+    "titleLine2": "AFRICA.",
+    "titleLine3": "EVERYWHERE.",
+    "subtitle": "Luxustaschen. Afrikanische Seele. Von Hand gefertigt, für die Ewigkeit gemacht.",
+    "shopCollection": "KOLLEKTION ENTDECKEN",
+    "ourStory": "UNSERE GESCHICHTE"
+  },
+  "Home": {
+    "pageTitle": "Luxuriöser afrikanischer Lifestyle & handgefertigte Mode",
+    "description": "Entdecken Sie handgefertigte VAKAA Raffia-Taschen, Lederwaren und kunsthandwerkliche Accessoires.",
+    "ogDescription": "Carrying Africa. Everywhere. Handgefertigte Luxustaschen und Accessoires.",
+    "trust": {
+      "artisans": {
+        "title": "VON AFRIKANISCHEN KUNSTHANDWERKERN",
+        "description": "Tradition bewahren, Gemeinschaften stärken"
+      },
+      "materials": {
+        "title": "PREMIUM-MATERIALIEN",
+        "description": "Raffia, Leder, Ankara & Perlen"
+      },
+      "payments": {
+        "title": "SICHERE ZAHLUNGEN",
+        "description": "Sicher, schnell & zuverlässig"
+      },
+      "delivery": {
+        "title": "WELTWEITE LIEFERUNG",
+        "description": "Afrika zu Ihnen nach Hause"
+      }
+    },
+    "collections": {
+      "title": "UNSERE KOLLEKTION ENTDECKEN",
+      "viewAll": "ALLE KOLLEKTIONEN ANZEIGEN"
+    },
+    "promise": {
+      "eyebrow": "UNSER VERSPRECHEN",
+      "title": "IN DER KULTUR VERWURZELT. FÜR DIE WELT ENTWORFEN.",
+      "description": "Wir verbinden zeitlose afrikanische Handwerkskunst mit zeitgenössischem Design, um Stücke zu schaffen, die Tradition widerspiegeln.",
+      "cta": "UNSERE GESCHICHTE ERFAHREN"
+    },
+    "bestSellers": {
+      "title": "BESTSELLER",
+      "viewAll": "ALLE ANZEIGEN"
+    },
+    "artisansTeaser": {
+      "eyebrow": "KUNSTHANDWERK",
+      "title": "DIE HÄNDE HINTER JEDER WEBARBEIT.",
+      "description": "Jedes VAKAA-Stück entsteht in von Frauen geleiteten Handwerkskooperativen in Ghana und Westafrika. Meisterweberinnen bewahren traditionelle Raffia-Techniken.",
+      "cta": "KUNSTHANDWERKER ENTDECKEN",
+      "badge": "100% ETHISCH & FAIR BEZAHLT"
+    },
+    "testimonials": {
+      "eyebrow": "KUNDENSTIMMEN",
+      "title": "STIMMEN AUS DER COMMUNITY",
+      "subtitle": "Geschätzt von Sammlern in über 40 Ländern weltweit.",
+      "verifiedBuyer": "Verifizierter Käufer",
+      "quote1": "Die Handwerkskunst der Maa Tote ist außergewöhnlich. Das Raffia-Geflecht ist fest und haptisch wunderbar.",
+      "author1": "Amara K.",
+      "location1": "London, UK",
+      "product1": "Maa Tote in Natur-Raffia",
+      "quote2": "VAKAA verkörpert Luxus auf höchstem Niveau — kulturelle Authentizität und kompromisslose Qualität.",
+      "author2": "Elena R.",
+      "location2": "Paris, Frankreich",
+      "product2": "Kemi Umhängetasche",
+      "quote3": "Wunderschön verpackt mit Echtheitszertifikat. Die Zuri Clutch ist in echt noch atemberaubender.",
+      "author3": "Zara M.",
+      "location3": "New York, USA",
+      "product3": "Zuri Gold Clutch"
+    },
+    "stats": {
+      "stat1Value": "10.000+",
+      "stat1Label": "Weltweit getragene Handtaschen",
+      "stat2Value": "15+",
+      "stat2Label": "Unterstützte Frauenkooperativen",
+      "stat3Value": "100%",
+      "stat3Label": "Ethisch & fair zertifiziert",
+      "stat4Value": "4.9 / 5",
+      "stat4Label": "Globale Kundenbewertung"
+    },
+    "community": {
+      "eyebrow": "COMMUNITY & STYLE",
+      "title": "CARRYING AFRICA. EVERYWHERE.",
+      "tagline": "Markieren Sie @vakaaofficial für unsere weltweite Galerie.",
+      "handle": "@vakaaofficial"
+    },
+    "newsletter": {
+      "title": "WERDEN SIE TEIL DES VAKAA-STAMMES",
+      "description": "Erfahren Sie als Erster von neuen Drops, exklusiven Angeboten und Geschichten der Kunsthandwerker.",
+      "placeholder": "Geben Sie Ihre E-Mail-Adresse ein",
+      "button": "BEITRETEN"
+    }
+  }
+}

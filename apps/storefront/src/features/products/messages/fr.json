@@ -1,0 +1,50 @@
+{
+  "Product": {
+    "inStock": "En Stock",
+    "outOfStock": "Épuisé",
+    "addToCart": "Ajouter au Panier",
+    "addedToCart": "Ajouté au Panier",
+    "adding": "Ajout en cours...",
+    "selectOptions": "Choisir les Options",
+    "addedToCartMessage": "Ajouté au panier",
+    "addedToCartDescription": "{name} a été ajouté à votre panier",
+    "errorTitle": "Erreur",
+    "errorAddToCart": "Impossible d'ajouter cet article au panier",
+    "sku": "SKU : {sku}",
+    "from": "À partir de",
+    "noImage": "Aucune image",
+    "featuredProducts": "Créations Phares",
+    "relatedProducts": "Pièces Suggérées",
+    "viewAllProducts": "Voir Toutes les Créations",
+    "notFound": "Pièce Introuvable",
+    "home": "Accueil",
+    "noProductsFound": "Aucune création trouvée",
+    "shopProductAt": "Acheter {name} sur {siteName}",
+    "productCount": "{count, plural, one {# pièce} other {# pièces}}",
+    "trustBadges": {
+      "fastShipping": "Expédition Express",
+      "freeReturns": "Retours Offerts",
+      "secureCheckout": "Paiement Sécurisé",
+      "guarantee": "Garantie 30 Jours"
+    },
+    "faq": {
+      "title": "Questions Fréquentes",
+      "shipping": {
+        "question": "Quels sont les modes de livraison ?",
+        "answer": "Nous proposons une livraison standard (5 à 7 jours ouvrés) et une livraison express sécurisée (2 à 3 jours ouvrés) par transporteur de prestige."
+      },
+      "returns": {
+        "question": "Quelle est votre politique de retour ?",
+        "answer": "Les retours sont acceptés sous 30 jours à compter de la réception. Les pièces doivent être neuves et dans leur écrin d'origine."
+      },
+      "tracking": {
+        "question": "Comment suivre ma commande ?",
+        "answer": "Dès l'expédition de votre commande, vous recevrez un courriel avec votre numéro de suivi en temps réel."
+      },
+      "international": {
+        "question": "Livrez-vous à l'international ?",
+        "answer": "Oui, nous livrons dans plus de 50 pays avec toutes taxes et droits de douane calculés lors du paiement."
+      }
+    }
+  }
+}

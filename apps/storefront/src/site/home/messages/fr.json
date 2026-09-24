@@ -1,0 +1,94 @@
+{
+  "Hero": {
+    "titleLine1": "PORTER",
+    "titleLine2": "L'AFRIQUE.",
+    "titleLine3": "PARTOUT.",
+    "subtitle": "Sacs de haute facture. Âme africaine. Façonnés à la main pour l'éternité.",
+    "shopCollection": "DÉCOUVRIR LA COLLECTION",
+    "ourStory": "NOTRE HISTOIRE"
+  },
+  "Home": {
+    "pageTitle": "Maison de Maroquinerie de Luxe & Artisanat Africain",
+    "description": "Découvrez les sacs en raphia faits main, pièces de cuir noble et accessoires de prestige VAKAA portant l'âme africaine dans le monde entier.",
+    "ogDescription": "Porter l'Afrique. Partout. Maroquinerie d'exception et accessoires d'artisanat africain.",
+    "trust": {
+      "artisans": {
+        "title": "FAÇONNÉ PAR DES ARTISANS AFRICAINS",
+        "description": "Préservation des savoir-faire et émancipation des communautés"
+      },
+      "materials": {
+        "title": "MATIÈRES D'EXCELLENCE",
+        "description": "Raphia sauvage, Cuir végétal, Perles & Métaux d'Afrique"
+      },
+      "payments": {
+        "title": "PAIEMENTS SÉCURISÉS",
+        "description": "Paiement sûr, instantané et chiffré"
+      },
+      "delivery": {
+        "title": "LIVRAISON INTERNATIONALE",
+        "description": "L'artisanat d'Afrique livré chez vous en toute sérénité"
+      }
+    },
+    "collections": {
+      "title": "NOS LIGNES EXCLUSIVES",
+      "viewAll": "TOUTES LES COLLECTIONS"
+    },
+    "promise": {
+      "eyebrow": "NOTRE MANIFESTE",
+      "title": "ENRACINÉ DANS LA CULTURE. CONÇU POUR LE MONDE.",
+      "description": "Nous célébrons la rencontre entre la virtuosité des maîtres artisans africains et une esthétique contemporaine de haute voltige.",
+      "cta": "DÉCOUVRIR NOTRE HISTOIRE"
+    },
+    "bestSellers": {
+      "title": "PIÈCES ICONIQUES",
+      "viewAll": "TOUT VOIR"
+    },
+    "artisansTeaser": {
+      "eyebrow": "LES ARTISANS DU TEMPS",
+      "title": "RENCONTREZ LES MAINS DERRIÈRE CHAQUE TISSAGE.",
+      "description": "Chaque création VAKAA prend racine au cœur de coopératives féminines au Ghana et en Afrique de l'Ouest. Les maîtres tisserands y transmettent des gestes ancestraux, assurant leur émancipation économique et l'épanouissement de villages entiers.",
+      "cta": "DÉCOUVRIR NOS ARTISANS",
+      "badge": "100% ÉTHIQUE & COMMERCE ÉQUITABLE"
+    },
+    "testimonials": {
+      "eyebrow": "TÉMOIGNAGES",
+      "title": "LES VOIX DU CERCLE",
+      "subtitle": "Adopté et chéri par des passionnés d'élégance dans plus de 40 pays.",
+      "verifiedBuyer": "Acheteur Vérifié",
+      "quote1": "La qualité du cabas Maa est tout simplement remarquable. Le raphia est dense, raffiné, et les anses en cuir sont splendides. Ce sac suscite l'admiration à chaque voyage.",
+      "author1": "Amara K.",
+      "location1": "Londres, Royaume-Uni",
+      "product1": "Cabas Maa en Raphia Naturel",
+      "quote2": "VAKAA incarne la quintessence du luxe conscient : authenticité culturelle, respect des artisans et zéro compromis esthétique. Le sac Kemi est devenu mon indispensable.",
+      "author2": "Elena R.",
+      "location2": "Paris, France",
+      "product2": "Sac Bandoulière Kemi",
+      "quote3": "Reçu dans un coffret sublime avec le certificat de l'artisan. La pochette Zuri illumine n'importe quelle tenue de soirée avec son fermoir en laiton doré poli.",
+      "author3": "Zara M.",
+      "location3": "New York, États-Unis",
+      "product3": "Pochette Dorée Zuri"
+    },
+    "stats": {
+      "stat1Value": "10 000+",
+      "stat1Label": "Sacs Façonnés Portés dans le Monde",
+      "stat2Value": "15+",
+      "stat2Label": "Coopératives d'Artisanes Partenaires",
+      "stat3Value": "100%",
+      "stat3Label": "Certifié Éthique & Salaire Décent",
+      "stat4Value": "4.9 / 5",
+      "stat4Label": "Satisfaction Client Internationale"
+    },
+    "community": {
+      "eyebrow": "STYLE & INSPIRATION",
+      "title": "PORTER L'AFRIQUE. PARTOUT.",
+      "tagline": "Taguez @vakaaofficial pour figurer dans notre galerie internationale.",
+      "handle": "@vakaaofficial"
+    },
+    "newsletter": {
+      "title": "REJOINDRE LE CERCLE PRIVÉ",
+      "description": "Recevez en avant-première nos capsules confidentielles, récits d'ateliers et invitations exclusives.",
+      "placeholder": "Votre adresse e-mail",
+      "button": "S'INSCRIRE"
+    }
+  }
+}

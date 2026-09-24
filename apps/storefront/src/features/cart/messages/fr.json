@@ -1,0 +1,22 @@
+{
+  "Cart": {
+    "title": "Votre Panier",
+    "empty": "Votre panier est vide",
+    "emptyMessage": "Découvrez nos collections pour commencer votre sélection",
+    "continueShopping": "Poursuivre mes achats",
+    "each": "l'unité",
+    "orderSummary": "Récapitulatif",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "calculatedAtCheckout": "Calculée à l'étape suivante",
+    "total": "Total",
+    "proceedToCheckout": "Commander",
+    "secureCheckout": "Paiement 100% Sécurisé",
+    "promotionCode": "Code Privilège",
+    "enterDiscountCode": "Saisissez votre code privilège ci-dessous",
+    "remove": "Retirer",
+    "enterCode": "Code promo",
+    "apply": "Appliquer",
+    "sku": "SKU : {sku}"
+  }
+}

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="vakaaGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F5D77F"/>
+      <stop offset="50%" stop-color="#D4A43C"/>
+      <stop offset="100%" stop-color="#A66B2D"/>
+    </linearGradient>
+    <linearGradient id="vakaaBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1A1009"/>
+      <stop offset="100%" stop-color="#0E0804"/>
+    </linearGradient>
+  </defs>
+  <!-- Background rounded rectangle -->
+  <rect width="512" height="512" rx="112" fill="url(#vakaaBg)"/>
+  <rect width="504" height="504" x="4" y="4" rx="108" fill="none" stroke="url(#vakaaGold)" stroke-width="8" stroke-opacity="0.5"/>
+  <!-- Central Luxury Monogram 'V' -->
+  <text 
+    x="50%" 
+    y="66%" 
+    font-family="'Playfair Display', Georgia, 'Times New Roman', serif" 
+    font-size="340" 
+    font-weight="700" 
+    fill="url(#vakaaGold)" 
+    text-anchor="middle"
+    letter-spacing="-0.02em"
+  >V</text>
+  <!-- Subtle accent dot -->
+  <circle cx="256" cy="425" r="14" fill="#D4A43C"/>
+</svg>
