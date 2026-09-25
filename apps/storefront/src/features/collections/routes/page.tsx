@@ -136,8 +136,15 @@ export default async function CollectionPage({params, searchParams}: PageProps<'
             </Breadcrumb>
 
             {/* Collection Header */}
-            <div className="mb-10">
-                <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight uppercase text-[#1D120A] dark:text-[#F8F4EE]">{collectionName}</h1>
+            <div className="mb-10 space-y-2">
+                <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight uppercase text-[#1D120A] dark:text-[#F8F4EE] leading-tight">
+                    {collectionName}
+                </h1>
+                {collectionResult?.data?.collection?.description && (
+                    <p className="text-sm sm:text-base text-[#6B5E55] dark:text-[#B5A496] max-w-2xl font-sans leading-relaxed">
+                        {collectionResult.data.collection.description}
+                    </p>
+                )}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">

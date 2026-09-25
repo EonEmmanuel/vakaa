@@ -160,22 +160,22 @@ export default async function ProductDetailPage({
             </div>
 
             {/* Shipping & Trust Badges */}
-            <section className="py-8 md:py-10 border-y border-[#E7DED0]/70 dark:border-[#3A291C] bg-[#EFE8DD]/30 dark:bg-[#160E07]">
+            <section className="py-8 md:py-10 border-y border-[#E7DED0]/70 dark:border-[#3A291C] bg-[#FAF7F2] dark:bg-[#120B06]">
                 <div className="vakaa-container">
-                    <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 md:gap-8">
-                        <div className="inline-flex items-center gap-2 rounded-md bg-[#EFE8DD]/80 dark:bg-[#20150D] px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#1D120A] dark:text-[#F8F4EE]">
+                    <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 md:gap-8">
+                        <div className="inline-flex items-center gap-2.5 rounded-xs bg-[#F8F4EE] dark:bg-[#1A110A] border border-[#E7DED0]/80 dark:border-[#3A291C] px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-[#1D120A] dark:text-[#F8F4EE] shadow-xs">
                             <Truck className="h-4 w-4 text-[#D4A43C]" />
                             {t('trustBadges.fastShipping')}
                         </div>
-                        <div className="inline-flex items-center gap-2 rounded-md bg-[#EFE8DD]/80 dark:bg-[#20150D] px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#1D120A] dark:text-[#F8F4EE]">
+                        <div className="inline-flex items-center gap-2.5 rounded-xs bg-[#F8F4EE] dark:bg-[#1A110A] border border-[#E7DED0]/80 dark:border-[#3A291C] px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-[#1D120A] dark:text-[#F8F4EE] shadow-xs">
                             <RotateCcw className="h-4 w-4 text-[#D4A43C]" />
                             {t('trustBadges.freeReturns')}
                         </div>
-                        <div className="inline-flex items-center gap-2 rounded-md bg-[#EFE8DD]/80 dark:bg-[#20150D] px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#1D120A] dark:text-[#F8F4EE]">
+                        <div className="inline-flex items-center gap-2.5 rounded-xs bg-[#F8F4EE] dark:bg-[#1A110A] border border-[#E7DED0]/80 dark:border-[#3A291C] px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-[#1D120A] dark:text-[#F8F4EE] shadow-xs">
                             <ShieldCheck className="h-4 w-4 text-[#D4A43C]" />
                             {t('trustBadges.secureCheckout')}
                         </div>
-                        <div className="inline-flex items-center gap-2 rounded-md bg-[#EFE8DD]/80 dark:bg-[#20150D] px-4 py-2 text-xs font-semibold uppercase tracking-wider text-[#1D120A] dark:text-[#F8F4EE]">
+                        <div className="inline-flex items-center gap-2.5 rounded-xs bg-[#F8F4EE] dark:bg-[#1A110A] border border-[#E7DED0]/80 dark:border-[#3A291C] px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-[#1D120A] dark:text-[#F8F4EE] shadow-xs">
                             <Clock className="h-4 w-4 text-[#D4A43C]" />
                             {t('trustBadges.guarantee')}
                         </div>

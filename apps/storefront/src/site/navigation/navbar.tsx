@@ -38,7 +38,7 @@ export function Navbar() {
                         {/* Right: Currency + Language + Search + Account + Cart */}
                         <div className="flex items-center gap-0.5 sm:gap-2">
                             <CurrencyPicker
-                                availableCurrencyCodes={['XAF', 'EUR', 'USD']}
+                                availableCurrencyCodes={['XAF', 'EUR', 'USD', 'NGN']}
                                 activeCurrencyCode="XAF"
                             />
                             <Suspense fallback={<div className="w-8 h-8" />}>

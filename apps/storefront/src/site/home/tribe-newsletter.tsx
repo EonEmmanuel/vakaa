@@ -13,15 +13,14 @@ export async function TribeNewsletter() {
 
             <div className="vakaa-container relative z-10 max-w-4xl mx-auto text-center space-y-8">
                 {/* Header Badge & Title */}
-                <div className="space-y-3">
-                    <div className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.25em] text-[#D4A43C]">
-                        <Sparkles className="size-3 text-[#D4A43C]" />
-                        <span>Le Cercle Privé VAKAA</span>
-                    </div>
+                <div className="space-y-2 sm:space-y-2.5">
                     <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#FAF7F2] uppercase leading-tight">
                         {t('newsletter.title')}
                     </h2>
-                    <p className="text-sm sm:text-base text-[#FAF7F2]/75 max-w-lg mx-auto font-sans leading-relaxed">
+                    <p className="text-xs sm:text-sm text-[#D4A43C] font-serif italic tracking-wide">
+                        Le Cercle Privé Vakáa
+                    </p>
+                    <p className="text-sm sm:text-base text-[#FAF7F2]/75 max-w-lg mx-auto font-sans leading-relaxed pt-1">
                         {t('newsletter.description')}
                     </p>
                 </div>

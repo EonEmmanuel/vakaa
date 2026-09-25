@@ -67,15 +67,14 @@ export async function HeritageSavoirFaire() {
 
                     {/* Right: Savoir-Faire & Manifesto */}
                     <div className="lg:col-span-6 space-y-6 lg:space-y-8">
-                        <div className="space-y-3">
-                            <div className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.25em] text-[#D4A43C]">
-                                <ShieldCheck className="size-3.5" />
-                                <span>{tStory('badge')}</span>
-                            </div>
+                        <div className="space-y-2 sm:space-y-2.5">
                             <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight text-[#FAF7F2] leading-[1.1] uppercase">
                                 {tStory('title')}
                             </h2>
-                            <p className="text-sm sm:text-base text-[#FAF7F2]/80 leading-relaxed font-sans pt-2">
+                            <p className="text-xs sm:text-sm text-[#D4A43C] font-serif italic tracking-wide">
+                                {tStory('badge')}
+                            </p>
+                            <p className="text-sm sm:text-base text-[#FAF7F2]/80 leading-relaxed font-sans pt-1">
                                 {tStory('originP1')}
                             </p>
                         </div>

@@ -143,19 +143,23 @@ export function ProductInfo({product, searchParams, currencyCode}: ProductInfoPr
     return (
         <div className="space-y-6">
             {/* Product Title & Price */}
-            <div className="space-y-2">
-                <h1 className="text-3xl md:text-4xl font-bold tracking-tight">{product.name}</h1>
+            <div className="space-y-3">
+                <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[#1D120A] dark:text-[#F8F4EE] uppercase leading-tight">
+                    {product.name}
+                </h1>
                 {selectedVariant && (
-                    <p className="text-2xl md:text-3xl text-muted-foreground font-semibold mt-3">
-                        <Price value={selectedVariant.priceWithTax} currencyCode={currencyCode}/>
-                    </p>
+                    <div className="flex items-baseline gap-3 pt-1">
+                        <span className="text-xl sm:text-2xl font-sans font-semibold tracking-tight text-[#1D120A] dark:text-[#F8F4EE]">
+                            <Price value={selectedVariant.priceWithTax} currencyCode={currencyCode}/>
+                        </span>
+                    </div>
                 )}
             </div>
 
-            <Separator />
+            <Separator className="bg-[#E7DED0]/80 dark:bg-[#3A291C]/80" />
 
             {/* Product Description */}
-            <div className="prose prose-sm max-w-none text-muted-foreground">
+            <div className="prose prose-sm max-w-none text-[#3A2418]/85 dark:text-[#F8F4EE]/80 leading-relaxed font-sans">
                 <div dangerouslySetInnerHTML={{__html: product.description}}/>
             </div>
 
@@ -212,21 +216,21 @@ export function ProductInfo({product, searchParams, currencyCode}: ProductInfoPr
             )}
 
             {/* Add to Cart Button */}
-            <div className="pt-2 space-y-3">
+            <div className="pt-2 space-y-4">
                 <Button
                     size="lg"
-                    className="w-full h-12 text-base font-semibold rounded-lg"
+                    className="w-full h-13 sm:h-14 text-xs font-bold uppercase tracking-[0.2em] rounded-xs bg-[#1D120A] hover:bg-[#3A2418] text-[#F8F4EE] dark:bg-[#D4A43C] dark:hover:bg-[#BF9232] dark:text-[#140C06] transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer"
                     disabled={!canAddToCart || isPending}
                     onClick={handleAddToCart}
                 >
                     {isAdded ? (
                         <>
-                            <CheckCircle2 className="mr-2 h-5 w-5"/>
+                            <CheckCircle2 className="mr-2 h-4 w-4 text-[#D4A43C] dark:text-[#140C06]"/>
                             {t('addedToCart')}
                         </>
                     ) : (
                         <>
-                            <ShoppingCart className="mr-2 h-5 w-5"/>
+                            <ShoppingCart className="mr-2 h-4 w-4"/>
                             {isPending
                                 ? t('adding')
                                 : !selectedVariant && product.optionGroups.length > 0
@@ -237,6 +241,15 @@ export function ProductInfo({product, searchParams, currencyCode}: ProductInfoPr
                         </>
                     )}
                 </Button>
+
+                {/* Reassurance strip */}
+                <div className="pt-2 border-t border-[#E7DED0]/60 dark:border-[#3A291C]/60 flex items-center justify-between text-[10px] sm:text-[11px] text-[#A66B2D] dark:text-[#D4A43C] uppercase tracking-wider font-semibold">
+                    <span>Authenticité Garantie</span>
+                    <span>•</span>
+                    <span>Tressage Artisanal</span>
+                    <span>•</span>
+                    <span>Livraison Sécurisée</span>
+                </div>
             </div>
 
             {/* SKU */}

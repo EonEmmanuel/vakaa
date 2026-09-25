@@ -118,7 +118,7 @@ export async function Footer() {
                     <div className="col-span-2 md:col-span-4 lg:col-span-3 space-y-4">
                         <div className="flex flex-col items-start">
                             <NavigationLink href="/" className="inline-block">
-                                <VakaaLogo />
+                                <VakaaLogo variant="light" height={32} />
                             </NavigationLink>
                             <p className="text-xs text-[#B5A496] font-medium tracking-wide mt-3">
                                 Carrying Africa. Everywhere.

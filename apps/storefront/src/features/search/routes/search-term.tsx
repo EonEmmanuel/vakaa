@@ -14,8 +14,8 @@ export async function SearchTerm({searchParams}: SearchTermProps) {
     const t = await getTranslations({locale, namespace: 'Search'});
 
     return (
-        <div className="mb-6">
-            <h1 className="text-3xl font-bold">
+        <div className="mb-8">
+            <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[#1D120A] dark:text-[#F8F4EE] uppercase leading-tight">
                 {searchTerm ? t('resultsFor', {query: searchTerm}) : t('title')}
             </h1>
         </div>
@@ -24,8 +24,8 @@ export async function SearchTerm({searchParams}: SearchTermProps) {
 
 export function SearchTermSkeleton() {
     return (
-        <div className="mb-6">
-            <div className="h-9 w-64 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+        <div className="mb-8">
+            <div className="h-10 w-64 bg-[#EFE8DD] dark:bg-[#20150D] rounded-xs animate-pulse" />
         </div>
     )
 }

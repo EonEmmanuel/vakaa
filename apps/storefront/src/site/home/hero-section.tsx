@@ -63,15 +63,15 @@ export async function HeroSection() {
                 <div className="absolute right-[6%] sm:right-[10%] lg:right-[16%] top-[40%] -translate-y-1/2 w-[34%] sm:w-[30%] lg:w-[26%] aspect-square rounded-full bg-[#E5DFD5]/40 dark:bg-[#20150D]/30 blur-3xl" />
 
                 {/* Soft gradient text-readability scrim */}
-                <div className="absolute inset-y-0 left-0 w-[58%] sm:w-[54%] lg:w-[46%] bg-gradient-to-r from-[#F8F4EE] via-[#F8F4EE]/90 to-transparent dark:from-[#140C06] dark:via-[#140C06]/90 z-[1]" />
+                <div className="absolute inset-y-0 left-0 w-[65%] sm:w-[56%] lg:w-[48%] bg-gradient-to-r from-[#F8F4EE] via-[#F8F4EE]/95 to-transparent dark:from-[#140C06] dark:via-[#140C06]/95 z-[1]" />
             </div>
 
             {/* ═══ Model Image — Positioned on right, fully visible, no clipping ═══ */}
             <div
-                className="absolute inset-y-0 right-0 w-[52%] sm:w-[50%] lg:w-[56%] z-[5] pointer-events-none flex items-end justify-end"
+                className="absolute inset-y-0 right-0 w-[48%] sm:w-[50%] lg:w-[56%] z-[5] pointer-events-none flex items-end justify-end"
                 style={{
-                    maskImage: 'linear-gradient(to bottom, black 88%, transparent 100%)',
-                    WebkitMaskImage: 'linear-gradient(to bottom, black 88%, transparent 100%)',
+                    maskImage: 'linear-gradient(to bottom, black 90%, transparent 100%)',
+                    WebkitMaskImage: 'linear-gradient(to bottom, black 90%, transparent 100%)',
                 }}
             >
                 <div className="relative w-full h-full max-h-[96%] sm:max-h-[98%] lg:max-h-[100%] flex items-end justify-end pr-1 sm:pr-4 lg:pr-8 xl:pr-14">
@@ -82,7 +82,7 @@ export async function HeroSection() {
                             fill
                             priority
                             unoptimized
-                            sizes="(max-width: 640px) 52vw, (max-width: 1024px) 50vw, 56vw"
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 56vw"
                             className="object-contain object-bottom-right drop-shadow-[0_12px_28px_rgba(29,18,10,0.10)]"
                         />
                     </div>
@@ -91,9 +91,9 @@ export async function HeroSection() {
 
             {/* ═══ Left Column: Typography & CTAs ═══ */}
             <div className="vakaa-container relative z-10 min-h-[440px] sm:min-h-[480px] lg:min-h-[580px] xl:min-h-[640px]">
-                <div className="w-[56%] sm:w-[54%] lg:w-[42%] xl:w-[40%] pt-2 sm:pt-6 lg:pt-10 pb-6 sm:pb-8 lg:pb-12">
+                <div className="w-[62%] sm:w-[54%] lg:w-[44%] xl:w-[40%] pt-2 sm:pt-6 lg:pt-10 pb-6 sm:pb-8 lg:pb-12">
                     {/* Complete 3-line headline */}
-                    <h1 className="font-serif text-[2.1rem] sm:text-[2.75rem] md:text-[3.35rem] lg:text-[4.25rem] xl:text-[4.85rem] font-bold tracking-tight text-[#1D120A] dark:text-[#F8F4EE] leading-[0.96] uppercase">
+                    <h1 className="font-serif text-[1.85rem] xs:text-[2.15rem] sm:text-[2.75rem] md:text-[3.35rem] lg:text-[4.25rem] xl:text-[4.85rem] font-bold tracking-tight text-[#1D120A] dark:text-[#F8F4EE] leading-[0.98] uppercase">
                         <span className="block">{t('titleLine1')}</span>
                         <span className="block">{t('titleLine2')}</span>
                         <span className="block">{t('titleLine3')}</span>

@@ -46,14 +46,13 @@ export async function CollectionGridPreview() {
             <div className="vakaa-container">
                 {/* Section Header */}
                 <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 md:mb-12 gap-4">
-                    <div className="space-y-2">
-                        <div className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.25em] text-[#A66B2D]">
-                            <Sparkles className="size-3.5 text-[#D4A43C]" />
-                            <span>Lignes & Façonnages</span>
-                        </div>
+                    <div className="space-y-1 sm:space-y-1.5">
                         <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#1D120A] dark:text-[#F8F4EE] uppercase leading-tight">
                             {t('collections.title')}
                         </h2>
+                        <p className="text-xs sm:text-sm text-[#A66B2D] dark:text-[#D4A43C] font-serif italic tracking-wide">
+                            Lignes signatures & silhouettes de saison
+                        </p>
                     </div>
 
                     <Link
