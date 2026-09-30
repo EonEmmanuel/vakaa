@@ -240,12 +240,12 @@ export async function Footer() {
                         <p className="text-xs font-bold tracking-[0.2em] text-[#D4A43C] uppercase">HELP</p>
                         <ul className="space-y-2 text-xs text-[#B5A496]">
                             <li>
-                                <NavigationLink href="/contact" className="hover:text-[#F8F4EE] transition-colors">
+                                <NavigationLink href="/shipping-and-delivery" className="hover:text-[#F8F4EE] transition-colors">
                                     Shipping & Delivery
                                 </NavigationLink>
                             </li>
                             <li>
-                                <NavigationLink href="/contact" className="hover:text-[#F8F4EE] transition-colors">
+                                <NavigationLink href="/returns-and-refunds" className="hover:text-[#F8F4EE] transition-colors">
                                     Returns & Exchanges
                                 </NavigationLink>
                             </li>
@@ -255,7 +255,7 @@ export async function Footer() {
                                 </NavigationLink>
                             </li>
                             <li>
-                                <NavigationLink href="/account/orders" className="hover:text-[#F8F4EE] transition-colors">
+                                <NavigationLink href="/track-order" className="hover:text-[#F8F4EE] transition-colors">
                                     Track Order
                                 </NavigationLink>
                             </li>
@@ -273,12 +273,12 @@ export async function Footer() {
                             <p className="text-xs font-bold tracking-[0.2em] text-[#D4A43C] uppercase">LEGAL</p>
                             <ul className="space-y-2 text-xs text-[#B5A496]">
                                 <li>
-                                    <NavigationLink href="/search?collection=terms" className="hover:text-[#F8F4EE] transition-colors">
+                                    <NavigationLink href="/terms" className="hover:text-[#F8F4EE] transition-colors">
                                         Terms & Conditions
                                     </NavigationLink>
                                 </li>
                                 <li>
-                                    <NavigationLink href="/search?collection=privacy" className="hover:text-[#F8F4EE] transition-colors">
+                                    <NavigationLink href="/privacy" className="hover:text-[#F8F4EE] transition-colors">
                                         Privacy Policy
                                     </NavigationLink>
                                 </li>
@@ -297,9 +297,9 @@ export async function Footer() {
                     <div>
                         &copy; {COPYRIGHT_YEAR} VAKAA. All Rights Reserved. Carrying Africa. Everywhere.
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         <span>Worldwide Express Shipping</span>
-                        <span>•</span>
+                        <span className="text-[#3A291C]">|</span>
                         <span>100% Artisan Handcrafted</span>
                     </div>
                 </div>

@@ -18,6 +18,7 @@ export function VakaaLogo({ className = '', variant = 'auto', height = 28 }: Vak
                     width={width}
                     height={height}
                     priority
+                    style={{ width: 'auto', height: 'auto' }}
                     className="h-6 sm:h-7 md:h-8 w-auto object-contain"
                 />
             </div>
@@ -33,6 +34,7 @@ export function VakaaLogo({ className = '', variant = 'auto', height = 28 }: Vak
                     width={width}
                     height={height}
                     priority
+                    style={{ width: 'auto', height: 'auto' }}
                     className="h-6 sm:h-7 md:h-8 w-auto object-contain"
                 />
             </div>
@@ -48,6 +50,7 @@ export function VakaaLogo({ className = '', variant = 'auto', height = 28 }: Vak
                     width={width}
                     height={height}
                     priority
+                    style={{ width: 'auto', height: 'auto' }}
                     className="h-6 sm:h-7 md:h-8 w-auto object-contain"
                 />
             </div>
@@ -63,6 +66,7 @@ export function VakaaLogo({ className = '', variant = 'auto', height = 28 }: Vak
                 width={width}
                 height={height}
                 priority
+                style={{ width: 'auto', height: 'auto' }}
                 className="dark:hidden h-6 sm:h-7 md:h-8 w-auto object-contain"
             />
             <Image
@@ -71,6 +75,7 @@ export function VakaaLogo({ className = '', variant = 'auto', height = 28 }: Vak
                 width={width}
                 height={height}
                 priority
+                style={{ width: 'auto', height: 'auto' }}
                 className="hidden dark:block h-6 sm:h-7 md:h-8 w-auto object-contain"
             />
         </div>

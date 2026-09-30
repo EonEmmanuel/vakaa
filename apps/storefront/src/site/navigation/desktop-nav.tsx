@@ -55,13 +55,20 @@ export function DesktopNav() {
                     <Link
                         key={item.href}
                         href={item.href}
-                        className={`transition-all ${
+                        className={`group relative py-1 cursor-pointer transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-standard)] ${
                             active
-                                ? 'font-semibold pb-1 border-b-2 border-[#1D120A] dark:border-[#F8F4EE] text-[#1D120A] dark:text-[#F8F4EE]'
-                                : 'font-medium text-[#1D120A]/75 dark:text-[#F8F4EE]/75 hover:text-[#D4A43C] dark:hover:text-[#D4A43C] pb-1 border-b-2 border-transparent'
+                                ? 'font-semibold text-[#1D120A] dark:text-[#F8F4EE]'
+                                : 'font-medium text-[#1D120A]/75 dark:text-[#F8F4EE]/75 hover:text-[#D4A43C] dark:hover:text-[#D4A43C]'
                         }`}
                     >
-                        {item.label}
+                        <span>{item.label}</span>
+                        <span
+                            className={`absolute bottom-0 left-0 right-0 h-[2px] rounded-full transition-transform duration-[var(--duration-fast)] ease-[var(--ease-out-standard)] origin-left motion-reduce:transition-none ${
+                                active
+                                    ? 'bg-[#1D120A] dark:bg-[#F8F4EE] scale-x-100'
+                                    : 'bg-[#D4A43C] scale-x-0 group-hover:scale-x-100'
+                            }`}
+                        />
                     </Link>
                 );
             })}

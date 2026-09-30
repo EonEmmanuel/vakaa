@@ -1,9 +1,9 @@
 import {Button} from '@/components/ui/button';
-import {Input} from '@/components/ui/input';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Tag} from 'lucide-react';
-import {applyPromotionCode, removePromotionCode} from './actions';
+import {removePromotionCode} from './actions';
 import {getTranslations} from 'next-intl/server';
+import {PromotionCodeForm} from './promotion-code-form';
 
 type ActiveOrder = {
     id: string;
@@ -48,16 +48,7 @@ export async function PromotionCode({activeOrder}: { activeOrder: ActiveOrder })
                         ))}
                     </div>
                 ) : (
-                    <form action={applyPromotionCode} className="flex gap-2">
-                        <Input
-                            type="text"
-                            name="code"
-                            placeholder={t('enterCode')}
-                            className="flex-1"
-                            required
-                        />
-                        <Button type="submit">{t('apply')}</Button>
-                    </form>
+                    <PromotionCodeForm />
                 )}
             </CardContent>
         </Card>

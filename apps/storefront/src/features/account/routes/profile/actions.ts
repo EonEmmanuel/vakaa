@@ -43,8 +43,10 @@ export async function updatePasswordAction(prevState: { error?: string; success?
 
 export async function updateCustomerAction(prevState: { error?: string; success?: boolean } | undefined, formData: FormData) {
     const t = await getTranslations('Errors');
-    const firstName = formData.get('firstName') as string;
-    const lastName = formData.get('lastName') as string;
+    const title = (formData.get('title') as string)?.trim();
+    const firstName = (formData.get('firstName') as string)?.trim();
+    const lastName = (formData.get('lastName') as string)?.trim();
+    const phoneNumber = (formData.get('phoneNumber') as string)?.trim();
 
     if (!firstName || !lastName) {
         return {error: t('firstLastNameRequired')};
@@ -53,8 +55,10 @@ export async function updateCustomerAction(prevState: { error?: string; success?
     try {
         const result = await mutate(UpdateCustomerMutation, {
             input: {
+                title: title || undefined,
                 firstName,
                 lastName,
+                phoneNumber: phoneNumber || undefined,
             },
         }, {useAuthToken: true});
 

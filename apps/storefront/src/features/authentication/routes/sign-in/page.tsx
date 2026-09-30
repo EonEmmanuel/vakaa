@@ -5,7 +5,6 @@ import {getTranslations} from 'next-intl/server';
 import {LoginForm} from './login-form';
 import {Skeleton} from '@/components/ui/skeleton';
 import {SITE_NAME} from '@/config/metadata';
-import {Sparkles} from 'lucide-react';
 
 export async function generateMetadata(): Promise<Metadata> {
     const locale = await getRouteLocale();
@@ -65,18 +64,17 @@ export default async function SignInPage({searchParams}: PageProps<'/[locale]/si
 
                 {/* Top Badge */}
                 <div className="relative z-10">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] text-[#D4A43C] bg-[#2A1B10] border border-[#D4A43C]/30 shadow-xs">
-                        <Sparkles className="w-3 h-3 text-[#D4A43C]" />
+                    <span className="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] text-[#D4A43C] bg-[#2A1B10] border border-[#D4A43C]/30 shadow-xs">
                         {t('brandTagline')}
                     </span>
                 </div>
 
                 {/* Center Editorial Quote */}
                 <div className="relative z-10 space-y-6 my-auto py-8">
-                    <h2 className="font-serif text-3xl xl:text-4xl font-bold tracking-tight text-[#FAF7F2] leading-tight">
+                    <h2 className="font-sans text-3xl xl:text-4xl font-bold tracking-tight text-[#FAF7F2] leading-tight">
                         {SITE_NAME}
                     </h2>
-                    <p className="font-serif text-lg xl:text-xl text-[#D4A43C] italic leading-relaxed">
+                    <p className="font-sans text-lg xl:text-xl text-[#D4A43C] italic leading-relaxed">
                         {t('brandQuoteSignIn')}
                     </p>
                     <p className="text-xs text-[#F8F4EE]/70 font-sans leading-relaxed max-w-sm">
@@ -87,15 +85,15 @@ export default async function SignInPage({searchParams}: PageProps<'/[locale]/si
                 {/* Bottom Trust Features */}
                 <div className="relative z-10 grid grid-cols-3 gap-4 pt-6 border-t border-[#3A291C]/80">
                     <div>
-                        <p className="font-serif text-base font-bold text-[#FAF7F2]">{t('vipPillar1Title')}</p>
+                        <p className="font-sans text-base font-bold text-[#FAF7F2]">{t('vipPillar1Title')}</p>
                         <p className="text-[10px] text-[#D4A43C] uppercase tracking-wider mt-0.5">{t('vipPillar1Desc')}</p>
                     </div>
                     <div>
-                        <p className="font-serif text-base font-bold text-[#FAF7F2]">{t('vipPillar2Title')}</p>
+                        <p className="font-sans text-base font-bold text-[#FAF7F2]">{t('vipPillar2Title')}</p>
                         <p className="text-[10px] text-[#D4A43C] uppercase tracking-wider mt-0.5">{t('vipPillar2Desc')}</p>
                     </div>
                     <div>
-                        <p className="font-serif text-base font-bold text-[#FAF7F2]">{t('vipPillar3Title')}</p>
+                        <p className="font-sans text-base font-bold text-[#FAF7F2]">{t('vipPillar3Title')}</p>
                         <p className="text-[10px] text-[#D4A43C] uppercase tracking-wider mt-0.5">{t('vipPillar3Desc')}</p>
                     </div>
                 </div>
@@ -108,7 +106,7 @@ export default async function SignInPage({searchParams}: PageProps<'/[locale]/si
                         <div className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-[#A66B2D] mb-1">
                             <span>Maison VAKAA</span>
                         </div>
-                        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#1D120A] dark:text-[#F8F4EE] tracking-tight">
+                        <h1 className="font-sans text-2xl sm:text-3xl font-bold text-[#1D120A] dark:text-[#F8F4EE] tracking-tight">
                             {t('signIn')}
                         </h1>
                         <p className="text-xs text-[#6B5E55] dark:text-[#B5A496]">

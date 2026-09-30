@@ -17,18 +17,24 @@ export function ProductCarousel({title, products}: ProductCarouselClientProps) {
     const id = useId();
 
     return (
-        <section className="py-16 md:py-24 bg-[#F8F4EE] dark:bg-[#140C06] transition-colors">
-            <div className="container mx-auto px-4 md:px-8">
-                {/* Header */}
-                <div className="flex items-end justify-between mb-8 md:mb-12">
-                    <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#1D120A] dark:text-[#F8F4EE] uppercase">
-                        {title}
-                    </h2>
+        <section className="py-14 sm:py-20 bg-[#FAF8F5] transition-colors border-t border-[#E7DED0]/60">
+            <div className="vakaa-container">
+                {/* Header matching ff98ca... reference */}
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
+                    <div className="space-y-1">
+                        <span className="font-sans text-xs font-bold uppercase tracking-wider text-[#A66B2D] flex items-center gap-2">
+                            <span>—</span>
+                            <span>Créations d’Exception</span>
+                        </span>
+                        <h2 className="font-sans text-2xl sm:text-3xl font-bold tracking-tight text-[#1D120A] leading-tight">
+                            {title || 'Explorez les Créations Similaires'}
+                        </h2>
+                    </div>
                     <Link
                         href="/search"
-                        className="group inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-[#1D120A] dark:text-[#D4A43C] hover:text-[#D4A43C] dark:hover:text-[#BF9232] transition-colors"
+                        className="group inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#A66B2D] hover:text-[#1D120A] transition-colors cursor-pointer"
                     >
-                        <span>VIEW ALL</span>
+                        <span>Tout Voir</span>
                         <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
                     </Link>
                 </div>

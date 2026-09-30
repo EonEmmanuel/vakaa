@@ -13,11 +13,11 @@ import {LanguagePicker} from '@/site/navigation/navbar/language-picker';
 export function Navbar() {
     return (
         <header className="fixed top-0 left-0 right-0 z-50 transition-colors">
-            <div className="bg-[#F8F4EE]/60 dark:bg-[#140C06]/60 backdrop-blur-md border-b border-[#E7DED0]/40 dark:border-[#3A291C]/40">
+            <div className="bg-[#FAF8F5]/90 backdrop-blur-md border-b border-[#E7DED0]/60">
                 <div className="vakaa-container">
-                    <div className="flex items-center justify-between h-14 sm:h-18">
-                        {/* Left: Desktop Nav Links / Mobile Menu Trigger */}
-                        <div className="flex items-center gap-4 lg:gap-6">
+                    <div className="flex items-center justify-between h-14 sm:h-16 md:h-18">
+                        {/* Left: Mobile Menu Trigger on mobile / Desktop Nav Links on lg */}
+                        <div className="flex items-center gap-2 sm:gap-4 lg:gap-6 min-w-0">
                             <div className="lg:hidden">
                                 <Suspense fallback={<div className="w-9 h-9" />}>
                                     <MobileNavWrapper />
@@ -31,26 +31,32 @@ export function Navbar() {
                         {/* Center: Brand Logo */}
                         <div className="absolute left-1/2 -translate-x-1/2 pointer-events-auto">
                             <NavigationLink href="/" className="inline-block py-1">
-                                <VakaaLogo />
+                                <VakaaLogo height={26} />
                             </NavigationLink>
                         </div>
 
-                        {/* Right: Currency + Language + Search + Account + Cart */}
-                        <div className="flex items-center gap-0.5 sm:gap-2">
-                            <CurrencyPicker
-                                availableCurrencyCodes={['XAF', 'EUR', 'USD', 'NGN']}
-                                activeCurrencyCode="XAF"
-                            />
-                            <Suspense fallback={<div className="w-8 h-8" />}>
-                                <LanguagePicker />
-                            </Suspense>
-                            <Suspense fallback={<div className="w-8 sm:w-9 h-8 sm:h-9" />}>
+                        {/* Right: Currency + Language (md+) | Search + Account (sm+) + Cart */}
+                        <div className="flex items-center gap-1 sm:gap-2">
+                            <div className="hidden md:flex items-center">
+                                <CurrencyPicker
+                                    availableCurrencyCodes={['XAF', 'EUR', 'USD', 'NGN']}
+                                    activeCurrencyCode="XAF"
+                                />
+                            </div>
+                            <div className="hidden md:flex items-center">
+                                <Suspense fallback={<div className="w-8 h-8" />}>
+                                    <LanguagePicker />
+                                </Suspense>
+                            </div>
+                            <Suspense fallback={<div className="w-9 h-9" />}>
                                 <NavbarSearch />
                             </Suspense>
-                            <Suspense fallback={<NavbarUserSkeleton />}>
-                                <NavbarUser />
-                            </Suspense>
-                            <Suspense fallback={<div className="w-8 sm:w-9 h-8 sm:h-9" />}>
+                            <div className="hidden sm:flex items-center">
+                                <Suspense fallback={<NavbarUserSkeleton />}>
+                                    <NavbarUser />
+                                </Suspense>
+                            </div>
+                            <Suspense fallback={<div className="w-9 h-9" />}>
                                 <NavbarCart />
                             </Suspense>
                         </div>

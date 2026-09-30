@@ -1,51 +1,49 @@
-import { getTranslations } from 'next-intl/server';
-import { getRouteLocale } from '@/platform/i18n/server';
-import { Sparkles, Gem, ShieldCheck, Globe } from 'lucide-react';
+import { Truck, RotateCcw, ShieldCheck, Headphones } from 'lucide-react';
 
-export async function TrustBar() {
-    const locale = await getRouteLocale();
-    const t = await getTranslations({locale, namespace: 'Home'});
-
-    const items = [
+export function TrustBar() {
+    const pillars = [
         {
-            icon: Sparkles,
-            title: t('trust.artisans.title'),
-            description: t('trust.artisans.description'),
-        },
-        {
-            icon: Gem,
-            title: t('trust.materials.title'),
-            description: t('trust.materials.description'),
+            icon: Truck,
+            title: "Livraison Express Sécurisée",
+            description: "Coursier 24-48h à Douala & Yaoundé, DHL Express Monde",
         },
         {
             icon: ShieldCheck,
-            title: t('trust.payments.title'),
-            description: t('trust.payments.description'),
+            title: "100% Haute Maroquinerie d'Art",
+            description: "Cuir tanné végétal et raphia sauvage façonnés main",
         },
         {
-            icon: Globe,
-            title: t('trust.delivery.title'),
-            description: t('trust.delivery.description'),
+            icon: RotateCcw,
+            title: "Retours Gracieux 14 Jours",
+            description: "Échanges et retours garantis sous 14 jours ouvrés",
+        },
+        {
+            icon: Headphones,
+            title: "Conciergerie Dédiée 7j/7",
+            description: "Conseils sur mesure & assistance WhatsApp directe",
         },
     ];
 
     return (
-        <section className="relative z-20 border-y border-[#3A291C] bg-[#1D120A] text-[#F8F4EE] py-4 sm:py-6 md:py-7 shadow-[0_8px_24px_rgba(0,0,0,0.25)] transition-colors">
+        <section className="py-6 sm:py-8 bg-[#FAF8F5] border-b border-[#E7DED0]/80 transition-colors">
             <div className="vakaa-container">
-                <div className="grid grid-cols-4 gap-2 sm:gap-6 lg:gap-8">
-                    {items.map((item, idx) => {
-                        const Icon = item.icon;
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+                    {pillars.map((pillar, idx) => {
+                        const Icon = pillar.icon;
                         return (
-                            <div key={idx} className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-1.5 sm:gap-3.5 group">
-                                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#2A1A10] border border-[#D4A43C]/25 flex items-center justify-center shrink-0">
-                                    <Icon className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-[#D4A43C] stroke-[1.75] transition-transform duration-300 group-hover:scale-110" />
+                            <div
+                                key={idx}
+                                className="flex items-center gap-3 p-2 rounded-2xl group transition-all"
+                            >
+                                <div className="size-9 sm:size-10 rounded-full bg-white ring-1 ring-[#E7DED0] flex items-center justify-center shrink-0 group-hover:ring-[#D4A43C]/60 group-hover:scale-105 transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-2xs">
+                                    <Icon className="w-4 h-4 text-[#A66B2D]" />
                                 </div>
-                                <div className="space-y-0.5">
-                                    <h4 className="text-[8px] sm:text-[11px] lg:text-xs font-bold tracking-wider uppercase text-[#F8F4EE] leading-tight">
-                                        {item.title}
-                                    </h4>
-                                    <p className="text-[7px] sm:text-[10px] lg:text-[11px] text-[#B5A496] leading-tight line-clamp-2 sm:line-clamp-none">
-                                        {item.description}
+                                <div className="space-y-0.5 min-w-0">
+                                    <h3 className="font-sans text-xs sm:text-[13px] font-bold text-[#1D120A] tracking-tight leading-tight">
+                                        {pillar.title}
+                                    </h3>
+                                    <p className="text-[10px] sm:text-[11px] text-[#3A2418]/65 leading-tight line-clamp-2">
+                                        {pillar.description}
                                     </p>
                                 </div>
                             </div>

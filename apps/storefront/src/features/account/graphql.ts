@@ -3,9 +3,11 @@ import {graphql} from '@/platform/vendure/graphql';
 export const ActiveCustomerFragment = graphql(`
     fragment ActiveCustomer on Customer {
         id
+        title
         firstName
         lastName
         emailAddress
+        phoneNumber
     }
 `);
 
@@ -47,6 +49,7 @@ export const GetCustomerOrdersQuery = graphql(`
     query GetCustomerOrders($options: OrderListOptions) {
         activeCustomer {
             id
+            emailAddress
             orders(options: $options) {
                 totalItems
                 items {
@@ -57,14 +60,24 @@ export const GetCustomerOrdersQuery = graphql(`
                     currencyCode
                     createdAt
                     updatedAt
+                    payments {
+                        id
+                        method
+                        amount
+                        state
+                    }
                     lines {
                         id
+                        quantity
+                        unitPriceWithTax
+                        linePriceWithTax
                         productVariant {
                             id
                             name
                             product {
                                 id
                                 name
+                                slug
                                 featuredAsset {
                                     id
                                     preview
@@ -241,8 +254,10 @@ export const UpdateCustomerMutation = graphql(`
         updateCustomer(input: $input) {
             __typename
             id
+            title
             firstName
             lastName
+            phoneNumber
             emailAddress
         }
     }

@@ -16,7 +16,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AddressesPage() {
     const locale = await getRouteLocale();
-    const t = await getTranslations({locale, namespace: 'Account'});
     const [addressesResult, countriesResult] = await Promise.all([
         query(GetCustomerAddressesQuery, {}, { useAuthToken: true }),
         query(GetAvailableCountriesQuery, {}, { languageCode: locale }),
@@ -26,15 +25,6 @@ export default async function AddressesPage() {
     const countries = countriesResult.data.availableCountries || [];
 
     return (
-        <div className="space-y-6">
-            <div>
-                <h1 className="text-3xl font-bold">{t('addresses')}</h1>
-                <p className="text-muted-foreground mt-2">
-                    {t('manageAddresses')}
-                </p>
-            </div>
-
-            <AddressesClient addresses={addresses} countries={countries} />
-        </div>
+        <AddressesClient addresses={addresses} countries={countries} />
     );
 }

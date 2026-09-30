@@ -58,7 +58,7 @@ export async function ArtisansPage() {
                         <span className="text-[11px] font-bold tracking-[0.25em] text-[#D4A43C] uppercase">
                             {t('badge')}
                         </span>
-                        <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.08] uppercase">
+                        <h1 className="font-sans text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.08] uppercase">
                             {t('title')}
                         </h1>
                         <div className="w-16 h-[2px] bg-[#D4A43C] mx-auto rounded-full" />
@@ -80,7 +80,7 @@ export async function ArtisansPage() {
                                     <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#EFE8DD] dark:bg-[#2A1B10] text-[#D4A43C] mb-1">
                                         <Icon className="w-4 h-4 stroke-[2]" />
                                     </div>
-                                    <p className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1D120A] dark:text-[#F8F4EE]">
+                                    <p className="font-sans text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1D120A] dark:text-[#F8F4EE]">
                                         {stat.value}
                                     </p>
                                     <p className="text-xs sm:text-sm text-[#6B5E55] dark:text-[#B5A496] font-medium tracking-wide">
@@ -100,7 +100,7 @@ export async function ArtisansPage() {
                         <span className="text-xs font-semibold tracking-widest text-[#D4A43C] uppercase">
                             REGIONAL COOPERATIVES
                         </span>
-                        <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+                        <h2 className="font-sans text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
                             Custodians of Sacred Craft
                         </h2>
                     </div>
@@ -129,7 +129,7 @@ export async function ArtisansPage() {
                                             <MapPin className="w-3.5 h-3.5" />
                                             <span>{coop.location}</span>
                                         </div>
-                                        <h3 className="font-serif text-xl font-bold tracking-tight">
+                                        <h3 className="font-sans text-xl font-bold tracking-tight">
                                             {coop.title}
                                         </h3>
                                         <p className="text-xs sm:text-sm text-[#6B5E55] dark:text-[#B5A496] leading-relaxed font-sans">
@@ -143,7 +143,7 @@ export async function ArtisansPage() {
 
                     {/* Bottom CTA Banner */}
                     <div className="mt-16 sm:mt-20 text-center bg-[#1D120A] text-[#F8F4EE] rounded-sm p-10 sm:p-14 space-y-6">
-                        <h3 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight uppercase">
+                        <h3 className="font-sans text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight uppercase">
                             {t('ctaTitle')}
                         </h3>
                         <p className="text-sm sm:text-base text-[#F8F4EE]/80 max-w-xl mx-auto font-sans">

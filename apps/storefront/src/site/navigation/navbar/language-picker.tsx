@@ -2,7 +2,7 @@
 
 import {useLocale, useTranslations} from 'next-intl';
 import {routing, localeNames, type Locale} from '@/platform/i18n/routing';
-import {Globe} from 'lucide-react';
+import {Globe, Check} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -55,7 +55,7 @@ export function LanguagePicker() {
                             <span className={isSelected ? 'font-semibold text-foreground' : 'text-muted-foreground'}>
                                 {localeNames[loc] ?? loc.toUpperCase()}
                             </span>
-                            {isSelected && <span className="text-xs text-[#D4A43C]">✓</span>}
+                            {isSelected && <Check className="w-3.5 h-3.5 text-[#D4A43C]" />}
                         </DropdownMenuItem>
                     );
                 })}

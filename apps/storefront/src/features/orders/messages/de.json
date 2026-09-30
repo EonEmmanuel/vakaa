@@ -1,25 +1,38 @@
 {
   "OrderStatus": {
     "AddingItems": "Artikel hinzufügen",
-    "ArrangingPayment": "Zahlung wird vorbereitet",
+    "ArrangingPayment": "Zahlung in Bearbeitung",
     "PaymentAuthorized": "Zahlung autorisiert",
-    "PaymentSettled": "Zahlung abgeschlossen",
+    "PaymentSettled": "Bestellung bezahlt",
     "PartiallyShipped": "Teilweise versendet",
     "Shipped": "Versendet",
-    "PartiallyDelivered": "Teilweise zugestellt",
-    "Delivered": "Zugestellt",
+    "PartiallyDelivered": "Teilweise geliefert",
+    "Delivered": "Geliefert",
     "Cancelled": "Storniert"
   },
   "OrderConfirmation": {
     "pageTitle": "Bestellbestätigung",
     "orderConfirmed": "Bestellung bestätigt!",
-    "thankYou": "Vielen Dank für Ihre Bestellung. Ihre Bestellnummer lautet",
-    "emailConfirmation": "Wir senden Ihnen eine E-Mail mit Ihren Bestelldetails und Tracking-Informationen.",
-    "orderSummary": "Bestellübersicht",
+    "thankYou": "Vielen Dank für Ihr Vertrauen. Ihre Bestellnummer lautet",
+    "emailConfirmation": "Eine Bestätigungs-E-Mail mit Details zu Ihren Artikeln und der Sendungsverfolgung wurde an Sie gesendet.",
+    "orderSummary": "Bestellte Artikel",
+    "orderId": "Bestellnummer",
+    "totalPayment": "Gesamtbetrag",
+    "paymentMethod": "Zahlungsart",
+    "status": "Status",
+    "estimatedDelivery": "Voraussichtliche Lieferung",
+    "orderAccepted": "Ihre Bestellung wurde bestätigt und wird in unserer Werkstatt vorbereitet.",
+    "printReceipt": "Beleg drucken",
+    "downloadInvoice": "Rechnung herunterladen (PDF)",
+    "trackOrder": "Bestellung verfolgen",
+    "orderDate": "Bestelldatum",
     "qty": "Menge: {quantity}",
     "total": "Gesamt",
     "shippingAddress": "Lieferadresse",
     "continueShopping": "Weiter einkaufen",
-    "viewOrders": "Bestellungen ansehen"
+    "viewOrders": "Meine Bestellungen ansehen",
+    "paymentIncomplete": "Zahlung nicht abgeschlossen",
+    "paymentCancelledMessage": "Ihre Transaktion wurde abgebrochen oder konnte nicht abgeschlossen werden. Es wurde kein Betrag abgebucht.",
+    "retryPayment": "Zahlung wiederholen"
   }
 }

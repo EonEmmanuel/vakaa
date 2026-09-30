@@ -4,19 +4,34 @@
     "nameDesc": "Name: Z to A",
     "priceAsc": "Price: Low to High",
     "priceDesc": "Price: High to Low",
+    "newest": "Newest Drops",
+    "sortBy": "Sort by",
     "placeholder": "Sort by"
   },
   "Filters": {
-    "title": "Filters",
-    "clearAll": "Clear all",
-    "filtersButton": "Filters"
+    "title": "Filter Options",
+    "clearAll": "Clear All",
+    "filtersButton": "Filter & Sort",
+    "categories": "Categories & Lines",
+    "priceRange": "Price Range",
+    "colors": "Colors & Tones",
+    "materials": "Noble Materials",
+    "availability": "Availability",
+    "inStock": "In Stock",
+    "limitedEdition": "Limited Edition",
+    "showingResults": "Showing 1-{count} of {total} results",
+    "allProducts": "All Pieces",
+    "activeFilters": "Active Filters:",
+    "reset": "Reset"
   },
   "Search": {
-    "title": "Search",
-    "pageTitle": "Search Products",
-    "resultsFor": "Search results for \"{query}\"",
-    "resultsTitle": "Search results for \"{query}\"",
+    "title": "Shop & Collections",
+    "home": "Home",
+    "shop": "Shop",
+    "pageTitle": "Luxury Handcrafted Bag Boutique",
+    "resultsFor": "Results for \"{query}\"",
+    "resultsTitle": "Results for \"{query}\"",
     "metaDescription": "Find products matching \"{query}\" at {siteName}",
-    "metaCatalogDescription": "Search our product catalog at {siteName}"
+    "metaCatalogDescription": "Explore our complete collection of artisan luxury leather and raffia bags at {siteName}"
   }
 }

@@ -54,7 +54,7 @@ export async function JournalPage() {
                         <span className="text-[11px] font-bold tracking-[0.25em] text-[#D4A43C] uppercase">
                             {t('badge')}
                         </span>
-                        <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.08] uppercase">
+                        <h1 className="font-sans text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.08] uppercase">
                             {t('title')}
                         </h1>
                         <div className="w-16 h-[2px] bg-[#D4A43C] mx-auto rounded-full" />
@@ -90,7 +90,7 @@ export async function JournalPage() {
                                         {t('readTime')}
                                     </span>
                                 </div>
-                                <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight leading-tight">
+                                <h2 className="font-sans text-2xl sm:text-3xl font-bold tracking-tight leading-tight">
                                     {t('featuredTitle')}
                                 </h2>
                                 <p className="text-sm sm:text-base text-[#6B5E55] dark:text-[#B5A496] leading-relaxed font-sans">
@@ -139,7 +139,7 @@ export async function JournalPage() {
                                             <span>•</span>
                                             <span>{article.readTime}</span>
                                         </div>
-                                        <h3 className="font-serif text-lg font-bold tracking-tight group-hover:text-[#D4A43C] transition-colors">
+                                        <h3 className="font-sans text-lg font-bold tracking-tight group-hover:text-[#D4A43C] transition-colors">
                                             {article.title}
                                         </h3>
                                         <p className="text-xs sm:text-sm text-[#6B5E55] dark:text-[#B5A496] leading-relaxed font-sans">
@@ -157,7 +157,7 @@ export async function JournalPage() {
                             <BookOpen className="w-5 h-5 stroke-[1.75]" />
                         </div>
                         <div className="space-y-2">
-                            <h3 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight">
+                            <h3 className="font-sans text-2xl sm:text-3xl font-bold tracking-tight">
                                 {t('newsletterTitle')}
                             </h3>
                             <p className="text-xs sm:text-sm text-[#6B5E55] dark:text-[#B5A496] max-w-md mx-auto font-sans">

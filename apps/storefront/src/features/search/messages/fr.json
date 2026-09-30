@@ -1,22 +1,37 @@
 {
   "Sort": {
-    "nameAsc": "Nom : De A à Z",
-    "nameDesc": "Nom : De Z à A",
+    "nameAsc": "Nom : A à Z",
+    "nameDesc": "Nom : Z à A",
     "priceAsc": "Prix : Du plus bas au plus haut",
     "priceDesc": "Prix : Du plus haut au plus bas",
+    "newest": "Nouveautés d'Atelier",
+    "sortBy": "Trier par",
     "placeholder": "Trier par"
   },
   "Filters": {
-    "title": "Filtres",
-    "clearAll": "Réinitialiser",
-    "filtersButton": "Filtres"
+    "title": "Options de Filtrage",
+    "clearAll": "Effacer tout",
+    "filtersButton": "Filtrer & Trier",
+    "categories": "Lignes & Catégories",
+    "priceRange": "Gamme de Prix",
+    "colors": "Teintes & Couleurs",
+    "materials": "Matières Nobles",
+    "availability": "Disponibilité",
+    "inStock": "En Stock",
+    "limitedEdition": "Édition Limitée",
+    "showingResults": "Affichage de 1-{count} sur {total} créations",
+    "allProducts": "Toutes les Pièces",
+    "activeFilters": "Filtres actifs :",
+    "reset": "Réinitialiser"
   },
   "Search": {
-    "title": "Recherche",
-    "pageTitle": "Rechercher des Créations",
-    "resultsFor": "Résultats de recherche pour « {query} »",
-    "resultsTitle": "Résultats de recherche pour « {query} »",
+    "title": "Boutique & Créations",
+    "home": "Accueil",
+    "shop": "Boutique",
+    "pageTitle": "Boutique de Maroquinerie d'Exception",
+    "resultsFor": "Résultats pour « {query} »",
+    "resultsTitle": "Résultats pour « {query} »",
     "metaDescription": "Découvrez les créations correspondant à « {query} » sur {siteName}",
-    "metaCatalogDescription": "Explorez le catalogue d'artisanat et maroquinerie de luxe {siteName}"
+    "metaCatalogDescription": "Explorez la collection complète de maroquinerie d'art et sacs en raphia faits main {siteName}"
   }
 }

@@ -45,10 +45,13 @@ interface CheckoutContextType {
   order: CheckoutOrder;
   addresses: CustomerAddress[];
   countries: Country[];
+  detectedCountryCode?: string;
   shippingMethods: ShippingMethod[];
   paymentMethods: PaymentMethod[];
   selectedPaymentMethodCode: string | null;
   setSelectedPaymentMethodCode: (code: string | null) => void;
+  paymentMetadata: Record<string, unknown>;
+  setPaymentMetadata: React.Dispatch<React.SetStateAction<Record<string, unknown>>>;
   isGuest: boolean;
 }
 
@@ -59,6 +62,7 @@ interface CheckoutProviderProps {
   order: CheckoutOrder;
   addresses: CustomerAddress[];
   countries: Country[];
+  detectedCountryCode?: string;
   shippingMethods: ShippingMethod[];
   paymentMethods: PaymentMethod[];
   isGuest: boolean;
@@ -69,6 +73,7 @@ export function CheckoutProvider({
   order,
   addresses,
   countries,
+  detectedCountryCode,
   shippingMethods,
   paymentMethods,
   isGuest,
@@ -76,6 +81,7 @@ export function CheckoutProvider({
   const [selectedPaymentMethodCode, setSelectedPaymentMethodCode] = useState<string | null>(
     paymentMethods.length === 1 ? paymentMethods[0].code : null
   );
+  const [paymentMetadata, setPaymentMetadata] = useState<Record<string, unknown>>({});
 
   return (
     <CheckoutContext.Provider
@@ -83,10 +89,13 @@ export function CheckoutProvider({
         order,
         addresses,
         countries,
+        detectedCountryCode,
         shippingMethods,
         paymentMethods,
         selectedPaymentMethodCode,
         setSelectedPaymentMethodCode,
+        paymentMetadata,
+        setPaymentMetadata,
         isGuest,
       }}
     >

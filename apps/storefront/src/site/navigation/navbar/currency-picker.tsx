@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { Coins } from 'lucide-react';
+import { Coins, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -30,10 +30,10 @@ export function CurrencyPicker({ availableCurrencyCodes, activeCurrencyCode }: C
     const { activeCurrency, isPending, setCurrency } = useCurrency();
     const current = activeCurrency || activeCurrencyCode || 'XAF';
 
-    // Prioritize and present curated store currencies: XAF, EUR, USD, NGN
+    // Prioritize and present curated store currencies: XAF, XOF, EUR, USD, NGN
     const displayCodes = Array.from(
-        new Set(['XAF', 'EUR', 'USD', 'NGN', ...(availableCurrencyCodes || [])])
-    ).filter((c) => ['XAF', 'EUR', 'USD', 'NGN'].includes(c));
+        new Set(['XAF', 'XOF', 'EUR', 'USD', 'NGN', ...(availableCurrencyCodes || [])])
+    ).filter((c) => ['XAF', 'XOF', 'EUR', 'USD', 'NGN'].includes(c));
 
     if (displayCodes.length <= 1) {
         return null;
@@ -57,7 +57,7 @@ export function CurrencyPicker({ availableCurrencyCodes, activeCurrencyCode }: C
             >
                 <Coins className="size-3.5 text-[#D4A43C]" />
                 <span className="font-semibold">{current}</span>
-                {current !== 'XAF' && (
+                {current !== 'XAF' && current !== 'XOF' && (
                     <span className="text-[9px] uppercase px-1 py-0.5 rounded bg-secondary text-muted-foreground font-mono">
                         Ref
                     </span>
@@ -87,7 +87,7 @@ export function CurrencyPicker({ availableCurrencyCodes, activeCurrencyCode }: C
                                 >
                                     {meta.badge}
                                 </span>
-                                {isSelected && <span className="text-xs text-[#D4A43C]">✓</span>}
+                                {isSelected && <Check className="w-3.5 h-3.5 text-[#D4A43C]" />}
                             </div>
                         </DropdownMenuItem>
                     );

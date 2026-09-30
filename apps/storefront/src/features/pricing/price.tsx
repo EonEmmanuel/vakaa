@@ -26,9 +26,10 @@ export function Price({
     const baseCurrency = (currencyCode || 'XAF').toUpperCase();
     const displayCurrency = (activeCurrency || baseCurrency).toUpperCase();
 
-    // If viewing in the base currency (or if both currencies are XAF/XOF)
-    if (displayCurrency === baseCurrency || (displayCurrency === 'XAF' && baseCurrency === 'XOF')) {
-        const formatted = formatMoney(baseAmount, baseCurrency, intlLocale);
+    // If viewing in the base currency (or between XAF and XOF with 1:1 statutory parity)
+    const isBothCfa = (displayCurrency === 'XAF' || displayCurrency === 'XOF') && (baseCurrency === 'XAF' || baseCurrency === 'XOF');
+    if (displayCurrency === baseCurrency || isBothCfa) {
+        const formatted = formatMoney(baseAmount, displayCurrency, intlLocale);
         return <span className={className}>{formatted}</span>;
     }
 

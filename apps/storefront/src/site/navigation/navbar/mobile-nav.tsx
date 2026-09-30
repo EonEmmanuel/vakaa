@@ -2,7 +2,7 @@
 
 import {useState} from 'react';
 import { Link, useRouter, usePathname } from '@/platform/i18n/navigation';
-import {Menu, Search, ShoppingBag, User, Package, MapPin, Sparkles, BookOpen, Mail, Home} from 'lucide-react';
+import {Menu, Search, ShoppingBag, User, Package, MapPin, Compass, BookOpen, Mail, Home} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {
@@ -48,7 +48,7 @@ export function MobileNav({collections}: MobileNavProps) {
     const navItems = [
         { label: 'Home', href: '/', icon: Home, isActive: pathname === '/' },
         { label: 'Shop All', href: '/search', icon: ShoppingBag, isActive: pathname === '/search' || pathname.startsWith('/collection/') || pathname.startsWith('/product/') },
-        { label: 'Our Story', href: '/our-story', icon: Sparkles, isActive: pathname === '/our-story' },
+        { label: 'Our Story', href: '/our-story', icon: Compass, isActive: pathname === '/our-story' },
         { label: 'Artisans', href: '/artisans', icon: User, isActive: pathname === '/artisans' },
         { label: 'Journal', href: '/journal', icon: BookOpen, isActive: pathname === '/journal' },
         { label: 'Contact', href: '/contact', icon: Mail, isActive: pathname === '/contact' },
@@ -56,13 +56,13 @@ export function MobileNav({collections}: MobileNavProps) {
 
     return (
         <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger render={<Button variant="ghost" size="icon" className="md:hidden" />}>
+            <SheetTrigger render={<Button variant="ghost" size="icon" className="lg:hidden" />}>
                 <Menu className="size-5" />
                 <span className="sr-only">{t('openMenu')}</span>
             </SheetTrigger>
             <SheetContent side="left" className="w-full sm:max-w-sm overflow-y-auto bg-[#F8F4EE] dark:bg-[#140C06]">
                 <SheetHeader>
-                    <SheetTitle className="font-serif text-[#1D120A] dark:text-[#F8F4EE]">{t('menu')}</SheetTitle>
+                    <SheetTitle className="font-sans font-bold text-[#1D120A] dark:text-[#F8F4EE]">{t('menu')}</SheetTitle>
                 </SheetHeader>
 
                 <div className="flex flex-col gap-6 px-4 pb-6">
@@ -84,32 +84,37 @@ export function MobileNav({collections}: MobileNavProps) {
                             Explore
                         </p>
                         <nav className="flex flex-col gap-1">
-                            {navItems.map((item) => {
+                            {navItems.map((item, idx) => {
                                 const Icon = item.icon;
                                 return (
-                                    <SheetClose
+                                    <div
                                         key={item.href}
-                                        render={
-                                            <Link
-                                                href={item.href}
-                                                className={`flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-sm transition-colors ${
-                                                    item.isActive
-                                                        ? 'bg-[#EFE8DD] dark:bg-[#2A1B10] text-[#1D120A] dark:text-[#F8F4EE] font-semibold border-l-2 border-[#D4A43C]'
-                                                        : 'text-[#1D120A]/80 dark:text-[#F8F4EE]/80 hover:bg-[#EFE8DD]/50 dark:hover:bg-[#2A1B10]/50 hover:text-[#D4A43C]'
-                                                }`}
-                                            />
-                                        }
-                                        nativeButton={false}
-                                        onClick={handleLinkClick}
+                                        className="animate-fade-up"
+                                        style={{ animationDelay: `${idx * 35}ms` }}
                                     >
-                                        <div className="flex items-center gap-3">
-                                            <Icon className={`h-4 w-4 ${item.isActive ? 'text-[#D4A43C]' : ''}`} />
-                                            <span>{item.label}</span>
-                                        </div>
-                                        {item.isActive && (
-                                            <span className="w-1.5 h-1.5 rounded-full bg-[#D4A43C]" />
-                                        )}
-                                    </SheetClose>
+                                        <SheetClose
+                                            render={
+                                                <Link
+                                                    href={item.href}
+                                                    className={`flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-sm cursor-pointer transition-all duration-[var(--duration-fast)] ease-[var(--ease-out-standard)] motion-reduce:transition-none hover:translate-x-0.5 ${
+                                                        item.isActive
+                                                            ? 'bg-[#EFE8DD] dark:bg-[#2A1B10] text-[#1D120A] dark:text-[#F8F4EE] font-semibold border-l-2 border-[#D4A43C]'
+                                                            : 'text-[#1D120A]/80 dark:text-[#F8F4EE]/80 hover:bg-[#EFE8DD]/50 dark:hover:bg-[#2A1B10]/50 hover:text-[#D4A43C]'
+                                                    }`}
+                                                />
+                                            }
+                                            nativeButton={false}
+                                            onClick={handleLinkClick}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <Icon className={`h-4 w-4 ${item.isActive ? 'text-[#D4A43C]' : ''}`} />
+                                                <span>{item.label}</span>
+                                            </div>
+                                            {item.isActive && (
+                                                <span className="w-1.5 h-1.5 rounded-full bg-[#D4A43C]" />
+                                            )}
+                                        </SheetClose>
+                                    </div>
                                 );
                             })}
                         </nav>

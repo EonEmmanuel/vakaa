@@ -34,20 +34,20 @@ export async function SearchResults({searchParams}: SearchResultsProps) {
 
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Filters Sidebar */}
-            <aside className="lg:col-span-1">
-                <Suspense fallback={<div className="h-64 animate-pulse bg-muted rounded-lg"/>}>
-                    <FacetFilters productDataPromise={productDataPromise}/>
-                </Suspense>
-            </aside>
-
-            {/* Product Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+            {/* Filters Sidebar (col-span-3) */}
             <div className="lg:col-span-3">
-                <Suspense fallback={<ProductGridSkeleton/>}>
-                    <ProductGrid productDataPromise={productDataPromise} currentPage={page} take={12}/>
+                <Suspense fallback={<div className="h-96 animate-pulse bg-[#F3EFE9] rounded-2xl" />}>
+                    <FacetFilters productDataPromise={productDataPromise} />
+                </Suspense>
+            </div>
+
+            {/* Product Grid (col-span-9) */}
+            <div className="lg:col-span-9">
+                <Suspense fallback={<ProductGridSkeleton />}>
+                    <ProductGrid productDataPromise={productDataPromise} currentPage={page} take={12} searchParams={searchParamsResolved} />
                 </Suspense>
             </div>
         </div>
-    )
+    );
 }

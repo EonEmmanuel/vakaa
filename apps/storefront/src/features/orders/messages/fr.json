@@ -15,11 +15,24 @@
     "orderConfirmed": "Commande Confirmée !",
     "thankYou": "Merci pour votre confiance. Votre numéro de commande est le",
     "emailConfirmation": "Un e-mail de confirmation détaillant vos pièces et le suivi d'expédition vous a été envoyé.",
-    "orderSummary": "Récapitulatif de Commande",
+    "orderSummary": "Articles Commandés",
+    "orderId": "N° de Commande",
+    "totalPayment": "Total Réglé",
+    "paymentMethod": "Mode de Paiement",
+    "status": "Statut",
+    "estimatedDelivery": "Livraison Estimée",
+    "orderAccepted": "Votre commande a été confirmée et est en cours de confection dans notre atelier.",
+    "printReceipt": "Imprimer le reçu",
+    "downloadInvoice": "Facture PDF",
+    "trackOrder": "Suivre ma commande",
+    "orderDate": "Date de commande",
     "qty": "Qté : {quantity}",
     "total": "Total",
     "shippingAddress": "Adresse de Livraison",
     "continueShopping": "Poursuivre mes achats",
-    "viewOrders": "Consulter mes Commandes"
+    "viewOrders": "Consulter mes Commandes",
+    "paymentIncomplete": "Paiement non finalisé",
+    "paymentCancelledMessage": "Votre transaction a été annulée ou n'a pas pu aboutir. Aucun montant n'a été débité de votre compte.",
+    "retryPayment": "Reprendre le paiement"
   }
 }

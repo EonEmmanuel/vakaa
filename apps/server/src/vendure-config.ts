@@ -10,9 +10,20 @@ import { AssetServerPlugin } from '@vendure/asset-server-plugin';
 import { DashboardPlugin } from '@vendure/dashboard/plugin';
 import { GraphiqlPlugin } from '@vendure/graphiql-plugin';
 import { VakaaBrandingPlugin } from './plugins/vakaa-branding/vakaa-branding.plugin';
+import { SebpayPlugin, sebpayPaymentHandler } from './plugins/sebpay';
+import { FlutterwavePlugin, flutterwavePaymentHandler } from './plugins/flutterwave';
+import { InvoicePlugin } from '@pinelab/pinelab-invoice-plugin';
+import { vakaaInvoiceLoadDataFn, VakaaInvoicePlugin } from './plugins/invoice';
 import 'dotenv/config';
+import dns from 'dns';
 import http from 'http';
 import path from 'path';
+
+try {
+    dns.setDefaultResultOrder('ipv4first');
+} catch {
+    // Ignore on older Node runtimes
+}
 
 const IS_DEV = process.env.APP_ENV === 'dev';
 
@@ -124,14 +135,15 @@ export const config: VendureConfig = {
             // Keep cloud connection alive with periodic TCP heartbeats
             keepAlive: true,
             keepAliveInitialDelayMillis: 10000,
-            // Safely close idle connections before Neon proxy disconnects them
-            idleTimeoutMillis: 30000,
-            connectionTimeoutMillis: 10000,
+            // Keep connections warm (Neon compute suspends after 5m; 2m keeps the pool active while requests flow)
+            idleTimeoutMillis: 120000,
+            // 45 seconds provides adequate buffer for Neon cold-starts and cross-region latency
+            connectionTimeoutMillis: 45000,
             max: 10,
         },
     },
     paymentOptions: {
-        paymentMethodHandlers: [dummyPaymentHandler],
+        paymentMethodHandlers: [dummyPaymentHandler, sebpayPaymentHandler, flutterwavePaymentHandler],
     },
     // When adding or altering custom field definitions, the database will
     // need to be updated. See the "Migrations" section in README.md.
@@ -141,33 +153,70 @@ export const config: VendureConfig = {
         AssetServerPlugin.init({
             route: 'assets',
             assetUploadDir: path.join(__dirname, '../static/assets'),
-            // For local dev, the correct value for assetUrlPrefix should
-            // be guessed correctly, but for production it will usually need
-            // to be set manually to match your production url.
-            assetUrlPrefix: IS_DEV ? undefined : 'https://www.my-shop.com/assets/',
+            assetUrlPrefix:
+                process.env.ASSET_URL_PREFIX ||
+                (IS_DEV
+                    ? `http://localhost:${serverPort}/assets/`
+                    : 'https://www.my-shop.com/assets/'),
         }),
         DefaultSchedulerPlugin.init(),
         DefaultJobQueuePlugin.init({ useDatabaseForBuffer: true }),
         DefaultSearchPlugin.init({ bufferUpdates: false, indexStockStatus: true }),
-        EmailPlugin.init({
-            devMode: true,
-            outputPath: path.join(__dirname, '../static/email/test-emails'),
-            route: 'mailbox',
-            handlers: defaultEmailHandlers,
-            templateLoader: new FileBasedTemplateLoader(path.join(__dirname, '../static/email/templates')),
-            globalTemplateVars: {
-                fromAddress: '"VAKAA" <noreply@vakaa.store>',
-                verifyEmailAddressUrl: process.env.STOREFRONT_URL
-                    ? `${process.env.STOREFRONT_URL}/verify`
-                    : 'http://localhost:3001/verify',
-                passwordResetUrl: process.env.STOREFRONT_URL
-                    ? `${process.env.STOREFRONT_URL}/reset-password`
-                    : 'http://localhost:3001/reset-password',
-                changeEmailAddressUrl: process.env.STOREFRONT_URL
-                    ? `${process.env.STOREFRONT_URL}/verify-email-address-change`
-                    : 'http://localhost:3001/verify-email-address-change',
-            },
-        }),
+        EmailPlugin.init(
+            process.env.EMAIL_DEV_MODE === 'true' ||
+            !process.env.BREVO_SMTP_KEY ||
+            !process.env.BREVO_SMTP_USER
+                ? {
+                      devMode: true,
+                      outputPath: path.join(__dirname, '../static/email/test-emails'),
+                      route: 'mailbox',
+                      handlers: defaultEmailHandlers,
+                      templateLoader: new FileBasedTemplateLoader(path.join(__dirname, '../static/email/templates')),
+                      globalTemplateVars: {
+                          fromAddress: process.env.EMAIL_FROM_ADDRESS || '"VAKÁA" <orders@vakaa.store>',
+                          storefrontUrl: process.env.STOREFRONT_URL || 'http://localhost:3001',
+                          verifyEmailAddressUrl: process.env.STOREFRONT_URL
+                              ? `${process.env.STOREFRONT_URL}/verify`
+                              : 'http://localhost:3001/verify',
+                          passwordResetUrl: process.env.STOREFRONT_URL
+                              ? `${process.env.STOREFRONT_URL}/reset-password`
+                              : 'http://localhost:3001/reset-password',
+                          changeEmailAddressUrl: process.env.STOREFRONT_URL
+                              ? `${process.env.STOREFRONT_URL}/verify-email-address-change`
+                              : 'http://localhost:3001/verify-email-address-change',
+                      },
+                  }
+                : {
+                      transport: {
+                          type: 'smtp',
+                          host: process.env.BREVO_SMTP_HOST || 'smtp-relay.brevo.com',
+                          port: +(process.env.BREVO_SMTP_PORT || 587),
+                          secure: process.env.BREVO_SMTP_SECURE === 'true',
+                          auth: {
+                              user: process.env.BREVO_SMTP_USER,
+                              pass: process.env.BREVO_SMTP_KEY,
+                          },
+                          pool: true,
+                          maxConnections: 5,
+                          logging: IS_DEV,
+                      },
+                      handlers: defaultEmailHandlers,
+                      templateLoader: new FileBasedTemplateLoader(path.join(__dirname, '../static/email/templates')),
+                      globalTemplateVars: {
+                          fromAddress: process.env.EMAIL_FROM_ADDRESS || '"VAKÁA" <orders@vakaa.store>',
+                          storefrontUrl: process.env.STOREFRONT_URL || 'http://localhost:3001',
+                          verifyEmailAddressUrl: process.env.STOREFRONT_URL
+                              ? `${process.env.STOREFRONT_URL}/verify`
+                              : 'http://localhost:3001/verify',
+                          passwordResetUrl: process.env.STOREFRONT_URL
+                              ? `${process.env.STOREFRONT_URL}/reset-password`
+                              : 'http://localhost:3001/reset-password',
+                          changeEmailAddressUrl: process.env.STOREFRONT_URL
+                              ? `${process.env.STOREFRONT_URL}/verify-email-address-change`
+                              : 'http://localhost:3001/verify-email-address-change',
+                      },
+                  }
+        ),
         DashboardPlugin.init({
             route: 'dashboard',
             appDir: IS_DEV
@@ -175,5 +224,25 @@ export const config: VendureConfig = {
                 : path.join(__dirname, 'dashboard'),
         }),
         VakaaBrandingPlugin,
+        SebpayPlugin.init({
+            publicKey: process.env.SEBPAY_PUBLIC_KEY || '',
+            secretKey: process.env.SEBPAY_SECRET_KEY || '',
+            isSandbox: process.env.SEBPAY_SANDBOX === 'true' || IS_DEV,
+            webhookUrl: process.env.SEBPAY_WEBHOOK_URL || '',
+            mockMode: !process.env.SEBPAY_SECRET_KEY && IS_DEV,
+        }),
+        FlutterwavePlugin.init({
+            publicKey: process.env.FLW_PUBLIC_KEY || '',
+            secretKey: process.env.FLW_SECRET_KEY || '',
+            secretHash: process.env.FLW_SECRET_HASH || 'vakaa_flw_secret_hash',
+            isSandbox: process.env.FLW_SANDBOX === 'true' || IS_DEV,
+            webhookUrl: process.env.FLW_WEBHOOK_URL || '',
+            mockMode: !process.env.FLW_SECRET_KEY && IS_DEV,
+        }),
+        InvoicePlugin.init({
+            vendureHost: process.env.VENDURE_HOST || `http://localhost:${serverPort}`,
+            loadDataFn: vakaaInvoiceLoadDataFn,
+        }),
+        VakaaInvoicePlugin,
     ],
 };

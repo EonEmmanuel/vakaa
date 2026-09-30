@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Link } from '@/platform/i18n/navigation';
 import { getTranslations } from 'next-intl/server';
 import { getRouteLocale } from '@/platform/i18n/server';
-import { Sparkles, Shield, Heart, Gem, ArrowRight } from "lucide-react";
+import { Award, Shield, Heart, Gem, ArrowRight } from "lucide-react";
 import type { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -25,7 +25,7 @@ export async function OurStoryPage() {
             desc: t('pillar1Desc'),
         },
         {
-            icon: Sparkles,
+            icon: Award,
             title: t('pillar2Title'),
             desc: t('pillar2Desc'),
         },
@@ -50,7 +50,7 @@ export async function OurStoryPage() {
                         <span className="text-[11px] font-bold tracking-[0.25em] text-[#D4A43C] uppercase">
                             {t('badge')}
                         </span>
-                        <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.08] uppercase">
+                        <h1 className="font-sans text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.08] uppercase">
                             {t('title')}
                         </h1>
                         <div className="w-16 h-[2px] bg-[#D4A43C] mx-auto rounded-full" />
@@ -70,7 +70,7 @@ export async function OurStoryPage() {
                             <span className="text-xs font-semibold tracking-widest text-[#A66B2D] uppercase">
                                 THE GENESIS
                             </span>
-                            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight leading-tight">
+                            <h2 className="font-sans text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight leading-tight">
                                 {t('originTitle')}
                             </h2>
                             <div className="space-y-4 text-sm sm:text-base text-[#3A2418]/85 dark:text-[#F8F4EE]/80 leading-relaxed font-sans">
@@ -78,7 +78,7 @@ export async function OurStoryPage() {
                                 <p>{t('originP2')}</p>
                             </div>
                             <div className="pt-2">
-                                <blockquote className="border-l-2 border-[#D4A43C] pl-4 italic text-[#3A2418]/90 dark:text-[#F8F4EE]/90 text-sm sm:text-base font-serif">
+                                <blockquote className="border-l-2 border-[#D4A43C] pl-4 italic text-[#3A2418]/90 dark:text-[#F8F4EE]/90 text-sm sm:text-base font-sans">
                                     &ldquo;True luxury is not about excess. It is about patience, provenance, and the spirit of the hands that shaped it.&rdquo;
                                 </blockquote>
                             </div>
@@ -96,7 +96,7 @@ export async function OurStoryPage() {
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                                 <div className="absolute bottom-4 left-4 right-4 text-white">
-                                    <p className="text-xs font-serif tracking-wider uppercase">Handcrafted in West Africa</p>
+                                    <p className="text-xs font-sans tracking-wider uppercase">Handcrafted in West Africa</p>
                                     <p className="text-[11px] text-white/80">Every piece takes up to 48 hours of artisanal dedication.</p>
                                 </div>
                             </div>
@@ -112,7 +112,7 @@ export async function OurStoryPage() {
                         <span className="text-xs font-semibold tracking-widest text-[#D4A43C] uppercase">
                             OUR COMMITMENT
                         </span>
-                        <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+                        <h2 className="font-sans text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
                             {t('pillarsTitle')}
                         </h2>
                     </div>
@@ -128,7 +128,7 @@ export async function OurStoryPage() {
                                     <div className="w-12 h-12 rounded-full bg-[#EFE8DD] dark:bg-[#2A1B10] flex items-center justify-center text-[#D4A43C]">
                                         <Icon className="w-5 h-5 stroke-[1.75]" />
                                     </div>
-                                    <h3 className="font-serif text-lg font-bold tracking-tight">
+                                    <h3 className="font-sans text-lg font-bold tracking-tight">
                                         {pillar.title}
                                     </h3>
                                     <p className="text-xs sm:text-sm text-[#6B5E55] dark:text-[#B5A496] leading-relaxed font-sans">
@@ -141,7 +141,7 @@ export async function OurStoryPage() {
 
                     {/* Bottom CTA Banner */}
                     <div className="mt-16 sm:mt-20 text-center bg-[#1D120A] text-[#F8F4EE] rounded-sm p-10 sm:p-14 space-y-6">
-                        <h3 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight uppercase">
+                        <h3 className="font-sans text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight uppercase">
                             {t('ctaTitle')}
                         </h3>
                         <p className="text-sm sm:text-base text-[#F8F4EE]/80 max-w-xl mx-auto font-sans">

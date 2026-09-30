@@ -1,20 +1,36 @@
-{{> header title="Verify Your New Email Address" }}
+{{> header title="Changement d'adresse email / Email Address Change" }}
 
-<mj-section background-color="#fafafa">
-    <mj-column>
-        <mj-text color="#525252">
-            We received a request to change your registered email address to this one.
-            Click the button below to verify this address and complete the process:
+<mj-section background-color="#FFFFFF" padding="36px 24px 20px 24px">
+    <mj-column width="100%">
+        <mj-text font-size="20px" font-weight="700" color="#18181B" padding-bottom="8px">
+            Confirmer votre nouvelle adresse email
+        </mj-text>
+        <mj-text font-size="14px" color="#52525B" line-height="22px" padding-bottom="12px">
+            Nous avons reçu une demande de mise à jour pour changer l'adresse email associée à votre compte client VAKÁA. Cliquez sur le bouton ci-dessous pour confirmer cette nouvelle adresse :
+        </mj-text>
+        <mj-text font-size="13px" color="#71717A" line-height="20px" padding-bottom="24px">
+            <em>We received a request to update the email address linked to your VAKÁA account. Please click below to confirm:</em>
         </mj-text>
 
-        <mj-button font-family="Helvetica"
-                   background-color="#f45e43"
-                   color="white"
+        <mj-button background-color="#18181B"
+                   color="#FFFFFF"
+                   font-size="13px"
+                   font-weight="600"
+                   letter-spacing="0.05em"
+                   border-radius="4px"
+                   inner-padding="14px 28px"
+                   padding-bottom="24px"
                    href="{{ changeEmailAddressUrl }}?token={{ identifierChangeToken }}">
-            Verify Me!
+            Confirmer l'adresse &bull; Confirm Email Address
         </mj-button>
+
+        <mj-divider border-color="#E4E4E7" border-width="1px" padding="16px 0" />
+
+        <mj-text font-size="12px" color="#A1A1AA" line-height="18px">
+            Si vous n'êtes pas à l'origine de cette demande, veuillez contacter notre équipe support dès que possible : <a href="mailto:contact@vakaa.store" style="color: #C59B27; text-decoration: none;">contact@vakaa.store</a>.<br />
+            <em>If you did not authorize this change, please contact our support team immediately.</em>
+        </mj-text>
     </mj-column>
 </mj-section>
-
 
 {{> footer }}

@@ -228,11 +228,23 @@ export const AddPaymentToOrderMutation = graphql(`
                     method
                     amount
                     state
+                    transactionId
+                    metadata
                 }
             }
             ... on ErrorResult {
                 errorCode
                 message
+            }
+            ... on PaymentDeclinedError {
+                errorCode
+                message
+                paymentErrorMessage
+            }
+            ... on PaymentFailedError {
+                errorCode
+                message
+                paymentErrorMessage
             }
         }
     }

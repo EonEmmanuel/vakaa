@@ -27,7 +27,7 @@ export function ResetPasswordForm({ searchParams }: ResetPasswordFormProps) {
                     <AlertCircle className="w-7 h-7" />
                 </div>
                 <div className="space-y-2">
-                    <h2 className="font-serif text-2xl tracking-tight text-[#140C06] dark:text-[#FAF6F0]">
+                    <h2 className="font-sans text-2xl font-bold tracking-tight text-[#140C06] dark:text-[#FAF6F0]">
                         {t('invalidResetLink')}
                     </h2>
                     <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-sm mx-auto">
@@ -54,7 +54,7 @@ export function ResetPasswordForm({ searchParams }: ResetPasswordFormProps) {
                 <span className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#D4A43C]">
                     {t('brandTagline')}
                 </span>
-                <h2 className="font-serif text-2xl sm:text-3xl tracking-tight text-[#140C06] dark:text-[#FAF6F0]">
+                <h2 className="font-sans font-bold text-2xl sm:text-3xl tracking-tight text-[#140C06] dark:text-[#FAF6F0]">
                     {t('resetYourPassword')}
                 </h2>
                 <p className="text-xs text-muted-foreground max-w-xs mx-auto leading-relaxed">

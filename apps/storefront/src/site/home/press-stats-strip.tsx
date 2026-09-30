@@ -30,7 +30,7 @@ export async function PressStatsStrip() {
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 text-center">
                     {stats.map((stat, idx) => (
                         <div key={idx} className="space-y-1.5 flex flex-col items-center">
-                            <span className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#D4A43C]">
+                            <span className="font-sans text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#D4A43C]">
                                 {stat.value}
                             </span>
                             <p className="text-xs sm:text-[13px] text-[#EFE8DD]/80 font-medium tracking-wide max-w-[24ch] uppercase">

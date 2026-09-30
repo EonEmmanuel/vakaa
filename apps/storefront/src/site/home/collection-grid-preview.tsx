@@ -1,105 +1,148 @@
 import Image from 'next/image';
-import {Link} from '@/platform/i18n/navigation';
-import {getTranslations} from 'next-intl/server';
-import {getRouteLocale} from '@/platform/i18n/server';
-import {ArrowRight, Sparkles} from 'lucide-react';
+import { Link } from '@/platform/i18n/navigation';
+import { ArrowRight } from 'lucide-react';
 
-export async function CollectionGridPreview() {
-    const locale = await getRouteLocale();
-    const t = await getTranslations({locale, namespace: 'Home'});
-
-    const categories = [
-        {
-            title: "Tote Bags",
-            tagline: "Cabas & Vannerie Noble",
-            image: "/images/cat-tote.jpg",
-            href: "/search?category=tote-bags",
-        },
-        {
-            title: "Shoulder Bags",
-            tagline: "Sacs Porté Épaule",
-            image: "/images/cat-shoulder.jpg",
-            href: "/search?category=shoulder-bags",
-        },
-        {
-            title: "Clutches",
-            tagline: "Pochettes & Minaudières",
-            image: "/images/cat-clutch.jpg",
-            href: "/search?category=clutches",
-        },
-        {
-            title: "Crossbodies",
-            tagline: "Sacs Bandoulière",
-            image: "/images/cat-crossbody.jpg",
-            href: "/search?category=crossbodies",
-        },
-        {
-            title: "Accessories",
-            tagline: "Petite Maroquinerie",
-            image: "/images/cat-accessory.jpg",
-            href: "/search?category=accessories",
-        },
-    ];
-
+export function CollectionGridPreview() {
     return (
-        <section className="py-16 sm:py-20 md:py-24 bg-[#F8F4EE] dark:bg-[#140C06] transition-colors">
-            <div className="vakaa-container">
-                {/* Section Header */}
-                <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 md:mb-12 gap-4">
-                    <div className="space-y-1 sm:space-y-1.5">
-                        <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#1D120A] dark:text-[#F8F4EE] uppercase leading-tight">
-                            {t('collections.title')}
+        <section className="py-16 sm:py-24 bg-[#FAF8F5] transition-colors border-b border-[#E7DED0]/60">
+            <div className="vakaa-container space-y-10 sm:space-y-14">
+                
+                {/* Section Header with Refined Typography & Spacing */}
+                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                    <div className="space-y-1.5 max-w-xl">
+                        <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-[#A66B2D]">
+                            Lignes Emblématiques
+                        </span>
+                        <h2 className="font-sans text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1D120A] tracking-tight leading-tight">
+                            Explorez Nos Catégories de Sacs
                         </h2>
-                        <p className="text-xs sm:text-sm text-[#A66B2D] dark:text-[#D4A43C] font-serif italic tracking-wide">
-                            Lignes signatures & silhouettes de saison
-                        </p>
                     </div>
 
                     <Link
                         href="/search"
-                        className="group inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-[#1D120A] dark:text-[#D4A43C] hover:text-[#D4A43C] transition-colors py-1"
+                        className="group inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase text-[#1D120A] hover:text-[#A66B2D] transition-colors py-1 cursor-pointer"
                     >
-                        <span>{t('collections.viewAll')}</span>
-                        <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+                        <span>Voir tout le catalogue</span>
+                        <ArrowRight className="w-3.5 h-3.5 transition-transform duration-[var(--duration-fast)] group-hover:translate-x-1" />
                     </Link>
                 </div>
 
-                {/* Editorial Collection Grid with Consistent Portrait Proportions */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5 lg:gap-6">
-                    {categories.map((cat, idx) => (
-                        <Link
-                            key={idx}
-                            href={cat.href}
-                            className="group relative flex flex-col overflow-hidden rounded-md bg-[#FAF7F2] dark:bg-[#181008] border border-[#E7DED0]/70 dark:border-[#3A291C] hover:border-[#D4A43C]/50 transition-all duration-500 shadow-xs hover:shadow-xl"
-                        >
-                            {/* Portrait Image Container */}
-                            <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#EFE8DD] dark:bg-[#20150D]">
-                                <Image
-                                    src={cat.image}
-                                    alt={cat.title}
-                                    fill
-                                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-                                    className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-108"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
-
-                                <div className="absolute bottom-2.5 left-2.5 right-2.5">
-                                    <span className="text-[10px] font-medium tracking-wider uppercase text-white/90 line-clamp-1">
-                                        {cat.tagline}
+                {/* ═══ Asymmetric Bento Category Layout (Seamless Pillowed Cards) ═══ */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-8 items-stretch">
+                    
+                    {/* Left Feature Card: Cabas & Tote Bags */}
+                    <div className="lg:col-span-6 relative rounded-3xl overflow-hidden bg-[#F3EFE9] shadow-xs hover:shadow-md transition-all duration-300 ease-out hover:-translate-y-0.5 group flex flex-col justify-between p-6 sm:p-8 min-h-[340px] sm:min-h-[460px]">
+                        <div className="relative z-10 space-y-2.5 max-w-sm">
+                            <span className="inline-block px-3 py-1 rounded-full bg-white/90 backdrop-blur-xs text-[10px] font-bold uppercase tracking-wider text-[#A66B2D]">
+                                12+ Modèles Exclusifs
+                            </span>
+                            <h3 className="font-sans text-2xl sm:text-3xl font-bold text-[#1D120A] tracking-tight leading-tight">
+                                Sacs Cabas & Totes
+                            </h3>
+                            <p className="text-xs sm:text-sm text-[#3A2418]/75 leading-relaxed font-sans">
+                                Volumes généreux, cuir tanné végétal et tressage ancestral de raphia naturel pour vos journées d&apos;exception.
+                            </p>
+                            <div className="pt-2">
+                                <Link
+                                    href="/search?category=tote-bags"
+                                    className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#1D120A] group-hover:text-[#A66B2D] transition-colors cursor-pointer"
+                                >
+                                    <span>Découvrir la collection</span>
+                                    <span className="size-7 rounded-full bg-[#1D120A] text-[#FAF8F5] group-hover:bg-[#A66B2D] flex items-center justify-center transition-colors">
+                                        <ArrowRight className="w-3.5 h-3.5" />
                                     </span>
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* Image anchoring the bottom */}
+                        <div className="relative w-full aspect-[16/10] mt-4 rounded-2xl overflow-hidden shadow-xs">
+                            <Image
+                                src="/images/bags/maa-tote.jpg"
+                                alt="Sacs Cabas VAKAA"
+                                fill
+                                className="object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
+                                sizes="(max-width: 1024px) 100vw, 50vw"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Right Stack: 2 Cards (Shoulder Bags Top, Clutches Bottom) */}
+                    <div className="lg:col-span-6 flex flex-col gap-5 sm:gap-6 lg:gap-8">
+                        
+                        {/* Top Right Card: Shoulder Bags */}
+                        <div className="relative rounded-3xl overflow-hidden bg-[#F3EFE9] shadow-xs hover:shadow-md transition-all duration-300 ease-out hover:-translate-y-0.5 group flex-1 p-5 sm:p-7 flex flex-row items-center justify-between gap-4">
+                            <div className="space-y-2 max-w-xs">
+                                <span className="inline-block px-3 py-1 rounded-full bg-white/90 backdrop-blur-xs text-[10px] font-bold uppercase tracking-wider text-[#A66B2D]">
+                                    8+ Modèles
+                                </span>
+                                <h3 className="font-sans text-lg sm:text-2xl font-bold text-[#1D120A] tracking-tight">
+                                    Porté Épaule & Baguettes
+                                </h3>
+                                <p className="text-xs text-[#3A2418]/70 leading-relaxed font-sans line-clamp-2 sm:line-clamp-none">
+                                    Silhouettes fuselées et bandoulières ergonomiques pour une allure citadine affirmée.
+                                </p>
+                                <div className="pt-1">
+                                    <Link
+                                        href="/search?category=shoulder-bags"
+                                        className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#1D120A] hover:text-[#A66B2D] transition-colors cursor-pointer"
+                                    >
+                                        <span>Explorer</span>
+                                        <span className="size-6 sm:size-7 rounded-full bg-[#1D120A] text-[#FAF8F5] group-hover:bg-[#A66B2D] flex items-center justify-center transition-colors">
+                                            <ArrowRight className="w-3 h-3" />
+                                        </span>
+                                    </Link>
                                 </div>
                             </div>
-
-                            {/* Caption */}
-                            <div className="p-3 sm:p-3.5 flex items-center justify-between">
-                                <h3 className="font-serif text-xs sm:text-sm font-bold tracking-wide text-[#1D120A] dark:text-[#F8F4EE] group-hover:text-[#D4A43C] transition-colors">
-                                    {cat.title}
-                                </h3>
-                                <ArrowRight className="size-3 text-[#1D120A]/40 dark:text-[#F8F4EE]/40 group-hover:text-[#D4A43C] group-hover:translate-x-0.5 transition-all" />
+                            <div className="relative w-28 sm:w-40 md:w-44 aspect-square rounded-2xl overflow-hidden shrink-0 shadow-xs">
+                                <Image
+                                    src="/images/bags/baguette-indigo-savane-1.jpg"
+                                    alt="Sacs Porté Épaule VAKAA"
+                                    fill
+                                    className="object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
+                                    sizes="(max-width: 640px) 120px, 20vw"
+                                />
                             </div>
-                        </Link>
-                    ))}
+                        </div>
+
+                        {/* Bottom Right Card: Clutches & Evening Bags */}
+                        <div className="relative rounded-3xl overflow-hidden bg-[#F3EFE9] shadow-xs hover:shadow-md transition-all duration-300 ease-out hover:-translate-y-0.5 group flex-1 p-5 sm:p-7 flex flex-row items-center justify-between gap-4">
+                            <div className="space-y-2 max-w-xs">
+                                <span className="inline-block px-3 py-1 rounded-full bg-white/90 backdrop-blur-xs text-[10px] font-bold uppercase tracking-wider text-[#A66B2D]">
+                                    6+ Pièces Bijoux
+                                </span>
+                                <h3 className="font-sans text-lg sm:text-2xl font-bold text-[#1D120A] tracking-tight">
+                                    Pochettes & Minaudières
+                                </h3>
+                                <p className="text-xs text-[#3A2418]/70 leading-relaxed font-sans line-clamp-2 sm:line-clamp-none">
+                                    Bouclerie en laiton patiné et format bijou pour sublimer vos soirées et cérémonies.
+                                </p>
+                                <div className="pt-1">
+                                    <Link
+                                        href="/search?category=clutches"
+                                        className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#1D120A] hover:text-[#A66B2D] transition-colors cursor-pointer"
+                                    >
+                                        <span>Explorer</span>
+                                        <span className="size-6 sm:size-7 rounded-full bg-[#1D120A] text-[#FAF8F5] group-hover:bg-[#A66B2D] flex items-center justify-center transition-colors">
+                                            <ArrowRight className="w-3 h-3" />
+                                        </span>
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className="relative w-28 sm:w-40 md:w-44 aspect-square rounded-2xl overflow-hidden shrink-0 shadow-xs">
+                                <Image
+                                    src="/images/bags/zuri-clutch.jpg"
+                                    alt="Pochettes de Soirée VAKAA"
+                                    fill
+                                    className="object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
+                                    sizes="(max-width: 640px) 120px, 20vw"
+                                />
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
+
             </div>
         </section>
     );

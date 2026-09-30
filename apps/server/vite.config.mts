@@ -16,6 +16,9 @@ export default defineConfig({
     plugins: [
         vendureDashboardPlugin({
             vendureConfigPath: pathToFileURL('./src/vendure-config.ts'),
+            pluginPackageScanner: {
+                nodeModulesRoot: resolve(__dirname, 'node_modules'),
+            },
             api: process.env.NODE_ENV === 'production'
                 ? { host: 'auto', port: 'auto' }
                 : { host: 'http://localhost', port: 3000 },

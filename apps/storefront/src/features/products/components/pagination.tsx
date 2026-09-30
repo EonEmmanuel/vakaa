@@ -79,7 +79,11 @@ export function Pagination({currentPage, totalPages}: PaginationProps) {
                         key={pageNum}
                         variant={isActive ? 'default' : 'outline'}
                         size="icon"
-                        className="rounded-full"
+                        className={`rounded-full size-9 sm:size-10 text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+                            isActive
+                                ? 'bg-[#D4A43C] text-white hover:bg-[#BF9232] border-0 shadow-xs'
+                                : 'bg-white text-[#1D120A] border-[#E7DED0] hover:bg-[#F3EFE9]'
+                        }`}
                         render={!isActive ? <Link href={createPageUrl(pageNum)} /> : undefined}
                         nativeButton={!isActive ? false : undefined}
                         disabled={isActive}

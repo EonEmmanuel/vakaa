@@ -1,7 +1,7 @@
 import type {Metadata, Viewport} from "next";
 import {locale as rootLocale} from "next/root-params";
 import {hasLocale, NextIntlClientProvider} from "next-intl";
-import {Geist, Geist_Mono, Playfair_Display} from "next/font/google";
+import {Plus_Jakarta_Sans, Geist_Mono} from "next/font/google";
 import {getMessages, getTranslations, setRequestLocale} from "next-intl/server";
 import {notFound} from "next/navigation";
 import {routing} from "@/platform/i18n/routing";
@@ -12,20 +12,15 @@ import {ThemeProvider} from "@/site/providers/theme-provider";
 import {CurrencyProvider} from "@/features/currency/currency-context";
 import {SITE_NAME, SITE_URL} from "@/config/metadata";
 
-const geistSans = Geist({
-    variable: "--font-geist-sans",
+const plusJakartaSans = Plus_Jakarta_Sans({
+    variable: "--font-jakarta",
     subsets: ["latin"],
+    display: "swap",
 });
 
 const geistMono = Geist_Mono({
     variable: "--font-geist-mono",
     subsets: ["latin"],
-});
-
-const playfair = Playfair_Display({
-    variable: "--font-playfair",
-    subsets: ["latin"],
-    display: "swap",
 });
 
 export function generateStaticParams() {
@@ -99,7 +94,7 @@ export default async function LocaleLayout({children}: {children: React.ReactNod
     return (
         <html lang={locale} data-scroll-behavior="smooth" suppressHydrationWarning>
             <body
-                className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased flex flex-col min-h-screen`}
+                className={`${plusJakartaSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
             >
                 <NextIntlClientProvider locale={locale} messages={messages}>
                     <ThemeProvider>

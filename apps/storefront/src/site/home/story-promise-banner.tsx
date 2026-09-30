@@ -17,7 +17,7 @@ export async function StoryPromiseBanner() {
                             <span className="text-[10px] sm:text-[11px] font-bold tracking-[0.25em] uppercase text-[#D4A43C]">
                                 {t('promise.eyebrow')}
                             </span>
-                            <h2 className="font-serif text-xl sm:text-2xl lg:text-[2.5rem] font-bold tracking-tight text-[#F8F4EE] leading-[1.08] uppercase">
+                            <h2 className="font-sans text-xl sm:text-2xl lg:text-[2.5rem] font-bold tracking-tight text-[#F8F4EE] leading-[1.08] uppercase">
                                 {t('promise.title')}
                             </h2>
                         </div>

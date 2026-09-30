@@ -2,7 +2,7 @@
 
 import {useTheme} from "next-themes";
 import {useEffect, useState} from "react";
-import {Moon, Sun, Monitor} from "lucide-react";
+import {Moon, Sun, Monitor, Check} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -36,20 +36,20 @@ export function ThemeSwitcher() {
                 <span className="sr-only">Toggle theme</span>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setTheme("light")}>
+                <DropdownMenuItem onClick={() => setTheme("light")} className="cursor-pointer">
                     <Sun className="size-4" />
                     <span>Light</span>
-                    {theme === "light" && <span className="ml-auto text-xs">✓</span>}
+                    {theme === "light" && <Check className="ml-auto w-3.5 h-3.5 text-[#D4A43C]" />}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("dark")}>
+                <DropdownMenuItem onClick={() => setTheme("dark")} className="cursor-pointer">
                     <Moon className="size-4" />
                     <span>Dark</span>
-                    {theme === "dark" && <span className="ml-auto text-xs">✓</span>}
+                    {theme === "dark" && <Check className="ml-auto w-3.5 h-3.5 text-[#D4A43C]" />}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme("system")}>
+                <DropdownMenuItem onClick={() => setTheme("system")} className="cursor-pointer">
                     <Monitor className="size-4" />
                     <span>System</span>
-                    {theme === "system" && <span className="ml-auto text-xs">✓</span>}
+                    {theme === "system" && <Check className="ml-auto w-3.5 h-3.5 text-[#D4A43C]" />}
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

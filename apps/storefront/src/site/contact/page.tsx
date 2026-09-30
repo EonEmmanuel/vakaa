@@ -40,7 +40,7 @@ export async function ContactPage() {
                         <span className="text-[11px] font-bold tracking-[0.25em] text-[#D4A43C] uppercase">
                             {t('badge')}
                         </span>
-                        <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.08] uppercase">
+                        <h1 className="font-sans text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.08] uppercase">
                             {t('title')}
                         </h1>
                         <div className="w-16 h-[2px] bg-[#D4A43C] mx-auto rounded-full" />
@@ -58,7 +58,7 @@ export async function ContactPage() {
                         {/* Left Column: Direct Concierge Channels */}
                         <div className="lg:col-span-5 space-y-8">
                             <div>
-                                <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight mb-3">
+                                <h2 className="font-sans text-2xl sm:text-3xl font-bold tracking-tight mb-3">
                                     Direct Channels
                                 </h2>
                                 <p className="text-sm text-[#6B5E55] dark:text-[#B5A496] font-sans leading-relaxed">
@@ -140,7 +140,7 @@ export async function ContactPage() {
                         {/* Right Column: Concierge Inquiry Form */}
                         <div className="lg:col-span-7 bg-[#FAF7F2] dark:bg-[#1D120A]/70 border border-[#E7DED0]/80 dark:border-[#3A291C] p-8 sm:p-10 lg:p-12 rounded-sm shadow-xs">
                             <div className="space-y-2 mb-8">
-                                <h3 className="font-serif text-2xl font-bold tracking-tight">
+                                <h3 className="font-sans text-2xl font-bold tracking-tight">
                                     {t('formTitle')}
                                 </h3>
                                 <p className="text-xs sm:text-sm text-[#6B5E55] dark:text-[#B5A496] font-sans">
@@ -220,7 +220,7 @@ export async function ContactPage() {
                         <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-[#EFE8DD] dark:bg-[#2A1B10] text-[#D4A43C] mb-2">
                             <HelpCircle className="w-5 h-5 stroke-[1.75]" />
                         </div>
-                        <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight">
+                        <h2 className="font-sans text-2xl sm:text-3xl font-bold tracking-tight">
                             Frequently Answered Questions
                         </h2>
                     </div>
@@ -231,7 +231,7 @@ export async function ContactPage() {
                                 key={idx}
                                 className="bg-[#FAF7F2] dark:bg-[#1D120A]/70 border border-[#E7DED0]/80 dark:border-[#3A291C] p-6 sm:p-7 rounded-sm space-y-2"
                             >
-                                <h3 className="font-serif text-base sm:text-lg font-bold text-[#1D120A] dark:text-[#F8F4EE]">
+                                <h3 className="font-sans text-base sm:text-lg font-bold text-[#1D120A] dark:text-[#F8F4EE]">
                                     {faq.q}
                                 </h3>
                                 <p className="text-xs sm:text-sm text-[#6B5E55] dark:text-[#B5A496] leading-relaxed font-sans">

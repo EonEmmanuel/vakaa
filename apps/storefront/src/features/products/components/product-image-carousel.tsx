@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 interface ProductImageCarouselProps {
     images: Array<{
@@ -34,69 +33,73 @@ export function ProductImageCarousel({ images }: ProductImageCarouselProps) {
 
     return (
         <div className="space-y-4">
-            {/* Main Image in Editorial 3:4 Portrait Ratio */}
-            <div className="relative aspect-[3/4] bg-[#F0EBE1] dark:bg-[#1A120B] rounded-md overflow-hidden group cursor-crosshair border border-[#E7DED0]/60 dark:border-[#3A291C]/60 shadow-sm">
+            {/* Main Image in Editorial Studio Pedestal (#F3EFE9) */}
+            <div className="relative aspect-[3/4] bg-[#F3EFE9] rounded-2xl sm:rounded-3xl overflow-hidden group shadow-[0_10px_30px_-15px_rgba(29,18,10,0.08)]">
                 <Image
                     src={images[currentIndex].source}
-                    alt={`Product image ${currentIndex + 1}`}
+                    alt={`Vue atelier ${currentIndex + 1}`}
                     fill
-                    className="object-cover object-center hover:scale-105 transition-transform duration-700 ease-out"
+                    className="object-cover object-center transition-all duration-500 ease-out"
                     sizes="(max-width: 1024px) 100vw, 50vw"
                     priority={currentIndex === 0}
                 />
 
-                {/* Navigation Arrows */}
+                {/* Floating Dual-Color Nav Arrows (Matching ff98ca... reference: Left Ebony, Right Gold) */}
                 {images.length > 1 && (
                     <>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/70 dark:bg-black/60 hover:bg-white dark:hover:bg-black backdrop-blur-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity rounded-full size-9 text-[#1D120A] dark:text-[#F8F4EE]"
+                        <button
+                            type="button"
+                            aria-label="Image précédente"
+                            className="absolute left-3.5 top-1/2 -translate-y-1/2 size-9 sm:size-10 rounded-xl bg-[#1D120A] hover:bg-[#3A2418] text-white flex items-center justify-center shadow-md transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer z-10"
                             onClick={goToPrevious}
                         >
-                            <ChevronLeft className="h-5 w-5" />
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/70 dark:bg-black/60 hover:bg-white dark:hover:bg-black backdrop-blur-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity rounded-full size-9 text-[#1D120A] dark:text-[#F8F4EE]"
+                            <ChevronLeft className="h-5 w-5 stroke-[2.5]" />
+                        </button>
+                        <button
+                            type="button"
+                            aria-label="Image suivante"
+                            className="absolute right-3.5 top-1/2 -translate-y-1/2 size-9 sm:size-10 rounded-xl bg-[#D4A43C] hover:bg-[#BF9232] text-white flex items-center justify-center shadow-md transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer z-10"
                             onClick={goToNext}
                         >
-                            <ChevronRight className="h-5 w-5" />
-                        </Button>
+                            <ChevronRight className="h-5 w-5 stroke-[2.5]" />
+                        </button>
                     </>
                 )}
 
-                {/* Image Counter */}
+                {/* Counter Pill */}
                 {images.length > 1 && (
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md text-[#FAF7F2] border border-white/10 px-3 py-1 rounded-full text-[11px] font-medium tracking-wider">
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-[#1D120A]/75 backdrop-blur-md text-[#FAF8F5] px-3.5 py-1 rounded-full text-[11px] font-semibold tracking-wider tabular-nums">
                         {currentIndex + 1} / {images.length}
                     </div>
                 )}
             </div>
 
-            {/* Thumbnail Grid in Matching 3:4 Proportions */}
+            {/* Thumbnail Strip in Matching #F3EFE9 Pedestals */}
             {images.length > 1 && (
-                <div className="grid grid-cols-4 sm:grid-cols-5 gap-2.5 sm:gap-3">
-                    {images.map((image, index) => (
-                        <button
-                            key={image.id}
-                            onClick={() => setCurrentIndex(index)}
-                            className={`aspect-[3/4] relative rounded-xs overflow-hidden transition-all duration-300 ${
-                                index === currentIndex
-                                    ? 'ring-2 ring-[#D4A43C] ring-offset-2 ring-offset-background scale-[1.02]'
-                                    : 'border border-[#E7DED0] dark:border-[#3A291C] opacity-70 hover:opacity-100'
-                            }`}
-                        >
-                            <Image
-                                src={image.preview}
-                                alt={`Thumbnail ${index + 1}`}
-                                fill
-                                className="object-cover object-center"
-                                sizes="20vw"
-                            />
-                        </button>
-                    ))}
+                <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
+                    {images.map((image, index) => {
+                        const isActive = index === currentIndex;
+                        return (
+                            <button
+                                key={image.id}
+                                type="button"
+                                onClick={() => setCurrentIndex(index)}
+                                className={`aspect-[3/4] relative rounded-xl sm:rounded-2xl overflow-hidden bg-[#F3EFE9] transition-all duration-200 cursor-pointer ${
+                                    isActive
+                                        ? 'ring-2 ring-[#D4A43C] ring-offset-2 ring-offset-[#FAF8F5] scale-[1.02]'
+                                        : 'opacity-70 hover:opacity-100 hover:scale-[1.01]'
+                                }`}
+                            >
+                                <Image
+                                    src={image.preview}
+                                    alt={`Miniature ${index + 1}`}
+                                    fill
+                                    className="object-cover object-center p-1"
+                                    sizes="20vw"
+                                />
+                            </button>
+                        );
+                    })}
                 </div>
             )}
         </div>

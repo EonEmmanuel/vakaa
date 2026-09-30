@@ -85,6 +85,10 @@ export async function transitionToArrangingPayment() {
 
     if (result.data.transitionOrderToState?.__typename === 'OrderStateTransitionError') {
         const errorResult = result.data.transitionOrderToState;
+        // If the order is already in ArrangingPayment state, proceed safely without error
+        if (errorResult.fromState === 'ArrangingPayment') {
+            return;
+        }
         throw new Error(
             `Failed to transition order state: ${errorResult.errorCode} - ${errorResult.message}`
         );
@@ -94,12 +98,17 @@ export async function transitionToArrangingPayment() {
     revalidatePath(`/${locale}/checkout`);
 }
 
-export async function placeOrder(paymentMethodCode: string) {
+export async function placeOrder(
+    paymentMethodCode: string,
+    paymentMetadata?: Record<string, unknown>
+) {
     // First, transition the order to ArrangingPayment state
     await transitionToArrangingPayment();
 
     // Prepare metadata based on payment method
-    const metadata: Record<string, unknown> = {};
+    const metadata: Record<string, unknown> = {
+        ...(paymentMetadata || {}),
+    };
 
     // For standard payment, include the required fields
     if (paymentMethodCode === 'standard-payment') {
@@ -122,16 +131,39 @@ export async function placeOrder(paymentMethodCode: string) {
 
     if (result.data.addPaymentToOrder.__typename !== 'Order') {
         const errorResult = result.data.addPaymentToOrder;
+        const detailedMessage =
+            (errorResult as any).paymentErrorMessage || errorResult.message;
         throw new Error(
-            `Failed to place order: ${errorResult.errorCode} - ${errorResult.message}`
+            `Failed to place order: ${errorResult.errorCode} - ${detailedMessage}`
         );
     }
 
-    const orderCode = result.data.addPaymentToOrder.code;
+    const order = result.data.addPaymentToOrder;
+    const orderCode = order.code;
 
     // Update the cart tag to immediately invalidate cached cart data
     updateTag('cart');
     updateTag('active-order');
+
+    // If payment method provided an external checkout link (e.g. Flutterwave hosted payment)
+    const payments = order.payments;
+    const latestPayment = payments && payments.length > 0 ? payments[payments.length - 1] : null;
+
+    let parsedMetadata = latestPayment?.metadata as any;
+    if (typeof parsedMetadata === 'string') {
+        try {
+            parsedMetadata = JSON.parse(parsedMetadata);
+        } catch {}
+    }
+    const paymentLink = parsedMetadata?.link || parsedMetadata?.public?.link;
+
+    if (
+        paymentMethodCode === 'flutterwave' &&
+        typeof paymentLink === 'string' &&
+        (paymentLink.startsWith('http://') || paymentLink.startsWith('https://'))
+    ) {
+        return { redirectUrl: paymentLink };
+    }
 
     const locale = await getLocale();
     redirect({href: `/order-confirmation/${orderCode}`, locale});

@@ -7,7 +7,7 @@ export function VerifyLoading() {
                 <Loader2 className="h-12 w-12 text-[#D4A43C] animate-spin"/>
             </div>
             <div className="space-y-2">
-                <h1 className="font-serif text-2xl sm:text-3xl tracking-tight text-[#140C06] dark:text-[#FAF6F0]">Verifying Your Account</h1>
+                <h1 className="font-sans font-bold text-2xl sm:text-3xl tracking-tight text-[#140C06] dark:text-[#FAF6F0]">Verifying Your Account</h1>
                 <p className="text-xs sm:text-sm text-muted-foreground max-w-xs mx-auto leading-relaxed">
                     Please wait while we verify your email address...
                 </p>

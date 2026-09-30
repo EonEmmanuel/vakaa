@@ -39,7 +39,7 @@ export async function ArtisansTeaserSection() {
                             <span className="text-[11px] font-bold tracking-[0.25em] uppercase text-[#D4A43C]">
                                 {t('artisansTeaser.eyebrow')}
                             </span>
-                            <h2 className="font-serif text-2xl sm:text-3xl lg:text-[2.6rem] font-bold tracking-tight text-[#1D120A] dark:text-[#F8F4EE] leading-[1.08] uppercase">
+                            <h2 className="font-sans text-2xl sm:text-3xl lg:text-[2.6rem] font-bold tracking-tight text-[#1D120A] dark:text-[#F8F4EE] leading-[1.08] uppercase">
                                 {t('artisansTeaser.title')}
                             </h2>
                         </div>

@@ -1,24 +1,36 @@
-{{> header title="Forgotten password reset" }}
+{{> header title="Réinitialisation du mot de passe / Password Reset" }}
 
-<mj-section background-color="#fafafa">
-    <mj-column>
-        <mj-text color="#525252">
-            Someone requested a new password for your account.
+<mj-section background-color="#FFFFFF" padding="36px 24px 20px 24px">
+    <mj-column width="100%">
+        <mj-text font-size="20px" font-weight="700" color="#18181B" padding-bottom="8px">
+            Réinitialisation de votre mot de passe
+        </mj-text>
+        <mj-text font-size="14px" color="#52525B" line-height="22px" padding-bottom="12px">
+            Une demande de réinitialisation de mot de passe a été initiée pour votre compte client VAKÁA. Cliquez sur le bouton ci-dessous pour choisir votre nouveau mot de passe :
+        </mj-text>
+        <mj-text font-size="13px" color="#71717A" line-height="20px" padding-bottom="24px">
+            <em>Someone requested a password reset for your VAKÁA account. Click the button below to define a new password:</em>
         </mj-text>
 
-        <mj-button font-family="Helvetica"
-                   background-color="#f45e43"
-                   color="white"
+        <mj-button background-color="#18181B"
+                   color="#FFFFFF"
+                   font-size="13px"
+                   font-weight="600"
+                   letter-spacing="0.05em"
+                   border-radius="4px"
+                   inner-padding="14px 28px"
+                   padding-bottom="24px"
                    href="{{ passwordResetUrl }}?token={{ passwordResetToken }}">
-            Reset password
+            Réinitialiser mon mot de passe &bull; Reset Password
         </mj-button>
 
-        <mj-text color="#525252">
-        If you didn't make this request then you can safely ignore this email - nothing has been changed on your account.
-        </mj-text>
+        <mj-divider border-color="#E4E4E7" border-width="1px" padding="16px 0" />
 
+        <mj-text font-size="12px" color="#A1A1AA" line-height="18px">
+            Si vous n'avez pas demandé cette réinitialisation, veuillez ignorer ce message. La sécurité de votre compte reste inchangée.<br />
+            <em>If you did not make this request, you can safely ignore this email. Your account remains completely secure.</em>
+        </mj-text>
     </mj-column>
 </mj-section>
-
 
 {{> footer }}
