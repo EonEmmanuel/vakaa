@@ -7,11 +7,11 @@ import {FeaturedBagSpotlight} from '@/site/home/featured-bag-spotlight';
 import {TrustBar} from '@/site/home/trust-bar';
 import {AtelierSpotlightCountdown} from '@/site/home/atelier-spotlight-countdown';
 import {CollectionGridPreview} from '@/site/home/collection-grid-preview';
-import {HeritageSavoirFaire} from '@/site/home/heritage-savoir-faire';
+import {FuturisticAtelierReel} from '@/site/home/futuristic-atelier-reel';
 import {TestimonialsSection} from '@/site/home/testimonials-section';
 import {InstagramFeed} from '@/site/home/instagram-feed';
 import {FaqSection} from '@/site/home/faq-section';
-import {TribeNewsletter} from '@/site/home/tribe-newsletter';
+import {PrivateCircleNewsletter} from '@/site/home/private-circle-newsletter';
 import {SITE_NAME, SITE_URL, buildCanonicalUrl} from '@/config/metadata';
 import {getTranslations} from 'next-intl/server';
 import {toOgLocale} from '@/platform/i18n/locale-utils';
@@ -41,41 +41,41 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Home() {
     return (
-        <div className="min-h-screen bg-[#FAF8F5] text-[#1D120A] transition-colors">
-            {/* 1. Iconic Hero with Character Model, Title Case & Ratings */}
+        <div className="min-h-screen bg-background text-foreground">
+            {/* Cinematic Full-Viewport Hero */}
             <HeroSection />
 
-            {/* 2. The Flagship Atelier: Direct-to-Consumer Product Showcase with Borderless Pedestal Cards, Interactive Swatches & 1-Click Buy */}
-            <Suspense fallback={<div className="h-96 w-full bg-[#FAF8F5]" />}>
+            {/* Flagship Product Showcase */}
+            <Suspense fallback={<div className="h-96 w-full bg-background" />}>
                 <BestSellersPreview />
             </Suspense>
 
-            {/* 3. Extraordinary Section 1: L'Éloge du Détail (Large-Format 60/40 Split Spotlight on Baguette Terre Émeraude & Cabas Maa) */}
+            {/* Editorial Product Spotlight — Asymmetric Split */}
             <FeaturedBagSpotlight />
 
-            {/* 4. Sleek 1-Line Luxury Atelier Guarantee Strip */}
+            {/* Minimal Trust Strip */}
             <TrustBar />
 
-            {/* 5. Extraordinary Section 2: L'Excellence de la Série Limitée (Numbered Atelier Drop 14/50 ex., Authenticity Certificate, Batch Allocation) */}
+            {/* Dark Contrast: Limited Edition Spotlight */}
             <AtelierSpotlightCountdown />
 
-            {/* 6. Asymmetric Bento Category Showcase */}
+            {/* Lookbook Scroll — Horizontal Product Reel */}
+            <FuturisticAtelierReel />
+
+            {/* Category Bento Grid */}
             <CollectionGridPreview />
 
-            {/* 7. Editorial 50/50 Visual Savoir-Faire (Tight Narrative & Master Craft Seals) */}
-            <HeritageSavoirFaire />
-
-            {/* 8. Client Reviews & Social Proof */}
+            {/* Client Testimonials */}
             <TestimonialsSection />
 
-            {/* 9. Instagram Community Lifestyle Grid */}
+            {/* Instagram Mosaic */}
             <InstagramFeed />
 
-            {/* 10. High-Conversion FAQ Accordion with Schema.org JSON-LD (Anchored at end) */}
+            {/* FAQ Accordion */}
             <FaqSection />
 
-            {/* 11. Le Cercle Privé VIP Newsletter (Anchored at very end) */}
-            <TribeNewsletter />
+            {/* Dark Newsletter CTA */}
+            <PrivateCircleNewsletter />
         </div>
     );
 }

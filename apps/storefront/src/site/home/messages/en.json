@@ -3,13 +3,13 @@
     "titleLine1": "Carrying",
     "titleLine2": "Africa.",
     "titleLine3": "Everywhere.",
-    "subtitle": "Luxury bags. African soul. Made by hand, made to last.",
+    "subtitle": "Architectural leather goods. Hand-sculpted for eternity.",
     "shopCollection": "Shop the collection",
     "ourStory": "Our Story"
   },
   "Home": {
-    "pageTitle": "Luxury African Lifestyle & Handcrafted Fashion",
-    "description": "Discover VAKAA luxury handcrafted raffia bags, leather goods, and artisan-made accessories carrying African soul everywhere.",
+    "pageTitle": "Maison of Luxury Leather Goods & Contemporary Handcrafted Bags",
+    "description": "Discover VAKAA luxury handcrafted raffia bags, fine leather goods, and architectural accessories worldwide.",
     "ogDescription": "Carrying Africa. Everywhere. Luxury handcrafted bags and accessories.",
     "trust": {
       "artisans": {
@@ -52,7 +52,7 @@
     },
     "testimonials": {
       "eyebrow": "CLIENT VOICES",
-      "title": "WORDS FROM THE TRIBE",
+      "title": "VOICES OF THE CIRCLE",
       "subtitle": "Trusted and cherished by luxury collectors across 40+ countries worldwide.",
       "verifiedBuyer": "Verified Buyer",
       "quote1": "The craftsmanship on the Maa Tote is extraordinary. The raffia weave is tight and tactile, and the leather handles feel indestructible. It gets compliments wherever I travel.",
@@ -85,10 +85,10 @@
       "handle": "@vakaaofficial"
     },
     "newsletter": {
-      "title": "JOIN THE VAKAA TRIBE",
-      "description": "Be the first to know about new drops, exclusive offers and artisan stories.",
+      "title": "JOIN THE PRIVATE CIRCLE",
+      "description": "Be the first to know about confidential drops, atelier previews and VIP privileges.",
       "placeholder": "Enter your email",
-      "button": "JOIN US"
+      "button": "PRIVATE ACCESS"
     }
   }
 }

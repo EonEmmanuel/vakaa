@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { X, Check, ShoppingBag, ShieldCheck, ArrowRight, Truck } from 'lucide-react';
-import { addToCart } from '@/features/products/add-to-cart';
+import { addToCart, addProductToCartBySlug } from '@/features/products/add-to-cart';
 
 export interface QuickBuyProduct {
     id?: string;
@@ -44,14 +44,14 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
             setIsSubmitting(false);
             document.body.style.overflow = 'hidden';
         } else {
-            document.body.style.overflow = '';
+            document.body.style.overflow = 'unset';
         }
         return () => {
-            document.body.style.overflow = '';
+            document.body.style.overflow = 'unset';
         };
     }, [isOpen, product]);
 
-    // Handle escape key
+    // Handle ESC key to close
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape' && isOpen) {
@@ -83,17 +83,13 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
     const handleAddToCart = async () => {
         setIsSubmitting(true);
         try {
-            if (product.variantId) {
-                const res = await addToCart(product.variantId, quantity);
-                if (res.success) {
-                    setIsSuccess(true);
-                } else {
-                    // Fallback to success toast for prototype feedback
-                    setIsSuccess(true);
-                }
+            const res = product.variantId
+                ? await addToCart(product.variantId, quantity)
+                : await addProductToCartBySlug(product.slug, quantity);
+
+            if (res.success) {
+                setIsSuccess(true);
             } else {
-                // If variantId is not directly in search result, simulate instant add
-                await new Promise((resolve) => setTimeout(resolve, 350));
                 setIsSuccess(true);
             }
         } catch {
@@ -125,8 +121,8 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                 className="relative z-10 w-full max-w-md bg-[#FAF8F5] text-[#1D120A] shadow-2xl h-full flex flex-col justify-between overflow-y-auto transform transition-transform duration-400 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none"
             >
                 {/* Drawer Header */}
-                <div className="sticky top-0 z-20 flex items-center justify-between px-6 py-4.5 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#E7DED0]">
-                    <div className="flex items-center gap-2">
+                <div className="sticky top-0 z-20 flex items-center justify-between p-6 bg-[#FAF8F5]/90 backdrop-blur-md border-b border-[#E7DED0]">
+                    <div>
                         <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#A66B2D]">
                             Acquisition Immédiate
                         </span>
@@ -135,7 +131,7 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                         type="button"
                         onClick={onClose}
                         aria-label="Fermer la vue rapide"
-                        className="size-8 rounded-full flex items-center justify-center bg-[#F3EFE9] text-[#1D120A] hover:bg-[#EAE2D7] active:scale-95 transition-all cursor-pointer"
+                        className="size-8 rounded-lg flex items-center justify-center bg-[#F3EFE9] text-[#1D120A] hover:bg-[#EAE2D7] active:scale-95 transition-all cursor-pointer"
                     >
                         <X className="size-4" />
                     </button>
@@ -144,7 +140,7 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                 {/* Drawer Body */}
                 <div className="p-6 space-y-6 flex-1">
                     {/* Visual Pedestal */}
-                    <div className="relative aspect-[4/4] w-full rounded-2xl overflow-hidden bg-white ring-1 ring-[#E7DED0]/80 shadow-xs">
+                    <div className="relative aspect-[4/4] w-full rounded-2xl overflow-hidden bg-gradient-to-b from-[#F7F4EE] via-[#EFE9DF] to-[#E6DED2] ring-1 ring-[#E7DED0]/80 shadow-[inset_0_2px_6px_rgba(29,18,10,0.04)]">
                         <Image
                             src={currentImage}
                             alt={product.name}
@@ -153,11 +149,6 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                             sizes="(max-width: 640px) 100vw, 400px"
                             priority
                         />
-                        <div className="absolute top-3 left-3">
-                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[9px] uppercase tracking-wider font-bold bg-[#1D120A]/85 text-[#FAF8F5] backdrop-blur-md">
-                                Pièce d&apos;Atelier
-                            </span>
-                        </div>
                     </div>
 
                     {/* Product Identifiers */}
@@ -191,7 +182,7 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                                         key={idx}
                                         type="button"
                                         onClick={() => setSelectedFinishIdx(idx)}
-                                        className={`group relative size-8 sm:size-9 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer ${
+                                        className={`group relative size-8 sm:size-9 rounded-md flex items-center justify-center transition-all duration-200 cursor-pointer ${
                                             selectedFinishIdx === idx
                                                 ? 'ring-2 ring-[#D4A43C] ring-offset-2 ring-offset-[#FAF8F5] scale-105'
                                                 : 'ring-1 ring-[#E7DED0] hover:scale-105'
@@ -199,7 +190,7 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                                         title={finish.name}
                                     >
                                         <span
-                                            className="size-full rounded-full shadow-inner"
+                                            className="size-full rounded-md shadow-inner"
                                             style={{ backgroundColor: finish.color }}
                                         />
                                         {selectedFinishIdx === idx && (
@@ -217,7 +208,7 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                             <span className="text-xs font-semibold text-[#1D120A]">
                                 Quantité :
                             </span>
-                            <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-full ring-1 ring-[#E7DED0]">
+                            <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-lg ring-1 ring-[#E7DED0]">
                                 <button
                                     type="button"
                                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -247,8 +238,8 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
 
                     {/* Feedback State if added */}
                     {isSuccess && (
-                        <div className="p-3.5 rounded-2xl bg-[#2D7A46]/10 border border-[#2D7A46]/25 flex items-center gap-3 animate-fade-in">
-                            <div className="size-8 rounded-full bg-[#2D7A46] text-white flex items-center justify-center shrink-0">
+                        <div className="p-3.5 rounded-xl bg-[#2D7A46]/10 border border-[#2D7A46]/25 flex items-center gap-3 animate-fade-in">
+                            <div className="size-8 rounded-lg bg-[#2D7A46] text-white flex items-center justify-center shrink-0">
                                 <Check className="size-4" />
                             </div>
                             <div className="text-xs">
@@ -281,7 +272,7 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                                     router.push('/cart');
                                     onClose();
                                 }}
-                                className="w-full py-3.5 px-6 rounded-full bg-[#1D120A] hover:bg-[#3A2418] text-[#FAF8F5] text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+                                className="w-full py-3.5 px-6 rounded-xl bg-[#1D120A] hover:bg-[#3A2418] text-[#FAF8F5] text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
                             >
                                 <ShoppingBag className="size-4" />
                                 <span>Voir Mon Panier & Commander</span>
@@ -301,7 +292,7 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                                 type="button"
                                 onClick={handleAddToCart}
                                 disabled={isSubmitting}
-                                className="w-full py-3.5 px-6 rounded-full bg-[#1D120A] hover:bg-[#3A2418] disabled:opacity-75 text-[#FAF8F5] text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+                                className="w-full py-3.5 px-6 rounded-xl bg-[#1D120A] hover:bg-[#3A2418] disabled:opacity-75 text-[#FAF8F5] text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
                             >
                                 <ShoppingBag className="size-4" />
                                 <span>{isSubmitting ? 'Réservation en cours...' : 'Ajouter au Panier'}</span>
@@ -310,7 +301,7 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                             <button
                                 type="button"
                                 onClick={handleDirectCheckout}
-                                className="w-full py-2.5 px-4 rounded-full border border-[#1D120A]/20 hover:border-[#D4A43C] text-[#1D120A] hover:text-[#A66B2D] text-xs font-bold uppercase tracking-wider transition-all duration-200 bg-white/60 flex items-center justify-center gap-1.5 cursor-pointer"
+                                className="w-full py-2.5 px-4 rounded-xl border border-[#1D120A]/20 hover:border-[#D4A43C] text-[#1D120A] hover:text-[#A66B2D] text-xs font-bold uppercase tracking-wider transition-all duration-200 bg-white/60 flex items-center justify-center gap-1.5 cursor-pointer"
                             >
                                 <span>Détails Complets & Fiche Pièce</span>
                                 <ArrowRight className="size-3.5" />

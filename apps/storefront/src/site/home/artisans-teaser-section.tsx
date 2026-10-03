@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Link } from '@/platform/i18n/navigation';
 import { getTranslations } from 'next-intl/server';
 import { getRouteLocale } from '@/platform/i18n/server';
-import { ShieldCheck, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 export async function ArtisansTeaserSection() {
     const locale = await getRouteLocale();
@@ -25,11 +25,6 @@ export async function ArtisansTeaserSection() {
                                 sizes="(max-width: 1024px) 100vw, 50vw"
                                 className="object-cover object-center transition-transform duration-700 hover:scale-102"
                             />
-                            {/* Subtle artisan badge overlay */}
-                            <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 inline-flex items-center gap-1.5 sm:gap-2 bg-[#1D120A]/90 dark:bg-[#F8F4EE]/90 text-[#F8F4EE] dark:text-[#1D120A] px-2.5 sm:px-3.5 py-1.5 rounded-sm text-[10px] sm:text-[11px] font-bold tracking-wider uppercase backdrop-blur-xs">
-                                <ShieldCheck className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#D4A43C]" />
-                                <span>{t('artisansTeaser.badge')}</span>
-                            </div>
                         </div>
                     </div>
 

@@ -15,6 +15,7 @@ export default function ReviewStep({ onEditStep }: ReviewStepProps) {
   const t = useTranslations('Checkout');
   const { order, paymentMethods, selectedPaymentMethodCode, paymentMetadata, isGuest } = useCheckout();
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const selectedPaymentMethod = paymentMethods.find(
     (method) => method.code === selectedPaymentMethodCode
@@ -24,6 +25,7 @@ export default function ReviewStep({ onEditStep }: ReviewStepProps) {
     if (!selectedPaymentMethodCode) return;
 
     setLoading(true);
+    setErrorMessage(null);
     try {
       const result = await placeOrderAction(selectedPaymentMethodCode, paymentMetadata);
       if (result?.redirectUrl) {
@@ -37,6 +39,7 @@ export default function ReviewStep({ onEditStep }: ReviewStepProps) {
         throw error;
       }
       console.error('Error placing order:', error);
+      setErrorMessage(error instanceof Error ? error.message : 'Une erreur est survenue lors de l’initialisation du paiement.');
       setLoading(false);
     }
   };
@@ -166,10 +169,16 @@ export default function ReviewStep({ onEditStep }: ReviewStepProps) {
         </div>
       </div>
 
+      {errorMessage && (
+        <div className="p-4 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-300 text-xs sm:text-sm font-medium animate-fade-in">
+          {errorMessage}
+        </div>
+      )}
+
       <button
         onClick={handlePlaceOrder}
         disabled={loading || !order.shippingAddress || !order.shippingLines?.length || !selectedPaymentMethodCode}
-        className="w-full h-14 rounded-full bg-[#1B3B2B] hover:bg-[#152e22] text-white font-semibold text-base transition-all shadow-md active:scale-[0.99] disabled:opacity-50 flex items-center justify-center cursor-pointer mt-6"
+        className="w-full h-14 rounded-xl bg-[#1B3B2B] hover:bg-[#152e22] text-white font-semibold text-base transition-all shadow-md active:scale-[0.99] disabled:opacity-50 flex items-center justify-center cursor-pointer mt-6"
       >
         {loading ? (
           <>

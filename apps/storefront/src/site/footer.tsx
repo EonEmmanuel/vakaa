@@ -47,7 +47,7 @@ function AfricanGeometricEmblem({className = ""}: {className?: string}) {
             viewBox="0 0 160 160"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className={`text-[#D4A43C] opacity-85 hover:opacity-100 transition-opacity ${className}`}
+            className={`text-[#D4A43C] opacity-85 hover:opacity-100 hover:rotate-3 hover:scale-105 active:scale-95 transition-all duration-300 ease-out cursor-pointer ${className}`}
         >
             {/* Center diamond core */}
             <rect x="70" y="70" width="20" height="20" transform="rotate(45 80 80)" stroke="currentColor" strokeWidth="2.5" />

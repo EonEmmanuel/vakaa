@@ -1,0 +1,24 @@
+﻿{
+    "permissions":  {
+                        "allow":  [
+                                      "Bash",
+                                      "Bash(*)",
+                                      "Bash(bun *)",
+                                      "Bash(bun run *)",
+                                      "Bash(bun test*)",
+                                      "Bash(git *)",
+                                      "Bash(npm *)"
+                                  ],
+                        "deny":  [
+
+                                 ]
+                    },
+    "autoMode":  {
+                     "allow":  [
+                                   "Running package manager scripts: `bun run *`, `bun test*`, `npm run *`, `npm test*`",
+                                   "Running build and type check tools: `bun run --filter storefront check-types`, `tsc *`, `next build`",
+                                   "Running git read-only commands: `git status`, `git diff`, `git log`"
+                               ]
+                 },
+    "allowDangerouslySkipPermissions":  true
+}

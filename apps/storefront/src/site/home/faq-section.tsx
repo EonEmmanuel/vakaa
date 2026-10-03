@@ -1,14 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Minus, HelpCircle } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-interface FAQItem {
-    question: string;
-    answer: string;
-}
-
-const FAQS: FAQItem[] = [
+const FAQS = [
     {
         question: "Comment sont fabriqués les sacs et accessoires VAKÁA ?",
         answer: "Chaque pièce est entièrement confectionnée à la main dans nos ateliers partenaires de Bolgatanga et Nairobi. Nos maîtres artisans associent le tressage méticuleux de raphia sauvage renouvelable à des cuirs nobles pleine fleur tannés aux extraits végétaux de mimosa et d'acacia. Plus de 48 heures de travail patient sont consacrées à chaque création.",
@@ -38,7 +34,6 @@ export function FaqSection() {
         setOpenIdx(openIdx === idx ? null : idx);
     };
 
-    // Schema.org FAQPage structured data for Google rich snippets
     const faqSchema = {
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
@@ -53,94 +48,67 @@ export function FaqSection() {
     };
 
     return (
-        <section className="py-16 sm:py-24 bg-[#FAF8F5] border-b border-[#E7DED0]/60 transition-colors">
-            {/* Embedded Schema.org JSON-LD */}
+        <section className="py-24 sm:py-32 bg-[#FAF8F5]">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
             />
+            <div className="vakaa-container">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+                    
+                    {/* Left: Heading 40% (approx 5 cols) */}
+                    <div className="lg:col-span-5 space-y-6">
+                        <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#A66B2D]">
+                            FAQ
+                        </span>
+                        <h2 className="font-sans text-4xl sm:text-5xl font-bold text-[#1D120A] tracking-tight leading-none">
+                            Questions Fréquentes
+                        </h2>
+                    </div>
 
-            <div className="vakaa-container max-w-4xl space-y-10 sm:space-y-14">
-                
-                {/* Section Header */}
-                <div className="text-center space-y-2 max-w-xl mx-auto">
-                    <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#A66B2D]">
-                        FAQ & Renseignements
-                    </span>
-                    <h2 className="font-sans text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1D120A] tracking-tight leading-tight">
-                        Une Question ? <span className="text-[#A66B2D]">Nous Vous Éclairons</span>
-                    </h2>
-                    <p className="text-xs sm:text-sm text-[#3A2418]/70 font-sans leading-relaxed pt-1">
-                        Tout ce que vous devez savoir sur la confection, nos garanties et vos commandes.
-                    </p>
-                </div>
-
-                {/* FAQ Accordion List */}
-                <div className="space-y-3 sm:space-y-4">
-                    {FAQS.map((faq, idx) => {
-                        const isOpen = openIdx === idx;
-                        return (
-                            <div
-                                key={idx}
-                                className={`rounded-2xl transition-all duration-200 border ${
-                                    isOpen
-                                        ? 'bg-[#F3EFE9] border-[#E7DED0] shadow-xs'
-                                        : 'bg-white/80 border-[#E7DED0]/70 hover:border-[#D4A43C]/50'
-                                }`}
-                            >
-                                <button
-                                    type="button"
-                                    onClick={() => toggle(idx)}
-                                    aria-expanded={isOpen}
-                                    className="w-full text-left p-5 sm:p-6 flex items-center justify-between gap-4 cursor-pointer"
-                                >
-                                    <span className="font-sans text-xs sm:text-sm md:text-base font-semibold text-[#1D120A] tracking-tight">
-                                        {faq.question}
-                                    </span>
-                                    <span
-                                        className={`size-7 sm:size-8 rounded-full flex items-center justify-center shrink-0 transition-colors ${
-                                            isOpen
-                                                ? 'bg-[#1D120A] text-[#FAF8F5]'
-                                                : 'bg-[#F3EFE9] text-[#1D120A]'
-                                        }`}
+                    {/* Right: Accordion 60% (approx 7 cols) */}
+                    <div className="lg:col-span-7 space-y-8">
+                        {FAQS.map((faq, idx) => {
+                            const isOpen = openIdx === idx;
+                            return (
+                                <div key={idx} className="border-b border-[#E7DED0] pb-8">
+                                    <button
+                                        type="button"
+                                        onClick={() => toggle(idx)}
+                                        className="w-full flex items-start justify-between gap-6 text-left cursor-pointer"
                                     >
-                                        {isOpen ? (
-                                            <Minus className="w-3.5 h-3.5 stroke-[2.5]" />
-                                        ) : (
-                                            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                                        <h3 className="font-sans text-lg sm:text-xl font-bold text-[#1D120A] pr-8">
+                                            {faq.question}
+                                        </h3>
+                                        <motion.div
+                                            animate={{ rotate: isOpen ? 180 : 0 }}
+                                            transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+                                            className="shrink-0 mt-1"
+                                        >
+                                            <ChevronDown className="w-5 h-5 text-[#A66B2D]" />
+                                        </motion.div>
+                                    </button>
+
+                                    <AnimatePresence initial={false}>
+                                        {isOpen && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: 'auto', opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+                                                className="overflow-hidden"
+                                            >
+                                                <p className="pt-6 text-base text-[#3A2418]/70 leading-relaxed font-sans">
+                                                    {faq.answer}
+                                                </p>
+                                            </motion.div>
                                         )}
-                                    </span>
-                                </button>
-
-                                {isOpen && (
-                                    <div className="px-5 sm:px-6 pb-5 sm:pb-6 pt-0 animate-fade-in">
-                                        <div className="border-t border-[#E7DED0]/60 pt-3">
-                                            <p className="text-xs sm:text-sm text-[#3A2418]/80 leading-relaxed font-sans">
-                                                {faq.answer}
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
+                                    </AnimatePresence>
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
-
-                {/* Direct Concierge Prompt */}
-                <div className="pt-2 text-center">
-                    <p className="text-xs sm:text-sm text-[#3A2418]/70">
-                        Vous avez une question spécifique sur une commande ou personnalisation ?{' '}
-                        <a
-                            href="https://wa.me/237699000000"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="font-bold text-[#A66B2D] hover:underline underline-offset-4"
-                        >
-                            Échangez directement avec notre concierge WhatsApp &rarr;
-                        </a>
-                    </p>
-                </div>
-
             </div>
         </section>
     );

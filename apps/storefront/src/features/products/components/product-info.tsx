@@ -207,12 +207,12 @@ export function ProductInfo({ product, searchParams, currencyCode }: ProductInfo
                 </span>
 
                 {isInStock ? (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#E8F5E9] text-[#2E7D32] border border-[#C8E6C9]">
-                        <span className="size-1.5 rounded-full bg-[#2E7D32]" />
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-semibold bg-[#E8F5E9] text-[#2E7D32] border border-[#C8E6C9]">
+                        <span className="size-1.5 rounded-xs bg-[#2E7D32]" />
                         <span>{t('inStock')}</span>
                     </span>
                 ) : (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
                         {t('outOfStock')}
                     </span>
                 )}
@@ -409,7 +409,7 @@ export function ProductInfo({ product, searchParams, currencyCode }: ProductInfo
                             href={`https://wa.me/?text=${encodeURIComponent(`Découvrez cette création VAKÁA : ${currentUrl}`)}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="size-7 rounded-full bg-[#F3EFE9] hover:bg-[#25D366] hover:text-white flex items-center justify-center transition-colors"
+                            className="size-7 rounded-lg bg-[#F3EFE9] hover:bg-[#25D366] hover:text-white flex items-center justify-center transition-colors"
                             aria-label="Partager sur WhatsApp"
                         >
                             <MessageCircle className="size-3.5" />
@@ -418,7 +418,7 @@ export function ProductInfo({ product, searchParams, currencyCode }: ProductInfo
                             href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="size-7 rounded-full bg-[#F3EFE9] hover:bg-[#1877F2] hover:text-white flex items-center justify-center transition-colors"
+                            className="size-7 rounded-lg bg-[#F3EFE9] hover:bg-[#1877F2] hover:text-white flex items-center justify-center transition-colors"
                             aria-label="Partager sur Facebook"
                         >
                             <FacebookIcon className="size-3.5" />
@@ -427,7 +427,7 @@ export function ProductInfo({ product, searchParams, currencyCode }: ProductInfo
                             href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(currentUrl)}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="size-7 rounded-full bg-[#F3EFE9] hover:bg-[#BD081C] hover:text-white flex items-center justify-center transition-colors"
+                            className="size-7 rounded-lg bg-[#F3EFE9] hover:bg-[#BD081C] hover:text-white flex items-center justify-center transition-colors"
                             aria-label="Partager sur Pinterest"
                         >
                             <PinterestIcon className="size-3.5" />
@@ -436,7 +436,7 @@ export function ProductInfo({ product, searchParams, currencyCode }: ProductInfo
                             href="https://instagram.com/vakaaofficial"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="size-7 rounded-full bg-[#F3EFE9] hover:bg-[#E4405F] hover:text-white flex items-center justify-center transition-colors"
+                            className="size-7 rounded-lg bg-[#F3EFE9] hover:bg-[#E4405F] hover:text-white flex items-center justify-center transition-colors"
                             aria-label="Partager sur Instagram"
                         >
                             <InstagramIcon className="size-3.5" />

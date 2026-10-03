@@ -1,13 +1,14 @@
 import Image from 'next/image';
+import { Link } from '@/platform/i18n/navigation';
 
-function InstagramIcon({ className = "w-4 h-4" }: { className?: string }) {
+function InstagramIcon({ className = "w-8 h-8" }: { className?: string }) {
     return (
         <svg
             className={className}
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth="1.75"
             strokeLinecap="round"
             strokeLinejoin="round"
             aria-hidden="true"
@@ -19,83 +20,56 @@ function InstagramIcon({ className = "w-4 h-4" }: { className?: string }) {
     );
 }
 
-export function InstagramFeed() {
-    const posts = [
-        {
-            src: '/images/bags/maa-tote.jpg',
-            alt: 'Le Cabas Maa porté lors d’une escapade estivale',
-            caption: 'Allure citadine et textures solaires.',
-        },
-        {
-            src: '/images/bags/baguette-indigo-savane-1.jpg',
-            alt: 'Sac baguette porté épaule finition laiton',
-            caption: 'L’indigo profond marié au cuir savane.',
-        },
-        {
-            src: '/images/artisan-hands.jpg',
-            alt: 'Gestes minutieux de nos artisanes à Bolgatanga',
-            caption: 'Patience et transmission.',
-        },
-        {
-            src: '/images/bags/zuri-clutch.jpg',
-            alt: 'Pochette Zuri lors d’un dîner de gala',
-            caption: 'Élégance nocturne intemporelle.',
-        },
-        {
-            src: '/images/bags/maa-tote.jpg',
-            alt: 'Détail du tressage de raphia naturel',
-            caption: 'Chaque brin de raphia raconte une histoire.',
-        },
+export async function InstagramFeed() {
+    const images = [
+        '/images/bags/baguette-indigo-savane-1.jpg',
+        '/images/bags/maa-tote.jpg',
+        '/images/bags/zuri-clutch.jpg',
+        '/images/bags/kemi-shoulder.jpg',
+        '/images/bags/baguette-terre-emeraude-1.jpg',
     ];
 
     return (
-        <section className="py-14 sm:py-20 bg-[#FAF8F5] border-b border-[#E7DED0]/60 transition-colors">
-            <div className="vakaa-container space-y-8 sm:space-y-12">
-                
-                {/* Header */}
-                <div className="text-center space-y-2 max-w-xl mx-auto">
-                    <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#A66B2D]">
+        <section className="py-24 sm:py-32 bg-[#FAF8F5]">
+            <div className="vakaa-container mb-12">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <h2 className="font-sans text-xl sm:text-2xl font-bold tracking-tight text-[#1D120A]">
                         @vakaaofficial
-                    </span>
-                    <h2 className="font-sans text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1D120A] tracking-tight leading-tight">
-                        Rejoignez Notre Communauté sur Instagram
                     </h2>
-                    <p className="text-xs sm:text-sm text-[#3A2418]/70 font-sans leading-relaxed pt-1">
-                        Partagez vos créations avec le hashtag <span className="font-semibold text-[#1D120A]">#VakaaWomen</span>
-                    </p>
+                    <Link
+                        href="https://instagram.com"
+                        target="_blank"
+                        className="text-xs font-bold uppercase tracking-widest text-[#A66B2D] hover:text-[#1D120A] transition-colors"
+                    >
+                        Suivre
+                    </Link>
                 </div>
+            </div>
 
-                {/* 5-Column Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-                    {posts.map((post, idx) => (
+            {/* Bleeding Grid */}
+            <div className="w-full">
+                <div className="grid grid-cols-2 lg:grid-cols-5 gap-1">
+                    {images.map((src, idx) => (
                         <a
                             key={idx}
                             href="https://instagram.com"
                             target="_blank"
                             rel="noopener noreferrer"
-                            aria-label={post.alt}
-                            className="group relative aspect-square rounded-2xl overflow-hidden bg-[#F3EFE9] shadow-xs cursor-pointer"
+                            className="group relative aspect-square overflow-hidden bg-[#E7DED0] block"
                         >
                             <Image
-                                src={post.src}
-                                alt={post.alt}
+                                src={src}
+                                alt="Instagram post"
                                 fill
-                                className="object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
-                                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                                className="object-cover object-center"
+                                sizes="(max-width: 1024px) 50vw, 20vw"
                             />
-                            {/* Hover Overlay */}
-                            <div className="absolute inset-0 bg-[#1D120A]/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-3 text-center text-white">
-                                <div className="size-9 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mb-1.5 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                                    <InstagramIcon className="w-4 h-4 text-white" />
-                                </div>
-                                <span className="text-[10px] font-semibold uppercase tracking-wider text-[#FAF8F5]/90 line-clamp-2">
-                                    {post.caption}
-                                </span>
+                            <div className="absolute inset-0 bg-[#1D120A]/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] flex items-center justify-center">
+                                <InstagramIcon className="w-8 h-8 text-white" />
                             </div>
                         </a>
                     ))}
                 </div>
-
             </div>
         </section>
     );
