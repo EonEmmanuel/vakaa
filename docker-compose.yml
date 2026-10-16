@@ -35,6 +35,9 @@ services:
       - vakaa-network
 
   worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: vakaa-backend:latest
     container_name: vakaa-worker
     restart: unless-stopped
