@@ -35,21 +35,18 @@ WORKDIR /app/apps/server
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Copy node_modules from builder
-COPY --from=builder /app/node_modules /app/node_modules
-COPY --from=builder /app/apps/server/node_modules /app/apps/server/node_modules
+# Copy node_modules from builder with correct ownership directly
+COPY --chown=node:node --from=builder /app/node_modules /app/node_modules
+COPY --chown=node:node --from=builder /app/apps/server/node_modules /app/apps/server/node_modules
 
 # Copy package manifests
-COPY --from=builder /app/package.json /app/bun.lock /app/
-COPY --from=builder /app/apps/server/package.json /app/apps/server/
+COPY --chown=node:node --from=builder /app/package.json /app/bun.lock /app/
+COPY --chown=node:node --from=builder /app/apps/server/package.json /app/apps/server/
 
 # Copy compiled files, static templates & catalog assets
-COPY --from=builder /app/apps/server/dist ./dist
-COPY --from=builder /app/apps/server/static ./static
-COPY --from=builder /app/apps/server/src/vakaa-products.csv ./dist/vakaa-products.csv
-
-# Ensure correct permissions for the non-root node user
-RUN chown -R node:node /app
+COPY --chown=node:node --from=builder /app/apps/server/dist ./dist
+COPY --chown=node:node --from=builder /app/apps/server/static ./static
+COPY --chown=node:node --from=builder /app/apps/server/src/vakaa-products.csv ./dist/vakaa-products.csv
 
 USER node
 
