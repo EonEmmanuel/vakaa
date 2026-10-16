@@ -21,15 +21,31 @@ export function normalizeAssetUrl(url?: string | null): string {
     normalized = normalized.replace('.r2.dev', '.r2.dev/');
   }
 
-  // Reroute inaccessible R2 dev URLs to the local Vendure asset server
+  const serverPort = process.env.PORT || '3000';
+  const vendureHost =
+    process.env.NEXT_PUBLIC_VENDURE_HOST ||
+    process.env.NEXT_PUBLIC_VENDURE_SHOP_API_URL?.replace(/\/shop-api\/?$/, '') ||
+    (process.env.NODE_ENV === 'production' ? 'https://api.vakaa.online' : `http://localhost:${serverPort}`);
+
+  // Reroute inaccessible R2 dev URLs to the Vendure asset server
   if (normalized.includes('.r2.dev/')) {
     const parts = normalized.split('.r2.dev/');
     const afterR2 = parts[1];
     if (afterR2) {
-      const serverPort = process.env.PORT || '3000';
-      const vendureHost = process.env.NEXT_PUBLIC_VENDURE_HOST || `http://localhost:${serverPort}`;
       return `${vendureHost.replace(/\/$/, '')}/assets/${afterR2.replace(/^\//, '')}`;
     }
+  }
+
+  // Rewrite localhost:3000 URLs to the live backend host in production
+  if (normalized.includes('localhost:3000') || normalized.includes('127.0.0.1:3000')) {
+    if (process.env.NODE_ENV === 'production' || process.env.NEXT_PUBLIC_VENDURE_HOST || process.env.NEXT_PUBLIC_VENDURE_SHOP_API_URL) {
+      normalized = normalized.replace(/^https?:\/\/(localhost|127\.0\.0\.1):3000/, vendureHost.replace(/\/$/, ''));
+    }
+  }
+
+  // Rewrite relative asset paths
+  if (normalized.startsWith('/assets/')) {
+    normalized = `${vendureHost.replace(/\/$/, '')}${normalized}`;
   }
 
   return normalized;
