@@ -1,82 +1,88 @@
-'use client';
+import { Truck, Moon, ShieldCheck, Leaf } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
+import { getRouteLocale } from '@/platform/i18n/server';
 
-import { motion } from 'framer-motion';
-import { Gem, Palette, Shield, Globe } from 'lucide-react';
+export async function TrustBar() {
+    const locale = await getRouteLocale();
+    const t = await getTranslations({ locale, namespace: 'Home' });
 
-export function TrustBar() {
-    const pillars = [
+    const tiles = [
         {
-            icon: Shield,
-            title: "Livraison Express Sécurisée",
-            description: "Coursier 24-48h & DHL Express Monde",
+            icon: Truck,
+            statNum: '48',
+            statUnit: 'h',
+            title: t('trust.tile1Title'),
+            desc: t('trust.tile1Desc'),
+            bgClass: 'bg-[#dbe3ee] dark:bg-[#1f2833]',
         },
         {
-            icon: Gem,
-            title: "Haute Maroquinerie d'Art",
-            description: "Cuir tanné végétal et raphia sauvage",
+            icon: Moon,
+            statNum: '30',
+            statUnit: ' ' + (locale === 'fr' ? 'jours' : 'days'),
+            title: t('trust.tile2Title'),
+            desc: t('trust.tile2Desc'),
+            bgClass: 'bg-[#efded7] dark:bg-[#2b1f1d]',
         },
         {
-            icon: Globe,
-            title: "Retours Gracieux 14 Jours",
-            description: "Échanges et retours garantis",
+            icon: ShieldCheck,
+            statNum: '10',
+            statUnit: ' ' + (locale === 'fr' ? 'ans' : 'years'),
+            title: t('trust.tile3Title'),
+            desc: t('trust.tile3Desc'),
+            bgClass: 'bg-[#f1e7c6] dark:bg-[#2c281a]',
         },
         {
-            icon: Palette,
-            title: "Conciergerie Dédiée 7j/7",
-            description: "Assistance sur mesure",
+            icon: Leaf,
+            statNum: '100',
+            statUnit: '%',
+            title: t('trust.tile4Title'),
+            desc: t('trust.tile4Desc'),
+            bgClass: 'bg-[#dbe4d3] dark:bg-[#1c271e]',
         },
     ];
 
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: { staggerChildren: 0.1 }
-        }
-    };
-
-    const itemVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: { 
-            opacity: 1, 
-            y: 0, 
-            transition: { duration: 0.6, ease: [0.32, 0.72, 0, 1] as const } 
-        }
-    };
-
     return (
-        <section className="py-12 sm:py-16 bg-[#FAF8F5] border-y border-[#E7DED0]">
-            <div className="vakaa-container">
-                <motion.div 
-                    variants={containerVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, margin: "-100px" }}
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0"
-                >
-                    {pillars.map((pillar, idx) => {
-                        const Icon = pillar.icon;
+        <section className="px-3 sm:px-5 bg-[#f2efe9] dark:bg-[#151413] pt-14 sm:pt-24 pb-14 sm:pb-24">
+            <div className="max-w-[1720px] mx-auto">
+                {/* ═══ Header: The Promise ═══ */}
+                <div className="mb-7 sm:mb-12 max-w-2xl">
+                    <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#8C6D23] dark:text-[#D4A43C] font-semibold">
+                        {t('trust.eyebrow')}
+                    </p>
+                    <h2 className="font-display mt-2 text-[clamp(2.15rem,4.5vw,3.75rem)] font-bold text-[#1c1b18] dark:text-[#fbfaf7] tracking-tight leading-[1.05]">
+                        {t('trust.title')}
+                    </h2>
+                </div>
+
+                {/* ═══ 4 Bento Promise Cards (Exact KVIST Grid & Tokens) ═══ */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+                    {tiles.map((tile, idx) => {
+                        const Icon = tile.icon;
                         return (
-                            <motion.div
+                            <div
                                 key={idx}
-                                variants={itemVariants}
-                                className={`flex flex-col items-center text-center px-4 ${
-                                    idx !== pillars.length - 1 ? 'lg:border-r lg:border-[#E7DED0]' : ''
-                                }`}
+                                className={`group flex h-full flex-col justify-between gap-6 rounded-[26px] p-5 sm:p-7 ${tile.bgClass} border border-black/5 dark:border-white/5 shadow-tile min-h-[220px] sm:min-h-[260px] transition-all duration-300 hover:shadow-lift`}
                             >
-                                <div className="size-12 rounded-lg bg-[#F3EFE9] flex items-center justify-center mb-4">
-                                    <Icon className="w-5 h-5 text-[#A66B2D]" />
+                                <span className="grid size-11 sm:size-12 place-items-center rounded-2xl bg-white/90 dark:bg-white/10 text-[#1c1b18] dark:text-[#fbfaf7] shadow-xs">
+                                    <Icon className="size-5 stroke-[2]" />
+                                </span>
+
+                                <div>
+                                    <p className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-[#1c1b18] dark:text-[#fbfaf7]">
+                                        <span className="tabular-nums">{tile.statNum}</span>
+                                        <span className="text-lg sm:text-2xl font-semibold">{tile.statUnit}</span>
+                                    </p>
+                                    <p className="mt-2 sm:mt-3 font-semibold text-[15.5px] sm:text-[16.5px] text-[#1c1b18] dark:text-[#fbfaf7]">
+                                        {tile.title}
+                                    </p>
+                                    <p className="mt-1 text-[13px] sm:text-[13.5px] leading-snug text-[#57544c] dark:text-[#a6a29a]">
+                                        {tile.desc}
+                                    </p>
                                 </div>
-                                <h3 className="font-sans text-sm font-bold text-[#1D120A] tracking-tight mb-2">
-                                    {pillar.title}
-                                </h3>
-                                <p className="text-xs text-[#3A2418]/70 leading-relaxed max-w-[200px]">
-                                    {pillar.description}
-                                </p>
-                            </motion.div>
+                            </div>
                         );
                     })}
-                </motion.div>
+                </div>
             </div>
         </section>
     );

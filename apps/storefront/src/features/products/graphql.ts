@@ -3,9 +3,14 @@ import {graphql} from '@/platform/vendure/graphql';
 export const ProductCardFragment = graphql(`
     fragment ProductCard on SearchResult {
         productId
+        productVariantId
         productName
         slug
         productAsset {
+            id
+            preview
+        }
+        productVariantAsset {
             id
             preview
         }
@@ -35,12 +40,27 @@ export const GetProductDetailQuery = graphql(`
                 preview
                 source
             }
+            customFields {
+                material
+                leatherOrigin
+                dimensions
+                strapDrop
+                weight
+                artisanOrigin
+                careInstructions
+                isLimitedEdition
+                curatorBadge
+            }
             variants {
                 id
                 name
                 sku
                 priceWithTax
                 stockLevel
+                customFields {
+                    allowPreOrder
+                    preOrderLeadTime
+                }
                 options {
                     id
                     code

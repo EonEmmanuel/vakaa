@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { X, Check, ShoppingBag, ShieldCheck, ArrowRight, Truck } from 'lucide-react';
 import { addToCart, addProductToCartBySlug } from '@/features/products/add-to-cart';
+import { useCart } from '@/features/cart/context/cart-context';
 
 export interface QuickBuyProduct {
     id?: string;
@@ -30,6 +31,7 @@ interface QuickBuyDrawerProps {
 
 export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps) {
     const router = useRouter();
+    const cart = useCart();
     const [selectedFinishIdx, setSelectedFinishIdx] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -83,15 +85,15 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
     const handleAddToCart = async () => {
         setIsSubmitting(true);
         try {
-            const res = product.variantId
-                ? await addToCart(product.variantId, quantity)
-                : await addProductToCartBySlug(product.slug, quantity);
-
-            if (res.success) {
-                setIsSuccess(true);
-            } else {
-                setIsSuccess(true);
-            }
+            await cart.addItem({
+                variantId: product.variantId,
+                slug: product.slug,
+                name: product.name,
+                priceWithTax: product.price,
+                assetPreview: product.imageUrl,
+                quantity,
+            });
+            setIsSuccess(true);
         } catch {
             setIsSuccess(true);
         } finally {
@@ -118,12 +120,12 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                 role="dialog"
                 aria-modal="true"
                 aria-label={`Achat rapide: ${product.name}`}
-                className="relative z-10 w-full max-w-md bg-[#FAF8F5] text-[#1D120A] shadow-2xl h-full flex flex-col justify-between overflow-y-auto transform transition-transform duration-400 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none"
+                className="relative z-10 w-full max-w-md bg-[#f2efe9] text-[#1c1b18] shadow-2xl h-full flex flex-col justify-between overflow-y-auto transform transition-transform duration-400 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none"
             >
                 {/* Drawer Header */}
-                <div className="sticky top-0 z-20 flex items-center justify-between p-6 bg-[#FAF8F5]/90 backdrop-blur-md border-b border-[#E7DED0]">
+                <div className="sticky top-0 z-20 flex items-center justify-between p-6 bg-[#f2efe9]/90 backdrop-blur-md border-b border-[#e2ddd2]">
                     <div>
-                        <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#A66B2D]">
+                        <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#D4A43C]">
                             Acquisition Immédiate
                         </span>
                     </div>
@@ -131,7 +133,7 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                         type="button"
                         onClick={onClose}
                         aria-label="Fermer la vue rapide"
-                        className="size-8 rounded-lg flex items-center justify-center bg-[#F3EFE9] text-[#1D120A] hover:bg-[#EAE2D7] active:scale-95 transition-all cursor-pointer"
+                        className="size-8 rounded-lg flex items-center justify-center bg-[#fbfaf7] border border-[#e2ddd2] text-[#1c1b18] hover:bg-white active:scale-95 transition-all cursor-pointer"
                     >
                         <X className="size-4" />
                     </button>
@@ -140,7 +142,7 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                 {/* Drawer Body */}
                 <div className="p-6 space-y-6 flex-1">
                     {/* Visual Pedestal */}
-                    <div className="relative aspect-[4/4] w-full rounded-2xl overflow-hidden bg-gradient-to-b from-[#F7F4EE] via-[#EFE9DF] to-[#E6DED2] ring-1 ring-[#E7DED0]/80 shadow-[inset_0_2px_6px_rgba(29,18,10,0.04)]">
+                    <div className="relative aspect-[4/4] w-full rounded-2xl overflow-hidden bg-[#fbfaf7] border border-[#e2ddd2] shadow-sm">
                         <Image
                             src={currentImage}
                             alt={product.name}
@@ -153,25 +155,25 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
 
                     {/* Product Identifiers */}
                     <div className="space-y-1.5">
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#A66B2D]">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#D4A43C]">
                             Maroquinerie d&apos;Art • Bolgatanga
                         </p>
-                        <h3 className="font-sans text-xl sm:text-2xl font-bold text-[#1D120A] tracking-tight">
+                        <h3 className="font-display text-xl sm:text-2xl font-bold text-[#1c1b18] tracking-tight">
                             {product.name}
                         </h3>
-                        <p className="font-sans text-lg font-bold text-[#1D120A] pt-0.5">
+                        <p className="font-mono text-lg font-bold text-[#1c1b18] pt-0.5">
                             {formatPrice(product.price, product.currencyCode)}
                         </p>
                     </div>
 
                     {/* Interactive Leather Finishes / Swatches */}
                     {product.finishes && product.finishes.length > 0 && (
-                        <div className="space-y-2.5 pt-2 border-t border-[#E7DED0]">
+                        <div className="space-y-2.5 pt-2 border-t border-[#e2ddd2]">
                             <div className="flex items-center justify-between text-xs">
-                                <span className="font-semibold text-[#1D120A]">
+                                <span className="font-semibold text-[#1c1b18]">
                                     Finition Sélectionnée :
                                 </span>
-                                <span className="font-medium text-[#A66B2D]">
+                                <span className="font-medium text-[#D4A43C]">
                                     {currentFinishName}
                                 </span>
                             </div>
@@ -184,8 +186,8 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                                         onClick={() => setSelectedFinishIdx(idx)}
                                         className={`group relative size-8 sm:size-9 rounded-md flex items-center justify-center transition-all duration-200 cursor-pointer ${
                                             selectedFinishIdx === idx
-                                                ? 'ring-2 ring-[#D4A43C] ring-offset-2 ring-offset-[#FAF8F5] scale-105'
-                                                : 'ring-1 ring-[#E7DED0] hover:scale-105'
+                                                ? 'ring-2 ring-[#D4A43C] ring-offset-2 ring-offset-[#f2efe9] scale-105'
+                                                : 'ring-1 ring-[#e2ddd2] hover:scale-105'
                                         }`}
                                         title={finish.name}
                                     >
@@ -203,27 +205,27 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                     )}
 
                     {/* Quantity Stepper & Limited Edition Counter */}
-                    <div className="pt-2 border-t border-[#E7DED0] space-y-3">
+                    <div className="pt-2 border-t border-[#e2ddd2] space-y-3">
                         <div className="flex items-center justify-between">
-                            <span className="text-xs font-semibold text-[#1D120A]">
+                            <span className="text-xs font-semibold text-[#1c1b18]">
                                 Quantité :
                             </span>
-                            <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-lg ring-1 ring-[#E7DED0]">
+                            <div className="flex items-center gap-3 bg-[#fbfaf7] px-3 py-1.5 rounded-lg border border-[#e2ddd2]">
                                 <button
                                     type="button"
                                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                                     disabled={quantity <= 1}
-                                    className="text-sm font-bold text-[#1D120A] disabled:opacity-30 cursor-pointer"
+                                    className="text-sm font-bold text-[#1c1b18] disabled:opacity-30 cursor-pointer"
                                 >
                                     -
                                 </button>
-                                <span className="text-xs font-bold tabular-nums min-w-[14px] text-center">
+                                <span className="text-xs font-bold tabular-nums font-mono min-w-[14px] text-center">
                                     {quantity}
                                 </span>
                                 <button
                                     type="button"
                                     onClick={() => setQuantity((q) => q + 1)}
-                                    className="text-sm font-bold text-[#1D120A] cursor-pointer"
+                                    className="text-sm font-bold text-[#1c1b18] cursor-pointer"
                                 >
                                     +
                                 </button>
@@ -250,20 +252,20 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                     )}
 
                     {/* Atelier Assurances */}
-                    <div className="pt-4 border-t border-[#E7DED0] space-y-2">
-                        <div className="flex items-center gap-2 text-[11px] text-[#3A2418]/80">
-                            <Truck className="size-3.5 text-[#A66B2D]" />
+                    <div className="pt-4 border-t border-[#e2ddd2] space-y-2">
+                        <div className="flex items-center gap-2 text-[11px] text-[#57544c]">
+                            <Truck className="size-3.5 text-[#D4A43C]" />
                             <span>Livraison 24-48h à Douala & Yaoundé, DHL Monde</span>
                         </div>
-                        <div className="flex items-center gap-2 text-[11px] text-[#3A2418]/80">
-                            <ShieldCheck className="size-3.5 text-[#A66B2D]" />
+                        <div className="flex items-center gap-2 text-[11px] text-[#57544c]">
+                            <ShieldCheck className="size-3.5 text-[#D4A43C]" />
                             <span>14 jours de retours gracieux et garantie authenticité</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Drawer Footer Actions */}
-                <div className="p-6 bg-white border-t border-[#E7DED0] space-y-2.5">
+                <div className="p-6 bg-[#fbfaf7] border-t border-[#e2ddd2] space-y-2.5">
                     {isSuccess ? (
                         <div className="space-y-2">
                             <button
@@ -272,7 +274,7 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                                     router.push('/cart');
                                     onClose();
                                 }}
-                                className="w-full py-3.5 px-6 rounded-xl bg-[#1D120A] hover:bg-[#3A2418] text-[#FAF8F5] text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+                                className="w-full py-3.5 px-6 rounded-xl bg-[#1c1b18] hover:bg-[#3A2418] text-[#fbfaf7] text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-sm flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
                             >
                                 <ShoppingBag className="size-4" />
                                 <span>Voir Mon Panier & Commander</span>
@@ -281,7 +283,7 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className="w-full py-2.5 text-center text-xs font-semibold text-[#1D120A]/70 hover:text-[#1D120A] cursor-pointer"
+                                className="w-full py-2.5 text-center text-xs font-semibold text-[#57544c] hover:text-[#1c1b18] cursor-pointer"
                             >
                                 Continuer à explorer
                             </button>
@@ -292,7 +294,7 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                                 type="button"
                                 onClick={handleAddToCart}
                                 disabled={isSubmitting}
-                                className="w-full py-3.5 px-6 rounded-xl bg-[#1D120A] hover:bg-[#3A2418] disabled:opacity-75 text-[#FAF8F5] text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+                                className="w-full py-3.5 px-6 rounded-xl bg-[#1c1b18] hover:bg-[#3A2418] disabled:opacity-75 text-[#fbfaf7] text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-sm flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
                             >
                                 <ShoppingBag className="size-4" />
                                 <span>{isSubmitting ? 'Réservation en cours...' : 'Ajouter au Panier'}</span>
@@ -301,7 +303,7 @@ export function QuickBuyDrawer({ isOpen, onClose, product }: QuickBuyDrawerProps
                             <button
                                 type="button"
                                 onClick={handleDirectCheckout}
-                                className="w-full py-2.5 px-4 rounded-xl border border-[#1D120A]/20 hover:border-[#D4A43C] text-[#1D120A] hover:text-[#A66B2D] text-xs font-bold uppercase tracking-wider transition-all duration-200 bg-white/60 flex items-center justify-center gap-1.5 cursor-pointer"
+                                className="w-full py-2.5 px-4 rounded-xl border border-[#e2ddd2] hover:border-[#D4A43C] text-[#1c1b18] hover:text-[#D4A43C] text-xs font-bold uppercase tracking-wider transition-all duration-200 bg-[#fbfaf7] flex items-center justify-center gap-1.5 cursor-pointer"
                             >
                                 <span>Détails Complets & Fiche Pièce</span>
                                 <ArrowRight className="size-3.5" />

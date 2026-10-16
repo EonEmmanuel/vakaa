@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useTransition } from 'react';
 import { logoutAction } from '@/features/authentication/logout';
@@ -19,7 +19,7 @@ export default function LogoutPage() {
 
     return (
         <div className="bg-white dark:bg-[#160E08] border border-[#EAE6DF] dark:border-[#3A291C] rounded-xl p-8 sm:p-12 shadow-xs text-center max-w-xl mx-auto space-y-6">
-            <div className="mx-auto w-16 h-16 rounded-full bg-[#FAF8F5] dark:bg-[#22160F] border border-[#EAE6DF] dark:border-[#3A291C] flex items-center justify-center text-[#EAA838]">
+            <div className="mx-auto w-16 h-16 rounded-full bg-[#FAF8F5] dark:bg-[#22160F] border border-[#EAE6DF] dark:border-[#3A291C] flex items-center justify-center text-[#D4A43C]">
                 <LogOut className="w-8 h-8 ml-0.5" />
             </div>
 
@@ -36,7 +36,7 @@ export default function LogoutPage() {
                 <Button
                     onClick={handleLogout}
                     disabled={isPending}
-                    className="w-full sm:w-auto min-w-[180px] h-11 bg-[#0F291E] hover:bg-[#1A3D2E] text-white rounded-xl font-medium shadow-xs"
+                    className="w-full sm:w-auto min-w-[180px] h-11 bg-[#1D120A] hover:bg-[#1D120A]/90 text-[#FAF8F5] rounded-xl font-medium shadow-xs"
                 >
                     {isPending ? (
                         <>

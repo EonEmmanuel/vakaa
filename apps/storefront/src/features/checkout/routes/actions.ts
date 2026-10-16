@@ -1,11 +1,22 @@
 'use server';
 
-import {mutate} from '@/platform/vendure/api';
-import {SetOrderShippingAddressMutation, SetOrderBillingAddressMutation, SetOrderShippingMethodMutation, AddPaymentToOrderMutation, TransitionOrderToStateMutation, SetCustomerForOrderMutation} from '@/features/checkout/graphql';
+import {mutate, query} from '@/platform/vendure/api';
+import {
+    SetOrderShippingAddressMutation,
+    SetOrderBillingAddressMutation,
+    SetOrderShippingAndBillingAddressMutation,
+    SetOrderShippingMethodMutation,
+    AddPaymentToOrderMutation,
+    TransitionOrderToStateMutation,
+    SetCustomerForOrderMutation,
+    GetEligibleShippingMethodsQuery,
+} from '@/features/checkout/graphql';
 import {CreateCustomerAddressMutation} from '@/features/account/graphql';
-import {revalidatePath, updateTag} from 'next/cache';
-import {redirect} from '@/platform/i18n/navigation';
-import {getLocale} from 'next-intl/server';
+import {updateTag} from 'next/cache';
+import {setAuthToken} from '@/platform/vendure/auth-token';
+import {getActiveCurrencyCode} from '@/features/currency/currency-server';
+import type {ShippingAddress, BillingAddress, CheckoutOrder} from './types';
+import type {ShippingMethod} from './checkout-provider';
 
 interface AddressInput {
     fullName: string;
@@ -19,45 +30,119 @@ interface AddressInput {
     company?: string;
 }
 
+export type SetShippingAddressResult = {
+    success: true;
+    shippingAddress: ShippingAddress;
+    billingAddress?: BillingAddress;
+    shippingMethods?: ShippingMethod[];
+};
+
 export async function setShippingAddress(
     shippingAddress: AddressInput,
     useSameForBilling: boolean
-) {
-    const shippingResult = await mutate(
-        SetOrderShippingAddressMutation,
-        {input: shippingAddress},
-        {useAuthToken: true}
-    );
-
-    if (shippingResult.data.setOrderShippingAddress.__typename !== 'Order') {
-        throw new Error('Failed to set shipping address');
-    }
+): Promise<SetShippingAddressResult> {
+    let shippingOrder: any;
+    let billingOrder: any;
 
     if (useSameForBilling) {
-        await mutate(
-            SetOrderBillingAddressMutation,
+        const result = await mutate(
+            SetOrderShippingAndBillingAddressMutation,
+            {
+                shippingInput: shippingAddress,
+                billingInput: shippingAddress,
+            },
+            {useAuthToken: true}
+        );
+
+        if (result.token) {
+            await setAuthToken(result.token);
+        }
+
+        shippingOrder = result.data?.setOrderShippingAddress;
+        billingOrder = result.data?.setOrderBillingAddress;
+
+        if (!shippingOrder || shippingOrder.__typename !== 'Order') {
+            throw new Error('Impossible d\'enregistrer l\'adresse de livraison. Veuillez réessayer.');
+        }
+        if (!billingOrder || billingOrder.__typename !== 'Order') {
+            throw new Error('Impossible d\'enregistrer l\'adresse de facturation. Veuillez réessayer.');
+        }
+    } else {
+        const result = await mutate(
+            SetOrderShippingAddressMutation,
             {input: shippingAddress},
             {useAuthToken: true}
         );
+
+        if (result.token) {
+            await setAuthToken(result.token);
+        }
+
+        shippingOrder = result.data?.setOrderShippingAddress;
+        if (!shippingOrder || shippingOrder.__typename !== 'Order') {
+            throw new Error('Impossible d\'enregistrer l\'adresse de livraison. Veuillez réessayer.');
+        }
     }
 
-    const locale = await getLocale();
-    revalidatePath(`/${locale}/checkout`);
+    // Refresh eligible shipping methods for the updated shipping destination without full-page revalidation
+    let shippingMethods: ShippingMethod[] | undefined;
+    try {
+        const currencyCode = await getActiveCurrencyCode();
+        const methodsRes = await query(
+            GetEligibleShippingMethodsQuery,
+            {},
+            { useAuthToken: true, currencyCode, timeoutMs: 3000 }
+        );
+        if (methodsRes.data?.eligibleShippingMethods) {
+            shippingMethods = methodsRes.data.eligibleShippingMethods as ShippingMethod[];
+        }
+    } catch {
+        // Non-blocking fallback if query times out or fails
+    }
+
+    return {
+        success: true,
+        shippingAddress: shippingOrder.shippingAddress,
+        billingAddress: useSameForBilling ? shippingOrder.shippingAddress : billingOrder?.billingAddress,
+        shippingMethods,
+    };
 }
 
-export async function setShippingMethod(shippingMethodId: string) {
+export type SetShippingMethodResult = {
+    success: true;
+    shippingWithTax: number;
+    totalWithTax: number;
+    shippingLines: CheckoutOrder['shippingLines'];
+};
+
+export async function setShippingMethod(shippingMethodId: string): Promise<SetShippingMethodResult> {
     const result = await mutate(
         SetOrderShippingMethodMutation,
         {shippingMethodId: [shippingMethodId]},
         {useAuthToken: true}
     );
 
-    if (result.data.setOrderShippingMethod.__typename !== 'Order') {
-        throw new Error('Failed to set shipping method');
+    if (result.token) {
+        await setAuthToken(result.token);
     }
 
-    const locale = await getLocale();
-    revalidatePath(`/${locale}/checkout`);
+    const order = result.data?.setOrderShippingMethod;
+    if (!order || order.__typename !== 'Order') {
+        throw new Error('Impossible de sélectionner ce mode de livraison. Veuillez réessayer.');
+    }
+
+    return {
+        success: true,
+        shippingWithTax: order.shippingWithTax,
+        totalWithTax: order.totalWithTax,
+        shippingLines: (order.shippingLines || []).map((line) => ({
+            ...line,
+            shippingMethod: {
+                ...line.shippingMethod,
+                description: line.shippingMethod.description ?? '',
+            },
+        })) as CheckoutOrder['shippingLines'],
+    };
 }
 
 export async function createCustomerAddress(address: AddressInput) {
@@ -67,12 +152,14 @@ export async function createCustomerAddress(address: AddressInput) {
         {useAuthToken: true}
     );
 
+    if (result.token) {
+        await setAuthToken(result.token);
+    }
+
     if (!result.data.createCustomerAddress) {
         throw new Error('Failed to create customer address');
     }
 
-    const locale = await getLocale();
-    revalidatePath(`/${locale}/checkout`);
     return result.data.createCustomerAddress;
 }
 
@@ -83,8 +170,17 @@ export async function transitionToArrangingPayment() {
         {useAuthToken: true}
     );
 
-    if (result.data.transitionOrderToState?.__typename === 'OrderStateTransitionError') {
-        const errorResult = result.data.transitionOrderToState;
+    if (result.token) {
+        await setAuthToken(result.token);
+    }
+
+    const transitionRes = result.data?.transitionOrderToState;
+    if (!transitionRes) {
+        throw new Error('Impossible d\'initialiser l\'état du paiement. Veuillez réessayer.');
+    }
+
+    if (transitionRes.__typename === 'OrderStateTransitionError') {
+        const errorResult = transitionRes;
         // If the order is already in ArrangingPayment state, proceed safely without error
         if (errorResult.fromState === 'ArrangingPayment') {
             return;
@@ -93,19 +189,22 @@ export async function transitionToArrangingPayment() {
             `Failed to transition order state: ${errorResult.errorCode} - ${errorResult.message}`
         );
     }
-
-    const locale = await getLocale();
-    revalidatePath(`/${locale}/checkout`);
 }
+
+export type PlaceOrderResult = {
+    success: true;
+    orderCode: string;
+    redirectUrl?: string | null;
+};
 
 export async function placeOrder(
     paymentMethodCode: string,
     paymentMetadata?: Record<string, unknown>
-) {
-    // First, transition the order to ArrangingPayment state
+): Promise<PlaceOrderResult> {
+    // 1. Transition the order to ArrangingPayment state
     await transitionToArrangingPayment();
 
-    // Prepare metadata based on payment method
+    // 2. Prepare metadata based on payment method
     const metadata: Record<string, unknown> = {
         ...(paymentMetadata || {}),
     };
@@ -117,7 +216,7 @@ export async function placeOrder(
         metadata.shouldErrorOnSettle = false;
     }
 
-    // Add payment to the order
+    // 3. Add payment to the order
     const result = await mutate(
         AddPaymentToOrderMutation,
         {
@@ -129,19 +228,29 @@ export async function placeOrder(
         {useAuthToken: true}
     );
 
-    if (result.data.addPaymentToOrder.__typename !== 'Order') {
-        const errorResult = result.data.addPaymentToOrder;
-        const detailedMessage =
-            (errorResult as any).paymentErrorMessage || errorResult.message;
-        throw new Error(
-            `Failed to place order: ${errorResult.errorCode} - ${detailedMessage}`
-        );
+    if (result.token) {
+        await setAuthToken(result.token);
     }
 
-    const order = result.data.addPaymentToOrder;
+    const orderResult = result.data?.addPaymentToOrder;
+    if (!orderResult || orderResult.__typename !== 'Order') {
+        if (orderResult) {
+            const errorResult = orderResult;
+            const detailedMessage =
+                ('paymentErrorMessage' in errorResult && typeof (errorResult as Record<string, unknown>).paymentErrorMessage === 'string'
+                    ? ((errorResult as Record<string, unknown>).paymentErrorMessage as string)
+                    : null) || errorResult.message;
+            throw new Error(
+                `Failed to place order: ${errorResult.errorCode} - ${detailedMessage}`
+            );
+        }
+        throw new Error('Le serveur n\'a pas répondu lors de la validation du paiement. Veuillez vérifier votre connexion et réessayer.');
+    }
+
+    const order = orderResult;
     const orderCode = order.code;
 
-    // Update the cart tag to immediately invalidate cached cart data
+    // Invalidate cached cart and active-order tags
     updateTag('cart');
     updateTag('active-order');
 
@@ -149,24 +258,26 @@ export async function placeOrder(
     const payments = order.payments;
     const latestPayment = payments && payments.length > 0 ? payments[payments.length - 1] : null;
 
-    let parsedMetadata = latestPayment?.metadata as any;
+    let parsedMetadata: unknown = latestPayment?.metadata;
     if (typeof parsedMetadata === 'string') {
         try {
             parsedMetadata = JSON.parse(parsedMetadata);
         } catch {}
     }
-    const paymentLink = parsedMetadata?.link || parsedMetadata?.public?.link;
+    const metaRecord = typeof parsedMetadata === 'object' && parsedMetadata !== null ? (parsedMetadata as Record<string, unknown>) : null;
+    const metaPublic = metaRecord && typeof metaRecord.public === 'object' && metaRecord.public !== null ? (metaRecord.public as Record<string, unknown>) : null;
+    const paymentLink = (typeof metaRecord?.link === 'string' ? metaRecord.link : null) || (typeof metaPublic?.link === 'string' ? metaPublic.link : null);
 
-    if (
-        paymentMethodCode === 'flutterwave' &&
-        typeof paymentLink === 'string' &&
-        (paymentLink.startsWith('http://') || paymentLink.startsWith('https://'))
-    ) {
-        return { redirectUrl: paymentLink };
-    }
-
-    const locale = await getLocale();
-    redirect({href: `/order-confirmation/${orderCode}`, locale});
+    return {
+        success: true,
+        orderCode,
+        redirectUrl:
+            paymentMethodCode === 'flutterwave' &&
+            typeof paymentLink === 'string' &&
+            (paymentLink.startsWith('http://') || paymentLink.startsWith('https://'))
+                ? paymentLink
+                : null,
+    };
 }
 
 interface GuestCustomerInput {
@@ -177,7 +288,16 @@ interface GuestCustomerInput {
 }
 
 export type SetCustomerForOrderResult =
-    | { success: true }
+    | {
+          success: true;
+          customer?: {
+              id: string;
+              firstName: string;
+              lastName: string;
+              emailAddress: string;
+              phoneNumber?: string | null;
+          };
+      }
     | { success: false; errorCode: 'EMAIL_CONFLICT'; message: string }
     | { success: false; errorCode: 'GUEST_CHECKOUT_DISABLED'; message: string }
     | { success: false; errorCode: 'NO_ACTIVE_ORDER'; message: string }
@@ -192,13 +312,21 @@ export async function setCustomerForOrder(
         { useAuthToken: true }
     );
 
-    const response = result.data.setCustomerForOrder;
+    if (result.token) {
+        await setAuthToken(result.token);
+    }
+
+    const response = result.data?.setCustomerForOrder;
+    if (!response) {
+        return { success: false, errorCode: 'UNKNOWN', message: 'Le serveur n\'a pas répondu à temps. Veuillez réessayer.' };
+    }
 
     switch (response.__typename) {
         case 'Order': {
-            const locale = await getLocale();
-            revalidatePath(`/${locale}/checkout`);
-            return { success: true };
+            return {
+                success: true,
+                customer: response.customer || undefined,
+            };
         }
         case 'AlreadyLoggedInError':
             return { success: true };

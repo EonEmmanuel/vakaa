@@ -32,6 +32,7 @@ export class SebpayClient {
                 method: 'POST',
                 headers,
                 body: JSON.stringify(request),
+                signal: AbortSignal.timeout(15000),
             });
 
             const data = (await response.json()) as SebpayCollectionResponse;
@@ -62,6 +63,7 @@ export class SebpayClient {
             const response = await fetch(url, {
                 method: 'GET',
                 headers,
+                signal: AbortSignal.timeout(15000),
             });
 
             const data = (await response.json()) as SebpayCollectionResponse;
@@ -90,7 +92,11 @@ export class SebpayClient {
         };
 
         try {
-            const response = await fetch(url, { method: 'GET', headers });
+            const response = await fetch(url, {
+                method: 'GET',
+                headers,
+                signal: AbortSignal.timeout(10000),
+            });
             const result = (await response.json()) as { success: boolean; data?: SebpayOperator[] };
             return result.data || [];
         } catch {
@@ -127,8 +133,10 @@ export class SebpayClient {
 
     private isMockActive(): boolean {
         if (this.options.mockMode === true) return true;
-        if (!this.options.publicKey || !this.options.secretKey) return true;
-        if (this.options.publicKey.includes('your_') || this.options.secretKey.includes('your_')) return true;
+        if (!this.options.publicKey || !this.options.secretKey) return this.options.isSandbox === true;
+        if (this.options.publicKey.includes('your_') || this.options.secretKey.includes('your_')) {
+            return this.options.isSandbox === true;
+        }
         return false;
     }
 

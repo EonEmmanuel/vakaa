@@ -5,7 +5,7 @@ import { getRouteLocale } from '@/platform/i18n/server';
 import { SearchResults } from "@/features/search/routes/search-results";
 import { SearchTerm, SearchTermSkeleton } from "@/features/search/routes/search-term";
 import { SearchResultsSkeleton } from "@/features/search/components/search-results-skeleton";
-import { TrustBar } from '@/site/home/trust-bar';
+import { TrustBar } from '@/components/shared/trust-bar';
 import { SITE_NAME, noIndexRobots } from '@/config/metadata';
 
 export async function generateMetadata({
@@ -31,7 +31,7 @@ export async function generateMetadata({
 
 export default async function SearchPage({ searchParams }: PageProps<'/[locale]/search'>) {
     return (
-        <div className="min-h-screen bg-[#FAF8F5] text-[#1D120A] flex flex-col">
+        <div className="min-h-screen bg-[#f2efe9] text-[#1c1b18] flex flex-col">
             {/* 1. Shop Hero Header (Breadcrumbs, Title & Decorative Accents) */}
             <Suspense fallback={<SearchTermSkeleton />}>
                 <SearchTerm searchParams={searchParams} />

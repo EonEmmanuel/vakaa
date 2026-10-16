@@ -1,4 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Geist:wght@300..700&family=Geist+Mono:wght@300..700&display=swap');
 @import "tailwindcss";
+@source "../../..";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
@@ -7,14 +9,33 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-jakarta), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-jakarta), var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), monospace;
+  --font-sans: var(--font-geist), "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-bricolage), "Bricolage Grotesque", Georgia, serif;
+  --font-display: var(--font-bricolage), "Bricolage Grotesque", "Geist", ui-sans-serif, sans-serif;
+  --font-mono: var(--font-geist-mono), "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-canvas: var(--background);
+  --color-surface: var(--card);
+  --color-ink: var(--foreground);
+  --color-ink-secondary: var(--muted-foreground);
+  --color-ink-faint: var(--faint-foreground);
+  --color-border-line: var(--border);
+
+  --color-sand: var(--sand);
+  --color-sage: var(--sage);
+  --color-linen: var(--linen);
+  --color-coffee: var(--coffee);
+  --color-blush: var(--blush);
+  --color-butter: var(--butter);
+  --color-stone: var(--stone);
+
   --color-pedestal: var(--pedestal);
   --color-gold: var(--gold);
   --color-gold-hover: var(--gold-hover);
+  --color-gold-light: var(--gold-light);
+  --color-gold-pressed: var(--gold-pressed);
   --color-bronze: var(--bronze);
+  --color-bronze-light: var(--bronze-light);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -60,44 +81,67 @@
   --ease-in-standard: cubic-bezier(0.4, 0, 1, 1);
   --ease-in-out-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+
+  --shadow-tile: 0 16px 36px -12px rgba(28, 27, 24, 0.08), 0 2px 6px -1px rgba(28, 27, 24, 0.04);
+  --shadow-lift: 0 26px 54px -14px rgba(28, 27, 24, 0.14), 0 6px 14px -2px rgba(28, 27, 24, 0.06);
 }
 
 :root {
-  --radius: 0.5rem;
-  --background: #FAF8F5;
-  --foreground: #1D120A;
-  --card: #FFFFFF;
-  --card-foreground: #1D120A;
-  --popover: #FFFFFF;
-  --popover-foreground: #1D120A;
-  --primary: #1D120A;
-  --primary-foreground: #FAF8F5;
-  --secondary: #F5EFEB;
-  --secondary-foreground: #1D120A;
-  --muted: #F5EFEB;
-  --muted-foreground: #6B5E55;
+  --radius: 0.625rem;
+  --background: #f2efe9;
+  --foreground: #1c1b18;
+  --card: #fbfaf7;
+  --card-foreground: #1c1b18;
+  --popover: #fbfaf7;
+  --popover-foreground: #1c1b18;
+  --primary: #1c1b18;
+  --primary-foreground: #fbfaf7;
+  --secondary: #ebe2d4;
+  --secondary-foreground: #1c1b18;
+  --muted: #ebe2d4;
+  --muted-foreground: #57544c;
+  --faint-foreground: #7d796f;
   --accent: #D4A43C;
+  --accent-light: #F7EECD;
   --accent-foreground: #1D120A;
-  --gold: #D4A43C;
-  --gold-hover: #BF9232;
-  --bronze: #A66B2D;
-  --destructive: #C53030;
-  --border: #E7DED0;
-  --input: #E7DED0;
+  --border: #e2ddd2;
+  --input: #e2ddd2;
   --ring: #D4A43C;
+
+  /* VAKAA Luxury Brand Palette */
+  --sand: #ebe2d4;
+  --sage: #dbe4d3;
+  --linen: #F8F4EE;
+  --coffee: #3A2418;
+  --blush: #efded7;
+  --butter: #f1e7c6;
+  --stone: #e5e2db;
+  --ink: #1D120A;
+  --ink-secondary: #57544c;
+  --ink-faint: #7d796f;
+  --canvas: #f2efe9;
+  --surface: #fbfaf7;
+
+  --pedestal: #ebe2d4;
+  --gold: #D4A43C;
+  --gold-hover: #c29330;
+  --gold-light: #F7EECD;
+  --gold-pressed: #A66B2D;
+  --bronze: #A66B2D;
+  --bronze-light: #7d796f;
+  --destructive: #c53030;
   --chart-1: #D4A43C;
-  --chart-2: #A66B2D;
-  --chart-3: #1D120A;
-  --chart-4: #2D7A46;
-  --chart-5: #B7791F;
-  --pedestal: #F3EFE9;
-  --sidebar: #FAF8F5;
-  --sidebar-foreground: #1D120A;
-  --sidebar-primary: #1D120A;
-  --sidebar-primary-foreground: #FAF8F5;
-  --sidebar-accent: #F5EFEB;
-  --sidebar-accent-foreground: #1D120A;
-  --sidebar-border: #E7DED0;
+  --chart-2: #57544c;
+  --chart-3: #1c1b18;
+  --chart-4: #2d7a46;
+  --chart-5: #7d796f;
+  --sidebar: #fbfaf7;
+  --sidebar-foreground: #1c1b18;
+  --sidebar-primary: #1c1b18;
+  --sidebar-primary-foreground: #fbfaf7;
+  --sidebar-accent: #ebe2d4;
+  --sidebar-accent-foreground: #1c1b18;
+  --sidebar-border: #e2ddd2;
   --sidebar-ring: #D4A43C;
 
   /* Motion Tokens */
@@ -114,41 +158,51 @@
 }
 
 .dark {
-  --background: #FAF8F5;
-  --foreground: #1D120A;
-  --card: #FFFFFF;
-  --card-foreground: #1D120A;
-  --popover: #FFFFFF;
-  --popover-foreground: #1D120A;
-  --primary: #1D120A;
-  --primary-foreground: #FAF8F5;
-  --secondary: #F5EFEB;
-  --secondary-foreground: #1D120A;
-  --muted: #F5EFEB;
-  --muted-foreground: #6B5E55;
+  --background: #151413;
+  --foreground: #fbfaf7;
+  --card: #1c1b19;
+  --card-foreground: #fbfaf7;
+  --popover: #1c1b19;
+  --popover-foreground: #fbfaf7;
+  --primary: #fbfaf7;
+  --primary-foreground: #151413;
+  --secondary: #272522;
+  --secondary-foreground: #fbfaf7;
+  --muted: #272522;
+  --muted-foreground: #a6a29a;
+  --faint-foreground: #7d796f;
   --accent: #D4A43C;
-  --accent-foreground: #1D120A;
-  --gold: #D4A43C;
-  --gold-hover: #BF9232;
-  --bronze: #A66B2D;
-  --destructive: #C53030;
-  --border: #E7DED0;
-  --input: #E7DED0;
+  --accent-light: #2A2114;
+  --accent-foreground: #140C06;
+  --border: #2e2c28;
+  --input: #2e2c28;
   --ring: #D4A43C;
-  --chart-1: #D4A43C;
-  --chart-2: #A66B2D;
-  --chart-3: #1D120A;
-  --chart-4: #2D7A46;
-  --chart-5: #B7791F;
-  --pedestal: #F3EFE9;
-  --sidebar: #FAF8F5;
-  --sidebar-foreground: #1D120A;
-  --sidebar-primary: #1D120A;
-  --sidebar-primary-foreground: #FAF8F5;
-  --sidebar-accent: #F5EFEB;
-  --sidebar-accent-foreground: #1D120A;
-  --sidebar-border: #E7DED0;
+  --pedestal: #22201d;
+  --sidebar: #1c1b19;
+  --sidebar-foreground: #fbfaf7;
+  --sidebar-primary: #fbfaf7;
+  --sidebar-primary-foreground: #151413;
+  --sidebar-accent: #272522;
+  --sidebar-accent-foreground: #fbfaf7;
+  --sidebar-border: #2e2c28;
   --sidebar-ring: #D4A43C;
+}
+
+/* Lenis Smooth Scroll Setup */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }
 
 @layer base {
@@ -166,18 +220,22 @@
   html {
     scrollbar-width: none;
     -ms-overflow-style: none;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
   body {
     @apply bg-background text-foreground font-sans antialiased selection:bg-accent/20 selection:text-foreground;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100vw;
   }
-  h1, h2, h3, h4, h5, h6 {
+  h1, h2, .font-display {
     font-family: var(--font-display);
-    letter-spacing: -0.04em;
+    letter-spacing: -0.03em;
+  }
+  h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+    letter-spacing: -0.01em;
   }
   .font-serif-heading, .font-serif {
     font-family: var(--font-serif);
@@ -195,19 +253,34 @@
   }
 }
 
-/* Global VAKAA luxury container and layout utilities */
+/* Global VAKAA luxury container and layout utilities (edge-to-edge layout matching KVIST architecture) */
 .vakaa-container {
   width: 100%;
-  max-width: 1440px;
+  max-width: 1720px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: clamp(1rem, 3.5vw, 5rem);
-  padding-right: clamp(1rem, 3.5vw, 5rem);
+  padding-left: clamp(0.75rem, 1.8vw, 1.5rem);
+  padding-right: clamp(0.75rem, 1.8vw, 1.5rem);
 }
 
 .vakaa-prose {
   max-width: 55ch;
   line-height: 1.7;
+}
+
+/* KVIST Luxury Shadows & Translucent Glass System */
+.shadow-tile {
+  box-shadow: 0 1px 0 rgba(28, 27, 24, 0.04), 0 14px 34px -20px rgba(28, 27, 24, 0.22);
+}
+:is(.dark *) .shadow-tile {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05), 0 14px 34px -20px rgba(0, 0, 0, 0.7);
+}
+
+.shadow-glass {
+  box-shadow: 0 10px 32px -10px rgba(28, 27, 24, 0.12), 0 1px 1px rgba(28, 27, 24, 0.04);
+}
+:is(.dark *) .shadow-glass {
+  box-shadow: 0 10px 32px -10px rgba(0, 0, 0, 0.6), 0 1px 1px rgba(255, 255, 255, 0.04);
 }
 
 /* Hide scrollbar utility class */
@@ -363,3 +436,48 @@
   }
 }
 
+@keyframes delivery-truck {
+  0% {
+    left: -44px;
+  }
+  100% {
+    left: calc(100% + 12px);
+  }
+}
+
+.animate-delivery-truck {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  animation: delivery-truck 6s linear infinite;
+  will-change: left;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-delivery-truck {
+    animation: none;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Lenis Smooth Inertial Scrolling Core Styles */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}

@@ -36,14 +36,14 @@ export function SortDropdown() {
 
     return (
         <div className="flex items-center gap-2">
-            <span className="text-xs sm:text-sm text-[#3A2418]/65 font-medium whitespace-nowrap hidden sm:inline">
+            <span className="text-xs sm:text-sm text-[#57544c] dark:text-[#a5a195] font-medium whitespace-nowrap hidden sm:inline">
                 {t('sortBy')} :
             </span>
             <Select value={currentSort} onValueChange={handleSortChange} items={sortOptions}>
-                <SelectTrigger className="w-[170px] sm:w-[190px] h-9 sm:h-10 rounded-full border border-[#E7DED0] bg-white text-xs sm:text-sm font-medium text-[#1D120A] shadow-xs focus:ring-1 focus:ring-[#D4A43C]">
+                <SelectTrigger className="w-[170px] sm:w-[190px] h-9 sm:h-10 rounded-full border border-[#e2ddd2] dark:border-[#2e2c28] bg-[#fbfaf7] dark:bg-[#1a1916] text-xs sm:text-sm font-medium text-[#1c1b18] dark:text-[#fbfaf7] shadow-xs focus:ring-1 focus:ring-[#D4A43C]">
                     <SelectValue placeholder={t('placeholder')} />
                 </SelectTrigger>
-                <SelectContent className="rounded-xl border-[#E7DED0] bg-white text-xs sm:text-sm">
+                <SelectContent className="rounded-xl border-[#e2ddd2] dark:border-[#2e2c28] bg-[#fbfaf7] dark:bg-[#1a1916] text-[#1c1b18] dark:text-[#fbfaf7] text-xs sm:text-sm">
                     {sortOptions.map((option) => (
                         <SelectItem key={option.value} value={option.value} className="cursor-pointer">
                             {option.label}

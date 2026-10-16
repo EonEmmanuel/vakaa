@@ -1,6 +1,8 @@
 {
   "Checkout": {
     "pageTitle": "Checkout",
+    "step": "Step",
+    "checkoutProgress": "Checkout progress",
     "steps": {
       "contact": "Contact",
       "address": "Address",
@@ -80,6 +82,10 @@
     "toBeCalculated": "To be calculated",
     "total": "Total",
     "item": "item",
-    "items": "items"
+    "items": "items",
+    "settlementCurrency": "Settlement in {currency}",
+    "sslSecured": "SSL encrypted secure checkout",
+    "paymentMethodsAccepted": "Mobile Money, Orange & MTN, Bank cards",
+    "trackedDelivery": "Insured delivery with tracking number"
   }
 }

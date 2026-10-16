@@ -3,6 +3,7 @@ import {
     ChannelService,
     LanguageCode,
     Logger,
+    Payment,
     PaymentMethod,
     PaymentMethodService,
     PaymentService,
@@ -52,7 +53,11 @@ export class FlutterwaveService implements OnApplicationBootstrap {
             .findOne({ where: { code: 'flutterwave' } });
 
         const isPlaceholder = (val?: string) =>
-            !val || val.includes('your-') || val.includes('your_') || val.includes('placeholder');
+            !val ||
+            val === 'vakaa_flw_secret_hash' ||
+            val.includes('your-') ||
+            val.includes('your_') ||
+            val.includes('placeholder');
 
         const activePublicKey: string =
             (!isPlaceholder(this.options.publicKey) ? this.options.publicKey : undefined) ||
@@ -153,8 +158,8 @@ export class FlutterwaveService implements OnApplicationBootstrap {
         const txRef = data.tx_ref;
 
         // Locate order payment in Vendure by transactionId or tx_ref
-        const payments = await this.connection.rawConnection
-            .getRepository('payment')
+        const payments = await this.connection
+            .getRepository(ctx, Payment)
             .createQueryBuilder('payment')
             .leftJoinAndSelect('payment.order', 'order')
             .where('payment.transactionId = :txId OR payment.transactionId = :txRef', {

@@ -26,10 +26,10 @@ export async function resetPasswordAction(prevState: { error?: string } | undefi
         password,
     });
 
-    const resetResult = result.data.resetPassword;
+    const resetResult = result.data?.resetPassword;
 
-    if (resetResult.__typename !== 'CurrentUser') {
-        return {error: resetResult.message};
+    if (!resetResult || resetResult.__typename !== 'CurrentUser') {
+        return {error: resetResult?.message || t('unexpectedError')};
     }
 
     // Store the token in a cookie if returned

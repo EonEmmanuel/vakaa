@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+import { normalizeAssetUrl } from '@/lib/utils';
 import { Suspense } from 'react';
 import { Link } from '@/platform/i18n/navigation';
 import { query } from '@/platform/vendure/api';
+import type { ResultOf } from '@/platform/vendure/graphql';
 import {SearchProductsQuery} from '@/features/search/graphql';
 import {GetCollectionProductsQuery} from '@/features/collections/graphql';
 import {ProductGrid} from '@/features/products/product-grid';
@@ -21,7 +23,7 @@ import {toOgLocale} from '@/platform/i18n/locale-utils';
 import {getActiveCurrencyCode} from '@/features/currency/currency-server';
 import {getRouteLocale} from '@/platform/i18n/server';
 import {getTranslations} from 'next-intl/server';
-import {TrustBar} from '@/site/home/trust-bar';
+import {TrustBar} from '@/components/shared/trust-bar';
 
 async function getCollectionProducts(slug: string, searchParams: { [key: string]: string | string[] | undefined }, currencyCode: string) {
     'use cache';
@@ -44,7 +46,7 @@ async function getCollectionProducts(slug: string, searchParams: { [key: string]
                 facetValues: []
             }
         }
-    } as any));
+    } as unknown as { data: ResultOf<typeof SearchProductsQuery> }));
 }
 
 async function getCollectionMetadata(slug: string) {
@@ -104,7 +106,7 @@ export async function generateMetadata({
             title: collection.name,
             description,
             images: collection.featuredAsset?.preview
-                ? [collection.featuredAsset.preview]
+                ? [normalizeAssetUrl(collection.featuredAsset.preview)]
                 : undefined,
         },
     };
@@ -150,7 +152,7 @@ export default async function CollectionPage({params, searchParams}: PageProps<'
     const locale = await getRouteLocale();
     const currencyCode = await getActiveCurrencyCode();
     const t = await getTranslations({locale, namespace: 'Collection'});
-    const tSearch = await getTranslations({locale, namespace: 'Search'});
+    const tCommon = await getTranslations({locale, namespace: 'Common'});
     const page = getCurrentPage(searchParamsResolved);
 
     const productDataPromise = getCollectionProducts(slug, searchParamsResolved, currencyCode);
@@ -161,44 +163,44 @@ export default async function CollectionPage({params, searchParams}: PageProps<'
     const collectionDescription = collectionResult?.data?.collection?.description;
 
     return (
-        <div className="min-h-screen bg-[#FAF8F5] text-[#1D120A] flex flex-col">
+        <div className="min-h-screen bg-[#f2efe9] dark:bg-[#151413] text-[#1c1b18] dark:text-[#fbfaf7] flex flex-col">
             {/* 1. Shop Collection Hero Header */}
-            <section className="relative w-full overflow-hidden bg-[#FAF8F5] border-b border-[#E7DED0]/60 pt-28 sm:pt-32 pb-12 sm:pb-16 text-center transition-colors">
-                <div className="absolute left-4 sm:left-12 top-1/2 -translate-y-1/2 w-32 sm:w-44 h-20 pointer-events-none opacity-70">
+            <section className="relative w-full overflow-hidden bg-[#f2efe9] dark:bg-[#151413] border-b border-[#e2ddd2]/80 dark:border-[#2e2c28] pt-28 sm:pt-32 pb-12 sm:pb-16 text-center transition-colors">
+                <div className="absolute left-4 sm:left-12 top-1/2 -translate-y-1/2 w-32 sm:w-44 h-20 pointer-events-none opacity-50">
                     <DecorativeDotCluster className="w-full h-full" />
                 </div>
-                <div className="absolute right-4 sm:right-12 top-1/2 -translate-y-1/2 w-32 sm:w-44 h-20 pointer-events-none opacity-70 transform rotate-180">
+                <div className="absolute right-4 sm:right-12 top-1/2 -translate-y-1/2 w-32 sm:w-44 h-20 pointer-events-none opacity-50 transform rotate-180">
                     <DecorativeDotCluster className="w-full h-full" />
                 </div>
 
                 <div className="vakaa-container relative z-10 space-y-3 max-w-3xl mx-auto">
-                    <h1 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1D120A] leading-tight">
+                    <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1c1b18] dark:text-[#fbfaf7] leading-tight">
                         {collectionName}
                     </h1>
 
                     {collectionDescription && (
-                        <p className="text-sm sm:text-base text-[#3A2418]/70 leading-relaxed font-sans max-w-xl mx-auto">
+                        <p className="text-sm sm:text-base text-[#57544c] dark:text-[#a6a29a] leading-relaxed font-sans max-w-xl mx-auto">
                             {collectionDescription}
                         </p>
                     )}
 
                     {/* Breadcrumbs */}
-                    <nav aria-label="Fil d'ariane" className="flex items-center justify-center gap-2 text-xs sm:text-sm text-[#3A2418]/60 pt-1">
+                    <nav aria-label="Fil d'ariane" className="flex items-center justify-center gap-2 text-xs sm:text-sm text-[#57544c] dark:text-[#a6a29a] pt-1">
                         <Link
                             href="/"
-                            className="hover:text-[#A66B2D] transition-colors cursor-pointer"
+                            className="hover:text-[#D4A43C] transition-colors cursor-pointer"
                         >
-                            {t('home')}
+                            {tCommon('home')}
                         </Link>
-                        <span className="text-[#3A2418]/30">/</span>
+                        <span className="text-[#e2ddd2]">/</span>
                         <Link
                             href="/search"
-                            className="hover:text-[#A66B2D] transition-colors cursor-pointer"
+                            className="hover:text-[#D4A43C] transition-colors cursor-pointer"
                         >
-                            {tSearch('shop')}
+                            {tCommon('shop')}
                         </Link>
-                        <span className="text-[#3A2418]/30">/</span>
-                        <span className="font-semibold text-[#1D120A]">
+                        <span className="text-[#e2ddd2]">/</span>
+                        <span className="font-semibold text-[#1c1b18] dark:text-[#fbfaf7]">
                             {collectionName}
                         </span>
                     </nav>
@@ -210,7 +212,7 @@ export default async function CollectionPage({params, searchParams}: PageProps<'
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
                     {/* Filters Sidebar */}
                     <div className="lg:col-span-3">
-                        <Suspense fallback={<div className="h-96 animate-pulse bg-[#F3EFE9] rounded-2xl" />}>
+                        <Suspense fallback={<div className="h-96 animate-pulse bg-[#fbfaf7] border border-[#e2ddd2] rounded-2xl" />}>
                             <FacetFilters productDataPromise={productDataPromise} />
                         </Suspense>
                     </div>

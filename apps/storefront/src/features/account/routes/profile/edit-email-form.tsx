@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useActionState, useEffect } from 'react';
 import { requestEmailUpdateAction } from './actions';
@@ -105,7 +105,7 @@ export function EditEmailForm({ currentEmail }: EditEmailFormProps) {
                     <Button
                         type="submit"
                         disabled={isPending}
-                        className="min-w-[180px] h-11 bg-[#0F291E] hover:bg-[#1A3D2E] text-white rounded-xl font-medium shadow-xs"
+                        className="min-w-[180px] h-11 bg-[#1D120A] hover:bg-[#1D120A]/90 text-[#FAF8F5] rounded-xl font-medium shadow-xs"
                     >
                         {isPending ? t('updating') : t('updateEmail')}
                     </Button>

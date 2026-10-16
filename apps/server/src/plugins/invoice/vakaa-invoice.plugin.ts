@@ -40,14 +40,14 @@ export class VakaaInvoicePlugin implements OnApplicationBootstrap {
             });
 
             const config = await invoiceService.getConfig(ctx);
-            // Ensure invoice generation is enabled and uses the bespoke VAKAA luxury template
-            if (!config || !config.enabled || !config.templateString || config.templateString.includes('pinelab.studio')) {
+            // Ensure invoice generation is enabled and uses the latest bespoke VAKAA luxury template
+            if (!config || !config.enabled || config.templateString !== vakaaInvoiceTemplate) {
                 await invoiceService.upsertConfig(ctx, {
                     enabled: true,
                     createCreditInvoices: true,
                     templateString: vakaaInvoiceTemplate,
                 });
-                Logger.info('VAKÁA luxury invoice template configured and enabled for default channel', 'VakaaInvoicePlugin');
+                Logger.info('VAKÁA luxury invoice template configured and updated for default channel', 'VakaaInvoicePlugin');
             }
         } catch (error: any) {
             Logger.warn(`Could not auto-configure invoice template on bootstrap: ${error?.message}`, 'VakaaInvoicePlugin');

@@ -3,6 +3,10 @@ import {
     DefaultJobQueuePlugin,
     DefaultSchedulerPlugin,
     DefaultSearchPlugin,
+    LanguageCode,
+    ProductVariant,
+    RequestContext,
+    StockDisplayStrategy,
     VendureConfig,
 } from '@vendure/core';
 import { defaultEmailHandlers, EmailPlugin, FileBasedTemplateLoader } from '@vendure/email-plugin';
@@ -13,7 +17,10 @@ import { VakaaBrandingPlugin } from './plugins/vakaa-branding/vakaa-branding.plu
 import { SebpayPlugin, sebpayPaymentHandler } from './plugins/sebpay';
 import { FlutterwavePlugin, flutterwavePaymentHandler } from './plugins/flutterwave';
 import { InvoicePlugin } from '@pinelab/pinelab-invoice-plugin';
+import { LimitedProductsPlugin } from '@pinelab/vendure-plugin-limited-products';
+import { VakaaReviewsPlugin } from './plugins/reviews';
 import { vakaaInvoiceLoadDataFn, VakaaInvoicePlugin } from './plugins/invoice';
+import { configureR2AssetStorage } from './plugins/r2-storage/r2-storage-strategy';
 import 'dotenv/config';
 import dns from 'dns';
 import http from 'http';
@@ -26,6 +33,12 @@ try {
 }
 
 const IS_DEV = process.env.APP_ENV === 'dev';
+const isPlaceholderSecret = (value?: string) =>
+    !value ||
+    value === 'vakaa_flw_secret_hash' ||
+    value.includes('your-') ||
+    value.includes('your_') ||
+    value.includes('placeholder');
 
 // Stabilize Dashboard Vite dev server detection to prevent rapid mode-flapping on Windows
 if (IS_DEV) {
@@ -76,10 +89,38 @@ if (IS_DEV) {
 // must take precedence over any value baked into the .env file at scaffold time.
 const serverPort = +process.env.PORT || +process.env.VENDURE_SERVER_PORT || 3000;
 
+const isNeonOrSsl = (url?: string) =>
+    Boolean(url?.includes('neon.tech')) || Boolean(url?.includes('sslmode=require'));
+
 const useSsl =
     process.env.DB_SSL === 'true' ||
-    Boolean(process.env.DATABASE_URL?.includes('neon.tech')) ||
-    Boolean(process.env.DATABASE_URL?.includes('sslmode=require'));
+    isNeonOrSsl(process.env.DATABASE_URL) ||
+    isNeonOrSsl(process.env.DATABASE_DIRECT_URL);
+
+const useR2 = Boolean(
+    process.env.R2_BUCKET_NAME &&
+    process.env.R2_ENDPOINT &&
+    process.env.R2_ACCESS_KEY_ID &&
+    process.env.R2_SECRET_ACCESS_KEY
+);
+
+/**
+ * Vakaa Quiet Luxury Stock Display Strategy:
+ * When stock <= 5, returns the exact remaining number (e.g. "2" for "Plus que 2 exemplaires disponibles").
+ * When stock > 5, returns 'IN_STOCK' to protect total commercial inventory confidentiality.
+ * When stock <= 0, returns 'OUT_OF_STOCK'.
+ */
+export class VakaaStockDisplayStrategy implements StockDisplayStrategy {
+    getStockLevel(ctx: RequestContext, productVariant: ProductVariant, saleableStockLevel: number): string {
+        if (saleableStockLevel <= 0) {
+            return 'OUT_OF_STOCK';
+        }
+        if (saleableStockLevel <= 5) {
+            return String(saleableStockLevel);
+        }
+        return 'IN_STOCK';
+    }
+}
 
 export const config: VendureConfig = {
     apiOptions: {
@@ -87,6 +128,16 @@ export const config: VendureConfig = {
         adminApiPath: 'admin-api',
         shopApiPath: 'shop-api',
         trustProxy: IS_DEV ? false : 1,
+        cors: {
+            origin: [
+                'http://localhost:3001',
+                'https://vakaa.com',
+                'https://www.vakaa.com',
+                /\.vercel\.app$/,
+                ...(process.env.STOREFRONT_URL ? [process.env.STOREFRONT_URL] : []),
+            ],
+            credentials: true,
+        },
         // The following options are useful in development mode,
         // but are best turned off for production for security
         // reasons.
@@ -94,6 +145,9 @@ export const config: VendureConfig = {
             adminApiDebug: true,
             shopApiDebug: true,
         } : {}),
+    },
+    catalogOptions: {
+        stockDisplayStrategy: new VakaaStockDisplayStrategy(),
     },
     authOptions: {
         tokenMethod: ['bearer', 'cookie'],
@@ -135,8 +189,8 @@ export const config: VendureConfig = {
             // Keep cloud connection alive with periodic TCP heartbeats
             keepAlive: true,
             keepAliveInitialDelayMillis: 10000,
-            // Keep connections warm (Neon compute suspends after 5m; 2m keeps the pool active while requests flow)
-            idleTimeoutMillis: 120000,
+            // Reap idle connections before Neon serverless proxy terminates them (30s)
+            idleTimeoutMillis: 30000,
             // 45 seconds provides adequate buffer for Neon cold-starts and cross-region latency
             connectionTimeoutMillis: 45000,
             max: 10,
@@ -145,23 +199,128 @@ export const config: VendureConfig = {
     paymentOptions: {
         paymentMethodHandlers: [dummyPaymentHandler, sebpayPaymentHandler, flutterwavePaymentHandler],
     },
-    // When adding or altering custom field definitions, the database will
-    // need to be updated. See the "Migrations" section in README.md.
-    customFields: {},
+    customFields: {
+        Product: [
+            {
+                name: 'material',
+                type: 'localeString',
+                label: [
+                    { languageCode: LanguageCode.fr, value: 'Matière Principale' },
+                    { languageCode: LanguageCode.en, value: 'Primary Material' },
+                ],
+            },
+            {
+                name: 'leatherOrigin',
+                type: 'localeString',
+                label: [
+                    { languageCode: LanguageCode.fr, value: 'Origine Cuir & Finitions' },
+                    { languageCode: LanguageCode.en, value: 'Leather Origin' },
+                ],
+            },
+            {
+                name: 'dimensions',
+                type: 'string',
+                label: [
+                    { languageCode: LanguageCode.fr, value: 'Dimensions Estimées (H × L × P)' },
+                    { languageCode: LanguageCode.en, value: 'Estimated Dimensions' },
+                ],
+            },
+            {
+                name: 'strapDrop',
+                type: 'string',
+                label: [
+                    { languageCode: LanguageCode.fr, value: 'Hauteur Bandoulière (Strap Drop)' },
+                    { languageCode: LanguageCode.en, value: 'Strap Drop' },
+                ],
+            },
+            {
+                name: 'weight',
+                type: 'string',
+                label: [
+                    { languageCode: LanguageCode.fr, value: 'Poids Léger' },
+                    { languageCode: LanguageCode.en, value: 'Weight' },
+                ],
+            },
+            {
+                name: 'artisanOrigin',
+                type: 'localeString',
+                label: [
+                    { languageCode: LanguageCode.fr, value: 'Origine de Confection' },
+                    { languageCode: LanguageCode.en, value: 'Craftsmanship Origin' },
+                ],
+            },
+            {
+                name: 'careInstructions',
+                type: 'localeText',
+                label: [
+                    { languageCode: LanguageCode.fr, value: 'Conseils d\'Entretien' },
+                    { languageCode: LanguageCode.en, value: 'Care Instructions' },
+                ],
+            },
+            {
+                name: 'isLimitedEdition',
+                type: 'boolean',
+                defaultValue: false,
+                label: [
+                    { languageCode: LanguageCode.fr, value: 'Édition Limitée' },
+                    { languageCode: LanguageCode.en, value: 'Limited Edition' },
+                ],
+            },
+            {
+                name: 'curatorBadge',
+                type: 'string',
+                label: [
+                    { languageCode: LanguageCode.fr, value: 'Badge Éditorial' },
+                    { languageCode: LanguageCode.en, value: 'Curator Badge' },
+                ],
+            },
+        ],
+        ProductVariant: [
+            {
+                name: 'allowPreOrder',
+                type: 'boolean',
+                defaultValue: false,
+                label: [
+                    { languageCode: LanguageCode.fr, value: 'Précommande / Confection sur Mesure' },
+                    { languageCode: LanguageCode.en, value: 'Allow Pre-Order' },
+                ],
+            },
+            {
+                name: 'preOrderLeadTime',
+                type: 'localeString',
+                label: [
+                    { languageCode: LanguageCode.fr, value: 'Délai de Confection Atelier' },
+                    { languageCode: LanguageCode.en, value: 'Pre-Order Lead Time' },
+                ],
+            },
+        ],
+    },
     plugins: [
+        LimitedProductsPlugin,
+        VakaaReviewsPlugin,
         GraphiqlPlugin.init(),
         AssetServerPlugin.init({
             route: 'assets',
             assetUploadDir: path.join(__dirname, '../static/assets'),
             assetUrlPrefix:
                 process.env.ASSET_URL_PREFIX ||
-                (IS_DEV
-                    ? `http://localhost:${serverPort}/assets/`
-                    : 'https://www.my-shop.com/assets/'),
+                process.env.R2_PUBLIC_URL ||
+                `http://localhost:${serverPort}/assets/`,
+            ...(useR2
+                ? {
+                      storageStrategyFactory: configureR2AssetStorage({
+                          bucket: process.env.R2_BUCKET_NAME!,
+                          endpoint: process.env.R2_ENDPOINT!,
+                          accessKeyId: process.env.R2_ACCESS_KEY_ID!,
+                          secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+                          region: process.env.R2_REGION || 'auto',
+                      }) as any,
+                  }
+                : {}),
         }),
         DefaultSchedulerPlugin.init(),
         DefaultJobQueuePlugin.init({ useDatabaseForBuffer: true }),
-        DefaultSearchPlugin.init({ bufferUpdates: false, indexStockStatus: true }),
+        DefaultSearchPlugin.init({ bufferUpdates: true, indexStockStatus: true }),
         EmailPlugin.init(
             process.env.EMAIL_DEV_MODE === 'true' ||
             !process.env.BREVO_SMTP_KEY ||
@@ -234,7 +393,11 @@ export const config: VendureConfig = {
         FlutterwavePlugin.init({
             publicKey: process.env.FLW_PUBLIC_KEY || '',
             secretKey: process.env.FLW_SECRET_KEY || '',
-            secretHash: process.env.FLW_SECRET_HASH || 'vakaa_flw_secret_hash',
+            // A known fallback must only exist for local sandbox testing. In
+            // production a missing secret causes webhook verification to fail closed.
+            secretHash: !isPlaceholderSecret(process.env.FLW_SECRET_HASH)
+                ? process.env.FLW_SECRET_HASH!
+                : (IS_DEV ? 'vakaa_flw_secret_hash' : ''),
             isSandbox: process.env.FLW_SANDBOX === 'true' || IS_DEV,
             webhookUrl: process.env.FLW_WEBHOOK_URL || '',
             mockMode: !process.env.FLW_SECRET_KEY && IS_DEV,
@@ -245,4 +408,23 @@ export const config: VendureConfig = {
         }),
         VakaaInvoicePlugin,
     ],
+};
+
+/**
+ * Configuration specifically for schema migrations.
+ * In Neon, PgBouncer connection pooling operates in transaction mode. Schema migrations
+ * (DDL statements, locks, and session-level commands) should run via the direct connection
+ * (DATABASE_DIRECT_URL) to bypass transaction-mode limitations.
+ * If DATABASE_DIRECT_URL is not set, it gracefully falls back to the primary DATABASE_URL.
+ */
+export const migrationConfig: VendureConfig = {
+    ...config,
+    dbConnectionOptions: {
+        ...config.dbConnectionOptions,
+        ...(process.env.DATABASE_DIRECT_URL
+            ? {
+                  url: process.env.DATABASE_DIRECT_URL,
+              }
+            : {}),
+    },
 };

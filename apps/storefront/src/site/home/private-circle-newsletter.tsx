@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 export function PrivateCircleNewsletter() {
@@ -13,53 +14,63 @@ export function PrivateCircleNewsletter() {
     };
 
     return (
-        <section className="py-24 sm:py-32 bg-[#1D120A] text-[#FAF8F5]">
-            <div className="vakaa-container">
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
-                    className="max-w-3xl mx-auto text-center space-y-12"
-                >
-                    <div className="space-y-6">
-                        <h2 className="font-sans text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight uppercase leading-none">
-                            Join the Private Circle
-                        </h2>
-                        <p className="text-sm sm:text-base text-white/60 font-sans max-w-lg mx-auto">
-                            Recevez en avant-première nos capsules numérotées, lancements d'ateliers et invitations exclusives.
-                        </p>
-                    </div>
+        <section className="px-3 pb-3 sm:px-5 sm:pb-5 bg-[#f2efe9] dark:bg-[#151413]">
+            <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                className="relative overflow-hidden rounded-[28px] sm:rounded-[32px] bg-[#1c1b18] text-[#fbfaf7] border border-black/5 dark:border-white/10 shadow-tile grid md:grid-cols-2 items-center"
+            >
+                {/* Left Side: Editorial & Form */}
+                <div className="p-7 sm:p-10 lg:p-14 space-y-5 sm:space-y-6">
+                    <span className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-[#D4A43C] font-semibold">
+                        LE CERCLE PRIVÉ VAKAA
+                    </span>
+                    <h2 className="font-display text-2xl sm:text-3xl lg:text-[2.2rem] font-bold tracking-tight text-[#fbfaf7] leading-[1.12]">
+                        Une note confidentielle lorsque l&apos;atelier dévoile une nouvelle capsule.
+                    </h2>
+                    <p className="text-[13.5px] sm:text-[14.5px] text-[#fbfaf7]/70 font-sans leading-relaxed max-w-md">
+                        Jamais plus de deux fois par mois. Accès prioritaire à nos pièces numérotées et invitations aux ventes privées.
+                    </p>
 
                     {isSubmitted ? (
-                        <div className="text-[#D4A43C] font-semibold tracking-wider text-sm">
-                            Votre invitation privée a été transmise. Bienvenue dans le Cercle.
+                        <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#D4A43C]/15 border border-[#D4A43C]/30 text-[#D4A43C] text-xs sm:text-sm font-medium">
+                            <span className="text-[#D4A43C]">✓</span>
+                            <span>Bienvenue dans le Cercle Privé Vakaa.</span>
                         </div>
                     ) : (
-                        <form
-                            onSubmit={handleSubmit}
-                            className="flex flex-col sm:flex-row items-end justify-center gap-6 max-w-xl mx-auto"
-                        >
-                            <div className="w-full">
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="VOTRE ADRESSE EMAIL"
-                                    required
-                                    className="w-full bg-transparent border-b border-white/30 text-white placeholder:text-white/30 pb-3 text-sm focus:outline-hidden focus:border-[#D4A43C] transition-colors rounded-none"
-                                />
-                            </div>
+                        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 max-w-md pt-1">
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="votre@adresse.com"
+                                required
+                                className="flex-1 h-11 sm:h-12 px-4 rounded-full bg-white/10 border border-white/15 text-[#fbfaf7] placeholder:text-[#fbfaf7]/40 text-sm focus:outline-hidden focus:border-[#D4A43C] transition-colors font-sans"
+                            />
                             <button
                                 type="submit"
-                                className="w-full sm:w-auto bg-[#D4A43C] text-[#1D120A] font-bold text-xs uppercase tracking-widest px-10 py-4 rounded-lg hover:bg-white transition-colors shrink-0 cursor-pointer"
+                                className="h-11 sm:h-12 px-6 rounded-full bg-[#fbfaf7] text-[#1c1b18] hover:bg-[#D4A43C] hover:text-[#1c1b18] font-medium text-xs uppercase tracking-wider transition-colors shrink-0 cursor-pointer shadow-xs active:scale-95"
                             >
-                                Souscrire
+                                Rejoindre
                             </button>
                         </form>
                     )}
-                </motion.div>
-            </div>
+                </div>
+
+                {/* Right Side: Artisan Workshop / Atmosphere Photo */}
+                <div className="relative h-64 sm:h-80 md:h-full min-h-[260px] md:min-h-[360px] w-full overflow-hidden bg-[#24211d]">
+                    <Image
+                        src="/images/hero-model.jpg"
+                        alt="Atelier Vakaa — Savoir-Faire"
+                        fill
+                        className="object-cover object-center brightness-90 contrast-105"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#1c1b18] via-[#1c1b18]/40 to-transparent" />
+                </div>
+            </motion.div>
         </section>
     );
 }

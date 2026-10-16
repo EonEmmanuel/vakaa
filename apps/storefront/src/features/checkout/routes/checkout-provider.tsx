@@ -1,9 +1,9 @@
 'use client';
 
-import { createContext, useContext, ReactNode, useState } from 'react';
+import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import { CheckoutOrder } from './types';
 
-interface CustomerAddress {
+export interface CustomerAddress {
   id: string;
   fullName?: string | null;
   company?: string | null;
@@ -18,13 +18,13 @@ interface CustomerAddress {
   defaultBillingAddress?: boolean | null;
 }
 
-interface Country {
+export interface Country {
   id: string;
   code: string;
   name: string;
 }
 
-interface ShippingMethod {
+export interface ShippingMethod {
   id: string;
   name: string;
   code: string;
@@ -32,7 +32,7 @@ interface ShippingMethod {
   priceWithTax: number;
 }
 
-interface PaymentMethod {
+export interface PaymentMethod {
   id: string;
   name: string;
   code: string;
@@ -43,10 +43,15 @@ interface PaymentMethod {
 
 interface CheckoutContextType {
   order: CheckoutOrder;
+  setOrder: React.Dispatch<React.SetStateAction<CheckoutOrder>>;
+  updateOrder: (patch: Partial<CheckoutOrder>) => void;
   addresses: CustomerAddress[];
+  setAddresses: React.Dispatch<React.SetStateAction<CustomerAddress[]>>;
+  addCustomerAddress: (address: CustomerAddress) => void;
   countries: Country[];
   detectedCountryCode?: string;
   shippingMethods: ShippingMethod[];
+  setShippingMethods: React.Dispatch<React.SetStateAction<ShippingMethod[]>>;
   paymentMethods: PaymentMethod[];
   selectedPaymentMethodCode: string | null;
   setSelectedPaymentMethodCode: (code: string | null) => void;
@@ -70,27 +75,65 @@ interface CheckoutProviderProps {
 
 export function CheckoutProvider({
   children,
-  order,
-  addresses,
+  order: initialOrder,
+  addresses: initialAddresses,
   countries,
   detectedCountryCode,
-  shippingMethods,
+  shippingMethods: initialShippingMethods,
   paymentMethods,
   isGuest,
 }: CheckoutProviderProps) {
+  const [order, setOrder] = useState<CheckoutOrder>(initialOrder);
+  const [addresses, setAddresses] = useState<CustomerAddress[]>(initialAddresses);
+  const [shippingMethods, setShippingMethods] = useState<ShippingMethod[]>(initialShippingMethods);
   const [selectedPaymentMethodCode, setSelectedPaymentMethodCode] = useState<string | null>(
     paymentMethods.length === 1 ? paymentMethods[0].code : null
   );
   const [paymentMetadata, setPaymentMetadata] = useState<Record<string, unknown>>({});
 
+  // Synchronize state if props change (e.g. background RSC reload)
+  useEffect(() => {
+    setOrder(initialOrder);
+  }, [initialOrder]);
+
+  useEffect(() => {
+    setAddresses(initialAddresses);
+  }, [initialAddresses]);
+
+  useEffect(() => {
+    setShippingMethods(initialShippingMethods);
+  }, [initialShippingMethods]);
+
+  const updateOrder = (patch: Partial<CheckoutOrder>) => {
+    setOrder((prev) => ({
+      ...prev,
+      ...patch,
+    }));
+  };
+
+  const addCustomerAddress = (newAddress: CustomerAddress) => {
+    setAddresses((prev) => {
+      const exists = prev.some((a) => a.id === newAddress.id);
+      if (exists) {
+        return prev.map((a) => (a.id === newAddress.id ? newAddress : a));
+      }
+      return [...prev, newAddress];
+    });
+  };
+
   return (
     <CheckoutContext.Provider
       value={{
         order,
+        setOrder,
+        updateOrder,
         addresses,
+        setAddresses,
+        addCustomerAddress,
         countries,
         detectedCountryCode,
         shippingMethods,
+        setShippingMethods,
         paymentMethods,
         selectedPaymentMethodCode,
         setSelectedPaymentMethodCode,

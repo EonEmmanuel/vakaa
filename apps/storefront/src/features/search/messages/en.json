@@ -32,6 +32,9 @@
     "resultsFor": "Results for \"{query}\"",
     "resultsTitle": "Results for \"{query}\"",
     "metaDescription": "Find products matching \"{query}\" at {siteName}",
-    "metaCatalogDescription": "Explore our complete collection of artisan luxury leather and raffia bags at {siteName}"
+    "metaCatalogDescription": "Explore our complete collection of artisan luxury leather and raffia bags at {siteName}",
+    "searchPlaceholder": "Search boutique...",
+    "noResultsFound": "No results found.",
+    "typeToSearch": "Type to search..."
   }
 }

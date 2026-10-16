@@ -15,6 +15,17 @@
     "shoppingCart": "Shopping Cart",
     "switchLanguage": "Switch language",
     "switchCurrency": "Switch currency",
-    "announcement": "COMPLIMENTARY SHIPPING ON ORDERS OVER 50 000 FCFA | CRAFTED IN AFRICA, WORN WORLDWIDE"
+    "announcement": "COMPLIMENTARY SHIPPING ON ORDERS OVER 50 000 FCFA | CRAFTED IN AFRICA, WORN WORLDWIDE",
+    "searchPlaceholder": "Search boutique...",
+    "noResultsFound": "No results found.",
+    "typeToSearch": "Type to search...",
+    "home": "Home",
+    "shop": "Shop",
+    "ourStory": "Our Story",
+    "artisans": "Artisans",
+    "journal": "Journal",
+    "contact": "Contact",
+    "explore": "Explore",
+    "viewAllResultsFor": "View all results for \"{query}\""
   }
 }

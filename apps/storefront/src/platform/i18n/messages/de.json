@@ -3,7 +3,10 @@
     "loading": "Wird geladen...",
     "sending": "Wird gesendet...",
     "sku": "Art.-Nr.",
-    "siteDescription": "Entdecken Sie die besten Produkte bei {siteName}. Qualitätsprodukte, wettbewerbsfähige Preise und schnelle Lieferung."
+    "siteDescription": "Entdecken Sie die besten Produkte bei {siteName}. Qualitätsprodukte, wettbewerbsfähige Preise und schnelle Lieferung.",
+    "home": "Startseite",
+    "shop": "Shop",
+    "cart": "Warenkorb"
   },
   "Errors": {
     "fieldsRequired": "Alle Felder sind erforderlich",

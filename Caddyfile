@@ -1,0 +1,22 @@
+{
+    # Global options
+    email contact@vakaa.com
+}
+
+api.vakaa.com {
+    # 50MB upload limit for Vendure Admin asset uploads
+    request_body {
+        max_size 50MB
+    }
+
+    # Reverse proxy to the Vendure Server container
+    reverse_proxy server:3000 {
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+
+    # Enable modern Zstandard & Gzip compression
+    encode zstd gzip
+}

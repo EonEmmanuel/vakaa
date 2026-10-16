@@ -50,14 +50,39 @@ export const AddToCartMutation = graphql(`
             ... on Order {
                 id
                 code
+                state
                 totalQuantity
+                subTotal
+                subTotalWithTax
+                shipping
+                shippingWithTax
+                total
+                totalWithTax
+                currencyCode
+                couponCodes
+                discounts {
+                    description
+                    amountWithTax
+                }
                 lines {
                     id
                     productVariant {
                         id
                         name
+                        sku
+                        product {
+                            id
+                            name
+                            slug
+                            featuredAsset {
+                                id
+                                preview
+                            }
+                        }
                     }
+                    unitPriceWithTax
                     quantity
+                    linePriceWithTax
                 }
             }
             ... on ErrorResult {
@@ -75,7 +100,90 @@ export const RemoveFromCartMutation = graphql(`
             ... on Order {
                 id
                 code
+                state
                 totalQuantity
+                subTotal
+                subTotalWithTax
+                shipping
+                shippingWithTax
+                total
+                totalWithTax
+                currencyCode
+                couponCodes
+                discounts {
+                    description
+                    amountWithTax
+                }
+                lines {
+                    id
+                    productVariant {
+                        id
+                        name
+                        sku
+                        product {
+                            id
+                            name
+                            slug
+                            featuredAsset {
+                                id
+                                preview
+                            }
+                        }
+                    }
+                    unitPriceWithTax
+                    quantity
+                    linePriceWithTax
+                }
+            }
+            ... on ErrorResult {
+                errorCode
+                message
+            }
+        }
+    }
+`);
+
+export const RemoveAllOrderLinesMutation = graphql(`
+    mutation RemoveAllOrderLines {
+        removeAllOrderLines {
+            __typename
+            ... on Order {
+                id
+                code
+                state
+                totalQuantity
+                subTotal
+                subTotalWithTax
+                shipping
+                shippingWithTax
+                total
+                totalWithTax
+                currencyCode
+                couponCodes
+                discounts {
+                    description
+                    amountWithTax
+                }
+                lines {
+                    id
+                    productVariant {
+                        id
+                        name
+                        sku
+                        product {
+                            id
+                            name
+                            slug
+                            featuredAsset {
+                                id
+                                preview
+                            }
+                        }
+                    }
+                    unitPriceWithTax
+                    quantity
+                    linePriceWithTax
+                }
             }
             ... on ErrorResult {
                 errorCode
@@ -92,7 +200,40 @@ export const AdjustCartItemMutation = graphql(`
             ... on Order {
                 id
                 code
+                state
                 totalQuantity
+                subTotal
+                subTotalWithTax
+                shipping
+                shippingWithTax
+                total
+                totalWithTax
+                currencyCode
+                couponCodes
+                discounts {
+                    description
+                    amountWithTax
+                }
+                lines {
+                    id
+                    productVariant {
+                        id
+                        name
+                        sku
+                        product {
+                            id
+                            name
+                            slug
+                            featuredAsset {
+                                id
+                                preview
+                            }
+                        }
+                    }
+                    unitPriceWithTax
+                    quantity
+                    linePriceWithTax
+                }
             }
             ... on ErrorResult {
                 errorCode

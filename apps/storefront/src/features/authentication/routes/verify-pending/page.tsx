@@ -2,7 +2,7 @@ import type {Metadata} from 'next';
 import {Suspense} from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { NavigationLink } from '@/site/navigation/navigation-link';
+import { NavigationLink } from '@/components/shared/navigation/navigation-link';
 import { CheckCircle } from 'lucide-react';
 import {getRouteLocale} from '@/platform/i18n/server';
 import {getTranslations} from 'next-intl/server';

@@ -1,0 +1,90 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: vakaa-backend:latest
+    container_name: vakaa-server
+    restart: unless-stopped
+    command: ["node", "dist/index.js"]
+    env_file:
+      - apps/server/.env
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+    expose:
+      - "3000"
+    volumes:
+      # Persistent local asset storage (if local disk used instead of Cloudflare R2 / S3)
+      - vakaa-assets:/app/apps/server/static/assets
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: 1200M
+        reservations:
+          cpus: "0.2"
+          memory: 300M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/shop-api"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - vakaa-network
+
+  worker:
+    image: vakaa-backend:latest
+    container_name: vakaa-worker
+    restart: unless-stopped
+    command: ["node", "dist/index-worker.js"]
+    env_file:
+      - apps/server/.env
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - vakaa-assets:/app/apps/server/static/assets
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 800M
+        reservations:
+          cpus: "0.1"
+          memory: 200M
+    depends_on:
+      server:
+        condition: service_healthy
+    networks:
+      - vakaa-network
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: vakaa-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 150M
+    depends_on:
+      - server
+    networks:
+      - vakaa-network
+
+volumes:
+  vakaa-assets:
+  caddy-data:
+  caddy-config:
+
+networks:
+  vakaa-network:
+    driver: bridge

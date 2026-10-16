@@ -1,5 +1,6 @@
-import type {Metadata} from 'next';
+﻿import type {Metadata} from 'next';
 import Image from 'next/image';
+import { normalizeAssetUrl } from '@/lib/utils';
 import {query} from '@/platform/vendure/api';
 import {GetCustomerOrdersQuery} from '@/features/account/graphql';
 import {
@@ -95,8 +96,8 @@ export default async function OrdersPage(props: PageProps<'/[locale]/account/ord
                     </div>
                     <div className="pt-2">
                         <Link
-                            href="/shop"
-                            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#0F291E] hover:bg-[#1A3D2E] text-white text-sm font-medium shadow-xs transition-colors"
+                            href="/search"
+                            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#1D120A] hover:bg-[#1D120A]/90 text-[#FAF8F5] text-sm font-medium shadow-xs transition-colors"
                         >
                             <ShoppingBag className="w-4 h-4" />
                             <span>Découvrir la collection</span>
@@ -119,8 +120,8 @@ export default async function OrdersPage(props: PageProps<'/[locale]/account/ord
                                 key={order.id}
                                 className="border border-[#EAE6DF] dark:border-[#3A291C] rounded-xl overflow-hidden shadow-xs bg-white dark:bg-[#160E08]"
                             >
-                                {/* FutureCommerce Golden Header Bar */}
-                                <div className="bg-[#EAA838] text-white px-5 py-3.5">
+                                {/* VAKAA Luxury Header Bar */}
+                                <div className="bg-[#1D120A] text-white px-5 py-3.5">
                                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-xs">
                                         <div>
                                             <span className="block text-white/80 font-medium uppercase text-[10px] tracking-wider">
@@ -166,7 +167,7 @@ export default async function OrdersPage(props: PageProps<'/[locale]/account/ord
                                     <div className="divide-y divide-[#F0EBE1] dark:divide-[#2A1D15]">
                                         {order.lines.map((line) => {
                                             const product = line.productVariant?.product;
-                                            const imageUrl = product?.featuredAsset?.preview;
+                                            const imageUrl = normalizeAssetUrl(product?.featuredAsset?.preview);
 
                                             return (
                                                 <div key={line.id} className="py-3 first:pt-0 last:pb-0 flex items-center gap-4">
@@ -217,7 +218,7 @@ export default async function OrdersPage(props: PageProps<'/[locale]/account/ord
                                         <div className="flex items-center gap-2.5 w-full sm:w-auto">
                                             <Link
                                                 href={`/account/orders/${order.code}`}
-                                                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-[#0F291E] dark:border-[#5A4535] text-xs sm:text-sm font-semibold text-[#0F291E] dark:text-[#E8D9C8] hover:bg-[#FAF8F5] dark:hover:bg-[#1E140D] transition-colors"
+                                                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-[#1D120A] dark:border-[#5A4535] text-xs sm:text-sm font-semibold text-[#1D120A] dark:text-[#E8D9C8] hover:bg-[#FAF8F5] dark:hover:bg-[#1E140D] transition-colors"
                                             >
                                                 <span>{t('trackOrder')}</span>
                                                 <ArrowRight className="w-3.5 h-3.5" />
@@ -228,7 +229,7 @@ export default async function OrdersPage(props: PageProps<'/[locale]/account/ord
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 download
-                                                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#0F291E] hover:bg-[#1A3D2E] text-white text-xs sm:text-sm font-semibold shadow-xs transition-colors"
+                                                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#1D120A] hover:bg-[#1D120A]/90 text-[#FAF8F5] text-xs sm:text-sm font-semibold shadow-xs transition-colors"
                                             >
                                                 <FileDown className="w-4 h-4" />
                                                 <span>{t('downloadInvoice')}</span>

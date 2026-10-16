@@ -1,0 +1,13 @@
+.git
+.github
+node_modules
+apps/server/node_modules
+apps/storefront
+.next
+*.log
+.env.local
+scratch
+docs
+*.png
+*.mp4
+*.html

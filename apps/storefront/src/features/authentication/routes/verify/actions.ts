@@ -18,10 +18,10 @@ export async function verifyAccountAction(token: string, password?: string) {
             password: password || undefined,
         });
 
-        const verifyResult = result.data.verifyCustomerAccount;
+        const verifyResult = result.data?.verifyCustomerAccount;
 
-        if (verifyResult.__typename !== 'CurrentUser') {
-            return {error: verifyResult.message};
+        if (!verifyResult || verifyResult.__typename !== 'CurrentUser') {
+            return {error: verifyResult?.message || t('unexpectedError')};
         }
 
         // Store the token in a cookie if returned

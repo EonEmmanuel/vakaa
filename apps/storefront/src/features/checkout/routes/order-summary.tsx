@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { normalizeAssetUrl } from '@/lib/utils';
 import { ChevronDown, ShoppingBag, ShieldCheck, Lock, Truck } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { OrderLine } from './types';
@@ -17,9 +18,9 @@ function OrderSummaryContent({ order, t }: { order: ReturnType<typeof useCheckou
         {order.lines.map((line: OrderLine) => (
           <div key={line.id} className="flex items-center gap-3.5">
             {line.productVariant.product.featuredAsset ? (
-              <div className="size-16 rounded-2xl bg-[#F3EFE9] dark:bg-[#20150E] p-1.5 flex items-center justify-center shrink-0 border border-stone-200/60 dark:border-stone-800">
+              <div className="size-16 rounded-2xl bg-[#ebe2d4] dark:bg-[#272522] p-1.5 flex items-center justify-center shrink-0 border border-[#e2ddd2]/60 dark:border-[#2e2c28]">
                 <Image
-                  src={line.productVariant.product.featuredAsset.preview}
+                  src={normalizeAssetUrl(line.productVariant.product.featuredAsset.preview)}
                   alt={line.productVariant.name}
                   width={64}
                   height={64}
@@ -27,36 +28,36 @@ function OrderSummaryContent({ order, t }: { order: ReturnType<typeof useCheckou
                 />
               </div>
             ) : (
-              <div className="size-16 rounded-2xl bg-[#F3EFE9] dark:bg-[#20150E] flex items-center justify-center shrink-0 border border-stone-200/60 dark:border-stone-800">
-                <ShoppingBag className="h-5 w-5 text-stone-400" />
+              <div className="size-16 rounded-2xl bg-[#ebe2d4] dark:bg-[#272522] flex items-center justify-center shrink-0 border border-[#e2ddd2]/60 dark:border-[#2e2c28]">
+                <ShoppingBag className="h-5 w-5 text-[#7d796f]" />
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-stone-900 dark:text-stone-100 line-clamp-1">
+              <p className="text-sm font-semibold text-[#1c1b18] dark:text-[#fbfaf7] line-clamp-2 leading-snug">
                 {line.productVariant.product.name}
               </p>
               {line.productVariant.name !== line.productVariant.product.name && (
-                <p className="text-xs text-stone-500 dark:text-stone-400 line-clamp-1">
+                <p className="text-xs text-[#57544c] dark:text-[#a6a29a] line-clamp-1 mt-0.5">
                   {line.productVariant.name}
                 </p>
               )}
-              <div className="mt-1">
-                <span className="inline-flex text-[11px] font-medium bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 px-2 py-0.5 rounded-full">
+              <div className="mt-1.5">
+                <span className="inline-flex items-center text-[11px] font-medium bg-[#ebe2d4] dark:bg-[#272522] text-[#1c1b18] dark:text-[#fbfaf7] px-2.5 py-0.5 rounded-full border border-[#e2ddd2]/60 dark:border-[#2e2c28]">
                   {t('qty', { quantity: line.quantity })}
                 </span>
               </div>
             </div>
-            <div className="text-sm font-bold text-stone-900 dark:text-stone-100 shrink-0">
+            <div className="text-sm font-bold text-[#1c1b18] dark:text-[#fbfaf7] shrink-0 tabular-nums">
               <Price value={line.linePriceWithTax} currencyCode={order.currencyCode} />
             </div>
           </div>
         ))}
       </div>
 
-      <div className="border-t border-stone-200/80 dark:border-stone-800 pt-4 space-y-3 text-sm">
-        <div className="flex justify-between items-center text-stone-600 dark:text-stone-400">
+      <div className="border-t border-[#e2ddd2] dark:border-[#2e2c28] pt-4 space-y-3 text-sm">
+        <div className="flex justify-between items-center text-[#57544c] dark:text-[#a6a29a]">
           <span>{t('subtotal')}</span>
-          <span className="font-semibold text-stone-900 dark:text-stone-200">
+          <span className="font-semibold text-[#1c1b18] dark:text-[#fbfaf7]">
             <Price value={order.subTotalWithTax} currencyCode={order.currencyCode} />
           </span>
         </div>
@@ -74,43 +75,43 @@ function OrderSummaryContent({ order, t }: { order: ReturnType<typeof useCheckou
           </>
         )}
 
-        <div className="flex justify-between items-center text-stone-600 dark:text-stone-400">
+        <div className="flex justify-between items-center text-[#57544c] dark:text-[#a6a29a]">
           <span>{t('shipping')}</span>
-          <span className="text-stone-900 dark:text-stone-200">
+          <span className="text-[#1c1b18] dark:text-[#fbfaf7]">
             {order.shippingWithTax > 0 ? (
               <Price value={order.shippingWithTax} currencyCode={order.currencyCode} />
             ) : (
-              <span className="text-xs text-stone-500 italic">{t('toBeCalculated')}</span>
+              <span className="text-xs text-[#7d796f] italic">{t('toBeCalculated')}</span>
             )}
           </span>
         </div>
 
-        <div className="border-t border-stone-200/80 dark:border-stone-800 pt-3">
+        <div className="border-t border-[#e2ddd2] dark:border-[#2e2c28] pt-3">
           <div className="flex justify-between items-baseline">
-            <span className="text-base font-bold text-stone-900 dark:text-stone-100">{t('total')}</span>
-            <span className="text-2xl font-bold text-stone-950 dark:text-white tabular-nums">
+            <span className="font-display text-base font-bold text-[#1c1b18] dark:text-[#fbfaf7]">{t('total')}</span>
+            <span className="text-2xl font-bold text-[#1c1b18] dark:text-white tabular-nums">
               <Price value={order.totalWithTax} currencyCode={order.currencyCode} />
             </span>
           </div>
-          <p className="text-[11px] text-stone-400 dark:text-stone-500 text-right mt-1">
-            Règlement en {order.currencyCode || 'XAF'}
+          <p className="text-[11px] text-[#7d796f] text-right mt-1 font-mono">
+            {t('settlementCurrency', { currency: order.currencyCode || 'XAF' })}
           </p>
         </div>
       </div>
 
       {/* Trust Badges */}
-      <div className="pt-4 border-t border-stone-200/70 dark:border-stone-800 space-y-2 text-[11px] text-stone-600 dark:text-stone-400">
-        <div className="flex items-center gap-2">
-          <Lock className="w-3.5 h-3.5 text-[#A66B2D] shrink-0" />
-          <span>Paiement sécurisé et crypté SSL</span>
+      <div className="pt-4 border-t border-[#e2ddd2] dark:border-[#2e2c28] space-y-2.5 text-xs text-[#57544c] dark:text-[#a6a29a]">
+        <div className="flex items-center gap-2.5">
+          <Lock className="w-4 h-4 text-[#D4A43C] shrink-0" />
+          <span>{t('sslSecured')}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <ShieldCheck className="w-3.5 h-3.5 text-[#A66B2D] shrink-0" />
-          <span>Mobile Money, Orange & MTN, Cartes bancaires</span>
+        <div className="flex items-center gap-2.5">
+          <ShieldCheck className="w-4 h-4 text-[#D4A43C] shrink-0" />
+          <span>{t('paymentMethodsAccepted')}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <Truck className="w-3.5 h-3.5 text-[#A66B2D] shrink-0" />
-          <span>Expédition protégée avec numéro de suivi</span>
+        <div className="flex items-center gap-2.5">
+          <Truck className="w-4 h-4 text-[#D4A43C] shrink-0" />
+          <span>{t('trackedDelivery')}</span>
         </div>
       </div>
     </div>
@@ -126,21 +127,21 @@ export default function OrderSummary() {
     <>
       {/* Mobile: Collapsible summary */}
       <div className="lg:hidden mb-6">
-        <div className="bg-white dark:bg-[#1A120B] rounded-2xl border border-stone-200/80 dark:border-stone-800 p-4 shadow-xs">
+        <div className="bg-[#fbfaf7] dark:bg-[#1c1b19] rounded-2xl border border-[#e2ddd2] dark:border-[#2e2c28] p-4 sm:p-5 shadow-xs">
           <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <CollapsibleTrigger className="w-full text-left">
-              <div className="flex items-center justify-between cursor-pointer">
-                <div className="flex items-center gap-2">
-                  <ShoppingBag className="h-4 w-4 text-[#A66B2D]" />
-                  <span className="font-bold text-sm text-stone-900 dark:text-stone-100">
+              <div className="flex items-center justify-between gap-3 cursor-pointer min-w-0">
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <ShoppingBag className="h-4 w-4 text-[#D4A43C] shrink-0" />
+                  <span className="font-display font-bold text-sm text-[#1c1b18] dark:text-[#fbfaf7] truncate">
                     {t('orderSummary')} ({order.lines.length} {order.lines.length === 1 ? t('item') : t('items')})
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-base text-stone-950 dark:text-white">
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="font-bold text-base text-[#1c1b18] dark:text-white tabular-nums">
                     <Price value={order.totalWithTax} currencyCode={order.currencyCode} />
                   </span>
-                  <ChevronDown className={`h-4 w-4 text-stone-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`h-4 w-4 text-[#7d796f] transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
                 </div>
               </div>
             </CollapsibleTrigger>
@@ -153,9 +154,9 @@ export default function OrderSummary() {
 
       {/* Desktop: Always visible sticky summary */}
       <div className="hidden lg:block">
-        <div className="bg-white dark:bg-[#1A120B] rounded-2xl border border-stone-200/80 dark:border-stone-800 p-6 sm:p-7 shadow-xs sticky top-28 space-y-5">
-          <h2 className="font-sans text-xl font-bold text-stone-900 dark:text-stone-100 tracking-tight flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5 text-[#A66B2D]" />
+        <div className="bg-[#fbfaf7] dark:bg-[#1c1b19] rounded-2xl sm:rounded-3xl border border-[#e2ddd2] dark:border-[#2e2c28] p-6 sm:p-7 shadow-[0_4px_24px_rgba(28,27,24,0.03)] sticky top-28 space-y-6">
+          <h2 className="font-display text-xl font-bold text-[#1c1b18] dark:text-[#fbfaf7] tracking-tight flex items-center gap-2">
+            <ShoppingBag className="w-5 h-5 text-[#D4A43C]" />
             {t('orderSummary')}
           </h2>
           <OrderSummaryContent order={order} t={t} />

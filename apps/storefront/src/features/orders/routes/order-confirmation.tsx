@@ -1,6 +1,7 @@
 import { Check, ShoppingBag, ClipboardList, AlertCircle, RefreshCw, Truck, MapPin, FileDown } from 'lucide-react';
 import { Link } from '@/platform/i18n/navigation';
 import Image from 'next/image';
+import { normalizeAssetUrl } from '@/lib/utils';
 import { Price } from '@/features/pricing/price';
 import { notFound } from 'next/navigation';
 import { getRouteLocale } from '@/platform/i18n/server';
@@ -9,8 +10,9 @@ import { query } from '@/platform/vendure/api';
 import { graphql } from '@/platform/vendure/graphql';
 import { OrderStatusBadge } from '@/features/orders/order-status-badge';
 import { PrintReceiptButton } from '@/features/orders/print-receipt-button';
-import { TrustBar } from '@/site/home/trust-bar';
+import {TrustBar} from '@/components/shared/trust-bar';
 import { DecorativeDotCluster } from '@/components/ui/decorative-dot-cluster';
+import { FlutterwaveReconciler } from './flutterwave-reconciler';
 
 const GetOrderByCodeQuery = graphql(`
     query GetOrderByCode($code: String!) {
@@ -78,8 +80,12 @@ interface OrderConfirmationProps {
 }
 
 export async function OrderConfirmation({ paramsPromise, searchParamsPromise }: OrderConfirmationProps) {
-    const { code } = await paramsPromise;
-    const searchParams = searchParamsPromise ? await searchParamsPromise : {};
+    const [{ code }, searchParams, locale] = await Promise.all([
+        paramsPromise,
+        searchParamsPromise ? searchParamsPromise : Promise.resolve({} as Record<string, string | string[] | undefined>),
+        getRouteLocale(),
+    ]);
+
     const rawStatus = typeof searchParams.status === 'string'
         ? searchParams.status.toLowerCase()
         : Array.isArray(searchParams.status)
@@ -93,24 +99,25 @@ export async function OrderConfirmation({ paramsPromise, searchParamsPromise }: 
         ? searchParams.transaction_id[0]
         : undefined;
 
-    if (transactionId && (rawStatus === 'successful' || rawStatus === 'completed')) {
-        try {
-            const shopUrl = process.env.VENDURE_SHOP_API_URL || 'http://localhost:3000/shop-api';
-            const serverUrl = shopUrl.replace(/\/shop-api\/?$/, '');
-            await fetch(`${serverUrl}/payments/flutterwave/verify/${encodeURIComponent(transactionId)}`, {
-                cache: 'no-store',
-            });
-        } catch {
-            // Non-blocking: background verification will also capture it
-        }
+    const isCompletedOrSuccess = rawStatus === 'successful' || rawStatus === 'completed';
+
+    const [translations, orderResult] = await Promise.all([
+        Promise.all([
+            getTranslations({ locale, namespace: 'OrderConfirmation' }),
+            getTranslations({ locale, namespace: 'Common' }),
+        ]),
+        query(GetOrderByCodeQuery, { code }, { useAuthToken: true }),
+    ]);
+
+    const [t, tCommon] = translations;
+    let order = orderResult.data?.orderByCode;
+
+    // Resilient fallback retry: If first lookup returned undefined (e.g. transient DB pool saturation), retry once
+    if (!order) {
+        await new Promise((r) => setTimeout(r, 600));
+        const retryRes = await query(GetOrderByCodeQuery, { code }, { useAuthToken: true });
+        order = retryRes.data?.orderByCode;
     }
-
-    const locale = await getRouteLocale();
-    const t = await getTranslations({ locale, namespace: 'OrderConfirmation' });
-    const tCart = await getTranslations({ locale, namespace: 'Cart' });
-
-    const { data } = await query(GetOrderByCodeQuery, { code }, { useAuthToken: true });
-    const order = data?.orderByCode;
 
     if (!order) {
         notFound();
@@ -132,6 +139,9 @@ export async function OrderConfirmation({ paramsPromise, searchParamsPromise }: 
 
     return (
         <div className="min-h-screen bg-[#FAF8F5] text-[#1D120A] flex flex-col">
+            {!isCancelled && (
+                <FlutterwaveReconciler transactionId={transactionId} orderCode={order.code} />
+            )}
             {/* 1. Hero Breadcrumbs Header Banner */}
             <section className="relative w-full overflow-hidden bg-[#FAF8F5] border-b border-[#E7DED0]/60 pt-28 sm:pt-32 pb-12 sm:pb-16 text-center transition-colors">
                 <div className="absolute left-4 sm:left-12 top-1/2 -translate-y-1/2 w-32 sm:w-44 h-20 pointer-events-none opacity-70">
@@ -148,7 +158,7 @@ export async function OrderConfirmation({ paramsPromise, searchParamsPromise }: 
 
                     <nav aria-label="Fil d'ariane" className="flex items-center justify-center gap-2 text-xs sm:text-sm text-[#3A2418]/60">
                         <Link href="/" className="hover:text-[#A66B2D] transition-colors cursor-pointer">
-                            {tCart('home')}
+                            {tCommon('home')}
                         </Link>
                         <span className="text-[#3A2418]/30">/</span>
                         <Link href="/account/orders" className="hover:text-[#A66B2D] transition-colors cursor-pointer">
@@ -202,8 +212,8 @@ export async function OrderConfirmation({ paramsPromise, searchParamsPromise }: 
 
                 {/* 3. FutureCommerce Golden Header Order Card (Design Reference: 2cacad...) */}
                 <div className="rounded-xl overflow-hidden border border-stone-200/80 dark:border-stone-800 shadow-sm bg-white dark:bg-[#1A120B]">
-                    {/* Golden Banner Header */}
-                    <div className="bg-[#EAA838] dark:bg-[#D4A43C] text-white px-5 py-4 sm:px-7 sm:py-5 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs sm:text-sm font-medium">
+                    {/* VAKAA Luxury Banner Header */}
+                    <div className="bg-[#1D120A] dark:bg-stone-900 text-[#FAF8F5] px-5 py-4 sm:px-7 sm:py-5 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs sm:text-sm font-medium">
                         <div className="space-y-1">
                             <span className="text-white/80 text-[11px] uppercase tracking-wider block">{t('orderId')}</span>
                             <span className="font-bold text-sm sm:text-base text-white">#{order.code}</span>
@@ -270,7 +280,7 @@ export async function OrderConfirmation({ paramsPromise, searchParamsPromise }: 
                                                 className="size-16 sm:size-20 rounded-lg bg-[#F3EFE9] dark:bg-[#20150E] p-1.5 flex items-center justify-center shrink-0 border border-stone-200/60 dark:border-stone-800 group hover:border-[#1B3B2B]/40 transition-colors"
                                             >
                                                 <Image
-                                                    src={line.productVariant.product.featuredAsset.preview}
+                                                    src={normalizeAssetUrl(line.productVariant.product.featuredAsset.preview)}
                                                     alt={line.productVariant.name}
                                                     width={80}
                                                     height={80}

@@ -19,11 +19,13 @@ import {
     Star,
     Check,
     Share2,
+    Sparkles,
 } from 'lucide-react';
 import { addToCart } from '@/features/products/add-to-cart';
 import { toast } from 'sonner';
 import { Price } from '@/features/pricing/price';
 import { useTranslations } from 'next-intl';
+import { useCart } from '@/features/cart/context/cart-context';
 
 function FacebookIcon({ className = "size-4" }: { className?: string }) {
     return (
@@ -54,12 +56,17 @@ interface ProductInfoProps {
         id: string;
         name: string;
         description: string;
+        slug?: string;
         variants: Array<{
             id: string;
             name: string;
             sku: string;
             priceWithTax: number;
             stockLevel: string;
+            customFields?: {
+                allowPreOrder?: boolean | null;
+                preOrderLeadTime?: string | null;
+            } | null;
             options: Array<{
                 id: string;
                 code: string;
@@ -85,13 +92,22 @@ interface ProductInfoProps {
     };
     searchParams: { [key: string]: string | string[] | undefined };
     currencyCode: string;
+    averageRating?: number;
+    reviewsCount?: number;
 }
 
-export function ProductInfo({ product, searchParams, currencyCode }: ProductInfoProps) {
+export function ProductInfo({
+    product,
+    searchParams,
+    currencyCode,
+    averageRating = 5.0,
+    reviewsCount = 28,
+}: ProductInfoProps) {
     const t = useTranslations('Product');
     const pathname = usePathname();
     const router = useRouter();
     const currentSearchParams = useSearchParams();
+    const cart = useCart();
     const [isPending, startTransition] = useTransition();
     const [isAdded, setIsAdded] = useState(false);
     const [quantity, setQuantity] = useState(1);
@@ -155,40 +171,58 @@ export function ProductInfo({ product, searchParams, currencyCode }: ProductInfo
     const handleAddToCart = async () => {
         if (!selectedVariant) return;
 
-        startTransition(async () => {
-            const result = await addToCart(selectedVariant.id, quantity);
-
-            if (result.success) {
-                setIsAdded(true);
-                toast.success(t('addedToCartMessage'), {
-                    description: t('addedToCartDescription', { name: product.name }),
-                });
-                setTimeout(() => setIsAdded(false), 2000);
-            } else {
-                toast.error(t('errorTitle'), {
-                    description: result.error || t('errorAddToCart'),
-                });
-            }
-        });
+        setIsAdded(true);
+        try {
+            await cart.addItem({
+                variantId: selectedVariant.id,
+                slug: product.slug,
+                name: product.name,
+                priceWithTax: selectedVariant.priceWithTax,
+                sku: selectedVariant.sku,
+                quantity,
+            });
+            toast.success(t('addedToCartMessage'), {
+                description: t('addedToCartDescription', { name: product.name }),
+            });
+        } catch (err: any) {
+            setIsAdded(false);
+            toast.error(t('errorTitle'), {
+                description: err?.message || t('errorAddToCart'),
+            });
+        } finally {
+            setTimeout(() => setIsAdded(false), 2000);
+        }
     };
 
     const handleBuyNow = async () => {
         if (!selectedVariant) return;
 
-        startTransition(async () => {
-            const result = await addToCart(selectedVariant.id, quantity);
-            if (result.success) {
-                router.push('/checkout');
-            } else {
-                toast.error(t('errorTitle'), {
-                    description: result.error || t('errorAddToCart'),
-                });
-            }
-        });
+        try {
+            await cart.addItem({
+                variantId: selectedVariant.id,
+                slug: product.slug,
+                name: product.name,
+                priceWithTax: selectedVariant.priceWithTax,
+                sku: selectedVariant.sku,
+                quantity,
+            });
+            router.push('/checkout');
+        } catch (err: any) {
+            toast.error(t('errorTitle'), {
+                description: err?.message || t('errorAddToCart'),
+            });
+        }
     };
 
-    const isInStock = selectedVariant && selectedVariant.stockLevel !== 'OUT_OF_STOCK';
-    const canAddToCart = selectedVariant && isInStock;
+    const isExplicitOutOfStock = selectedVariant?.stockLevel === 'OUT_OF_STOCK' || selectedVariant?.stockLevel === '0';
+    const numericStock = selectedVariant && !isNaN(Number(selectedVariant.stockLevel)) && Number(selectedVariant.stockLevel) > 0
+        ? Number(selectedVariant.stockLevel)
+        : null;
+    const isLowStock = numericStock !== null && numericStock <= 5;
+    const isPreOrder = isExplicitOutOfStock && Boolean(selectedVariant?.customFields?.allowPreOrder);
+    const isInStock = (!isExplicitOutOfStock && selectedVariant !== null) || isPreOrder;
+    const canAddToCart = Boolean(selectedVariant && (isInStock || isPreOrder));
+    const maxQuantity = numericStock !== null ? numericStock : 10;
 
     // Clean plain-text description snippet for the buy box (full description lives in tabs)
     const cleanSnippet = useMemo(() => {
@@ -199,56 +233,66 @@ export function ProductInfo({ product, searchParams, currencyCode }: ProductInfo
     const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
     return (
-        <div className="space-y-5 text-[#1D120A]">
+        <div className="space-y-5 text-[#1c1b18]">
             {/* Category Micro-Tag & Stock Badge Row */}
             <div className="flex items-center justify-between gap-3">
-                <span className="font-sans text-xs font-bold uppercase tracking-wider text-[#A66B2D]">
+                <span className="font-sans text-xs font-bold uppercase tracking-wider text-[#D4A43C]">
                     Maroquinerie d’Art & Raphia
                 </span>
 
-                {isInStock ? (
+                {isPreOrder ? (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-semibold bg-[#D4A43C]/10 text-[#D4A43C] border border-[#D4A43C]/20">
+                        <Sparkles className="size-3 text-[#D4A43C]" />
+                        <span>Sur Mesure / Précommande</span>
+                    </span>
+                ) : isExplicitOutOfStock ? (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+                        {t('outOfStock')}
+                    </span>
+                ) : isLowStock ? (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200/80">
+                        <span className="size-1.5 rounded-full bg-amber-500 animate-pulse" />
+                        <span>Plus que {numericStock} {numericStock > 1 ? 'exemplaires en atelier' : 'exemplaire en atelier'}</span>
+                    </span>
+                ) : (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-semibold bg-[#E8F5E9] text-[#2E7D32] border border-[#C8E6C9]">
                         <span className="size-1.5 rounded-xs bg-[#2E7D32]" />
                         <span>{t('inStock')}</span>
                     </span>
-                ) : (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
-                        {t('outOfStock')}
-                    </span>
                 )}
             </div>
 
-            {/* Product Title (Modern Title Case, Plus Jakarta Sans) */}
-            <h1 className="font-sans text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[#1D120A] leading-tight">
+            {/* Product Title */}
+            <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[#1c1b18] leading-tight">
                 {product.name}
             </h1>
 
-            {/* Micro-Rating & Social Proof Row (FutureCommerce style) */}
+            {/* Micro-Rating & Social Proof Row */}
             <div className="flex items-center gap-3 text-xs sm:text-sm">
                 <div className="flex items-center gap-1 text-[#D4A43C]">
                     {Array.from({ length: 5 }).map((_, i) => (
                         <Star key={i} className="size-4 fill-[#D4A43C] text-[#D4A43C]" />
                     ))}
                 </div>
-                <span className="font-bold text-[#1D120A]">5.0</span>
-                <span className="text-[#3A2418]/50">(28 avis)</span>
+                <span className="font-bold text-[#1c1b18]">{Number(averageRating).toFixed(1)}</span>
+                <span className="text-[#7d796f]">({reviewsCount} {reviewsCount > 1 ? 'avis' : 'avis'})</span>
             </div>
 
             {/* Price Display */}
             {selectedVariant && (
                 <div className="pt-1">
-                    <div className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#1D120A] tabular-nums">
+                    <div className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#1c1b18] tabular-nums font-mono">
                         <Price value={selectedVariant.priceWithTax} currencyCode={currencyCode} />
                     </div>
                 </div>
             )}
 
             {/* Short Narrative Snippet */}
-            <p className="text-xs sm:text-sm text-[#3A2418]/80 leading-relaxed font-sans">
+            <p className="text-xs sm:text-sm text-[#57544c] leading-relaxed font-sans">
                 {cleanSnippet || 'Création d’exception façonnée à la main en Afrique, mariant la noblesse du raphia sauvage au cuir pleine fleur tanné aux extraits végétaux.'}
             </p>
 
-            <Separator className="bg-[#E7DED0]/80" />
+            <Separator className="bg-[#e2ddd2]" />
 
             {/* Option Groups / Color Selectors */}
             {product.optionGroups.length > 0 && (
@@ -258,9 +302,9 @@ export function ProductInfo({ product, searchParams, currencyCode }: ProductInfo
                         return (
                             <div key={group.id} className="space-y-2.5">
                                 <div className="flex items-center justify-between text-xs font-semibold">
-                                    <span className="text-[#3A2418]/80">{group.name} :</span>
+                                    <span className="text-[#57544c]">{group.name} :</span>
                                     {activeOption && (
-                                        <span className="text-[#1D120A] font-bold">{activeOption.name}</span>
+                                        <span className="text-[#1c1b18] font-bold">{activeOption.name}</span>
                                     )}
                                 </div>
 
@@ -274,8 +318,8 @@ export function ProductInfo({ product, searchParams, currencyCode }: ProductInfo
                                                 onClick={() => handleOptionChange(group.id, option.id)}
                                                 className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                                                     isSelected
-                                                        ? 'bg-[#1D120A] text-[#FAF8F5] shadow-sm'
-                                                        : 'bg-[#F3EFE9] text-[#1D120A] hover:bg-[#EBE5DC] border border-[#E7DED0]/70'
+                                                        ? 'bg-[#1D120A] text-white shadow-xs'
+                                                        : 'bg-[#fbfaf7] text-[#1c1b18] hover:bg-white border border-[#e2ddd2]'
                                                 }`}
                                             >
                                                 {option.name}
@@ -292,35 +336,35 @@ export function ProductInfo({ product, searchParams, currencyCode }: ProductInfo
             {/* Quantity Stepper & Dual CTAs (Matching ff98ca... reference) */}
             <div className="pt-2 space-y-3">
                 <div className="flex flex-wrap sm:flex-nowrap items-center gap-3">
-                    {/* Stepper [-] 1 [+] */}
-                    <div className="inline-flex items-center rounded-xl bg-[#F3EFE9] border border-[#E7DED0] h-12 px-2 text-[#1D120A]">
+                    {/* Stepper [-] 1 [+] in rounded-full pill */}
+                    <div className="inline-flex items-center rounded-full bg-[#fbfaf7] border border-[#e2ddd2] h-12 px-3 text-[#1c1b18]">
                         <button
                             type="button"
                             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                             disabled={quantity <= 1}
-                            className="size-8 rounded-lg flex items-center justify-center hover:bg-white text-[#1D120A] disabled:opacity-30 transition-colors cursor-pointer"
+                            className="size-7 rounded-full flex items-center justify-center hover:bg-white text-[#1c1b18] disabled:opacity-30 transition-colors cursor-pointer"
                             aria-label="Diminuer la quantité"
                         >
                             <Minus className="size-3.5" />
                         </button>
-                        <span className="w-10 text-center font-bold text-sm tabular-nums">
+                        <span className="w-10 text-center font-bold text-sm tabular-nums font-mono">
                             {quantity}
                         </span>
                         <button
                             type="button"
-                            onClick={() => setQuantity((q) => Math.min(10, q + 1))}
-                            disabled={quantity >= 10}
-                            className="size-8 rounded-lg flex items-center justify-center hover:bg-white text-[#1D120A] disabled:opacity-30 transition-colors cursor-pointer"
+                            onClick={() => setQuantity((q) => Math.min(maxQuantity, q + 1))}
+                            disabled={quantity >= maxQuantity}
+                            className="size-7 rounded-full flex items-center justify-center hover:bg-white text-[#1c1b18] disabled:opacity-30 transition-colors cursor-pointer"
                             aria-label="Augmenter la quantité"
                         >
                             <Plus className="size-3.5" />
                         </button>
                     </div>
 
-                    {/* Primary CTA: Add To Cart (Deep Atelier Green) */}
+                    {/* Primary CTA: Add To Cart / Pre-Order */}
                     <Button
                         size="lg"
-                        className="flex-1 h-12 rounded-xl bg-[#1B3B2B] hover:bg-[#122A1E] text-white text-xs font-bold uppercase tracking-wider shadow-sm transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+                        className="flex-1 h-12 rounded-full bg-[#1c1b18] hover:bg-[#3A2418] text-[#fbfaf7] text-xs font-bold uppercase tracking-wider shadow-sm transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
                         disabled={!canAddToCart || isPending}
                         onClick={handleAddToCart}
                     >
@@ -328,6 +372,11 @@ export function ProductInfo({ product, searchParams, currencyCode }: ProductInfo
                             <>
                                 <Check className="mr-2 size-4" />
                                 <span>{t('addedToCart')}</span>
+                            </>
+                        ) : isPreOrder ? (
+                            <>
+                                <Sparkles className="mr-2 size-4 text-[#D4A43C]" />
+                                <span>{isPending ? t('adding') : 'Commander sur Mesure'}</span>
                             </>
                         ) : (
                             <>
@@ -337,17 +386,17 @@ export function ProductInfo({ product, searchParams, currencyCode }: ProductInfo
                         )}
                     </Button>
 
-                    {/* Secondary CTA: Buy Now (Warm Gold/Amber) */}
+                    {/* Secondary CTA: Buy Now */}
                     <Button
                         size="lg"
-                        className="h-12 px-6 rounded-xl bg-[#D4A43C] hover:bg-[#BF9232] text-white text-xs font-bold uppercase tracking-wider shadow-sm transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+                        className="h-12 px-7 rounded-full bg-[#D4A43C] hover:bg-[#c29330] text-[#1D120A] font-semibold text-xs uppercase tracking-wider shadow-sm transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
                         disabled={!canAddToCart || isPending}
                         onClick={handleBuyNow}
                     >
                         <span>Commander</span>
                     </Button>
 
-                    {/* Wishlist Heart Button */}
+                    {/* Wishlist Heart Button (Rounded-full) */}
                     <button
                         type="button"
                         onClick={() => {
@@ -355,15 +404,22 @@ export function ProductInfo({ product, searchParams, currencyCode }: ProductInfo
                             toast.success(isWishlisted ? 'Retiré de vos favoris' : 'Ajouté à vos favoris d’atelier');
                         }}
                         aria-label="Ajouter aux favoris"
-                        className={`size-12 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${
+                        className={`size-12 rounded-full border flex items-center justify-center transition-all cursor-pointer ${
                             isWishlisted
                                 ? 'bg-rose-50 border-rose-200 text-rose-600'
-                                : 'bg-[#F3EFE9] border-[#E7DED0] text-[#1D120A] hover:bg-white'
+                                : 'bg-[#fbfaf7] border-[#e2ddd2] text-[#1c1b18] hover:bg-white'
                         }`}
                     >
                         <Heart className={`size-5 ${isWishlisted ? 'fill-rose-600' : ''}`} />
                     </button>
                 </div>
+
+                {isPreOrder && selectedVariant?.customFields?.preOrderLeadTime && (
+                    <div className="p-3.5 rounded-xl bg-[#D4A43C]/10 border border-[#D4A43C]/20 text-xs text-[#1c1b18] flex items-center gap-2.5">
+                        <Sparkles className="size-4 text-[#D4A43C] shrink-0" />
+                        <span><strong>Confection sur mesure :</strong> Pièce réalisée à la commande dans notre atelier sous {selectedVariant.customFields.preOrderLeadTime}.</span>
+                    </div>
+                )}
 
                 {/* Direct WhatsApp Concierge Button */}
                 <a
@@ -378,38 +434,38 @@ export function ProductInfo({ product, searchParams, currencyCode }: ProductInfo
             </div>
 
             {/* Reassurance Strip */}
-            <div className="py-2.5 px-3 rounded-xl bg-[#F3EFE9]/70 border border-[#E7DED0]/60 flex items-center justify-between text-[11px] text-[#3A2418]/70 font-medium">
+            <div className="py-2.5 px-3 rounded-xl bg-[#fbfaf7] border border-[#e2ddd2] flex items-center justify-between text-[11px] text-[#57544c] font-medium">
                 <span className="flex items-center gap-1.5"><ShieldCheck className="size-3.5 text-[#D4A43C]" /> Authenticité Garantie</span>
-                <span className="text-[#E7DED0]">|</span>
+                <span className="text-[#e2ddd2]">|</span>
                 <span className="flex items-center gap-1.5"><CheckCircle2 className="size-3.5 text-[#D4A43C]" /> Fait Main en Afrique</span>
-                <span className="text-[#E7DED0]">|</span>
+                <span className="text-[#e2ddd2]">|</span>
                 <span className="flex items-center gap-1.5"><Truck className="size-3.5 text-[#D4A43C]" /> Envoi Sécurisé</span>
             </div>
 
-            <Separator className="bg-[#E7DED0]/80" />
+            <Separator className="bg-[#e2ddd2]" />
 
-            {/* Metadata & Social Share (FutureCommerce reference matching) */}
-            <div className="space-y-2 text-xs text-[#3A2418]/75">
+            {/* Metadata & Social Share */}
+            <div className="space-y-2 text-xs text-[#57544c]">
                 {selectedVariant && (
                     <div className="flex items-center gap-2">
-                        <span className="font-bold text-[#1D120A]">SKU :</span>
+                        <span className="font-bold text-[#1c1b18]">SKU :</span>
                         <span className="font-mono text-[11px]">{selectedVariant.sku || 'VAK-CAB-ART-01'}</span>
                     </div>
                 )}
 
                 <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-bold text-[#1D120A]">Tags :</span>
+                    <span className="font-bold text-[#1c1b18]">Tags :</span>
                     <span>Maroquinerie d’Exception, Raphia Sauvage, Fait Main, Cuir Végétal</span>
                 </div>
 
                 <div className="flex items-center gap-3 pt-1">
-                    <span className="font-bold text-[#1D120A]">Partager :</span>
-                    <div className="flex items-center gap-2 text-[#3A2418]/70">
+                    <span className="font-bold text-[#1c1b18]">Partager :</span>
+                    <div className="flex items-center gap-2 text-[#57544c]">
                         <a
                             href={`https://wa.me/?text=${encodeURIComponent(`Découvrez cette création VAKÁA : ${currentUrl}`)}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="size-7 rounded-lg bg-[#F3EFE9] hover:bg-[#25D366] hover:text-white flex items-center justify-center transition-colors"
+                            className="size-7 rounded-lg bg-[#fbfaf7] border border-[#e2ddd2] hover:bg-[#25D366] hover:text-white flex items-center justify-center transition-colors"
                             aria-label="Partager sur WhatsApp"
                         >
                             <MessageCircle className="size-3.5" />
@@ -418,7 +474,7 @@ export function ProductInfo({ product, searchParams, currencyCode }: ProductInfo
                             href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="size-7 rounded-lg bg-[#F3EFE9] hover:bg-[#1877F2] hover:text-white flex items-center justify-center transition-colors"
+                            className="size-7 rounded-lg bg-[#fbfaf7] border border-[#e2ddd2] hover:bg-[#1877F2] hover:text-white flex items-center justify-center transition-colors"
                             aria-label="Partager sur Facebook"
                         >
                             <FacebookIcon className="size-3.5" />
@@ -427,7 +483,7 @@ export function ProductInfo({ product, searchParams, currencyCode }: ProductInfo
                             href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(currentUrl)}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="size-7 rounded-lg bg-[#F3EFE9] hover:bg-[#BD081C] hover:text-white flex items-center justify-center transition-colors"
+                            className="size-7 rounded-lg bg-[#fbfaf7] border border-[#e2ddd2] hover:bg-[#BD081C] hover:text-white flex items-center justify-center transition-colors"
                             aria-label="Partager sur Pinterest"
                         >
                             <PinterestIcon className="size-3.5" />
@@ -436,7 +492,7 @@ export function ProductInfo({ product, searchParams, currencyCode }: ProductInfo
                             href="https://instagram.com/vakaaofficial"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="size-7 rounded-lg bg-[#F3EFE9] hover:bg-[#E4405F] hover:text-white flex items-center justify-center transition-colors"
+                            className="size-7 rounded-lg bg-[#fbfaf7] border border-[#e2ddd2] hover:bg-[#E4405F] hover:text-white flex items-center justify-center transition-colors"
                             aria-label="Partager sur Instagram"
                         >
                             <InstagramIcon className="size-3.5" />

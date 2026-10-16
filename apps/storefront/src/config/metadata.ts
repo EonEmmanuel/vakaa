@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { normalizeAssetUrl } from '@/lib/utils';
 
 export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || 'VAKAA';
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://vakaa.com';
@@ -47,7 +48,7 @@ export function buildOgImages(
 
   return [
     {
-      url: imageUrl,
+      url: normalizeAssetUrl(imageUrl),
       alt: alt || 'Product image',
     },
   ];

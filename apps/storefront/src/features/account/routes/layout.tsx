@@ -3,7 +3,7 @@ import {Suspense} from 'react';
 import {noIndexRobots} from '@/config/metadata';
 import {AccountNavLinks, type NavItem} from '@/features/account/components/account-nav-links';
 import {DecorativeDotCluster} from '@/components/ui/decorative-dot-cluster';
-import {TrustBar} from '@/site/home/trust-bar';
+import {TrustBar} from '@/components/shared/trust-bar';
 import {Link} from '@/platform/i18n/navigation';
 import {getRouteLocale} from '@/platform/i18n/server';
 import {getTranslations} from 'next-intl/server';

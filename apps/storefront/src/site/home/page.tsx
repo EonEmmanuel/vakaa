@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import {Suspense} from 'react';
 import {getRouteLocale} from '@/platform/i18n/server';
 import {HeroSection} from '@/site/home/hero-section';
+import {RollingTextMarquee} from '@/site/home/rolling-text-marquee';
 import {BestSellersPreview} from '@/site/home/best-sellers-preview';
 import {FeaturedBagSpotlight} from '@/site/home/featured-bag-spotlight';
 import {TrustBar} from '@/site/home/trust-bar';
@@ -45,7 +46,13 @@ export default async function Home() {
             {/* Cinematic Full-Viewport Hero */}
             <HeroSection />
 
-            {/* Flagship Product Showcase */}
+            {/* Architectural Rolling Text Marquee (Exact KVIST Craftsmanship Ticker) */}
+            <RollingTextMarquee />
+
+            {/* Category Bento Grid (Exact KVIST 'Find your corner' Section) */}
+            <CollectionGridPreview />
+
+            {/* Flagship Product Showcase (Exact KVIST 'This week's favourites' Section) */}
             <Suspense fallback={<div className="h-96 w-full bg-background" />}>
                 <BestSellersPreview />
             </Suspense>
@@ -53,26 +60,17 @@ export default async function Home() {
             {/* Editorial Product Spotlight — Asymmetric Split */}
             <FeaturedBagSpotlight />
 
-            {/* Minimal Trust Strip */}
+            {/* The Promise Bento Strip (Exact KVIST 'Buy once, keep for good' Section) */}
             <TrustBar />
 
-            {/* Dark Contrast: Limited Edition Spotlight */}
-            <AtelierSpotlightCountdown />
-
-            {/* Lookbook Scroll — Horizontal Product Reel */}
-            <FuturisticAtelierReel />
-
-            {/* Category Bento Grid */}
-            <CollectionGridPreview />
-
-            {/* Client Testimonials */}
+            {/* Client Testimonials (Exact KVIST 'Lived in, loved back' Section) */}
             <TestimonialsSection />
 
             {/* Instagram Mosaic */}
             <InstagramFeed />
 
-            {/* FAQ Accordion */}
-            <FaqSection />
+            {/* FAQ Accordion (commented out per user instruction) */}
+            {/* <FaqSection /> */}
 
             {/* Dark Newsletter CTA */}
             <PrivateCircleNewsletter />

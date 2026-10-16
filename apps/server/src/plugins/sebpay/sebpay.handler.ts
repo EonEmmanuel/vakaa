@@ -50,8 +50,18 @@ export const sebpayPaymentHandler = new PaymentMethodHandler({
         // Resolve API credentials: args take precedence over env
         const publicKey = args.publicKey || process.env.SEBPAY_PUBLIC_KEY || '';
         const secretKey = args.secretKey || process.env.SEBPAY_SECRET_KEY || '';
-        const isSandbox = args.isSandbox ?? (process.env.SEBPAY_SANDBOX === 'true');
+        const isSandbox = process.env.APP_ENV === 'dev'
+            ? (args.isSandbox ?? true)
+            : process.env.SEBPAY_SANDBOX === 'true';
         const webhookUrl = process.env.SEBPAY_WEBHOOK_URL || '';
+
+        if (!isSandbox && (!publicKey || !secretKey || !webhookUrl)) {
+            return {
+                amount,
+                state: 'Declined',
+                errorMessage: 'SebPay is not configured for live payments.',
+            };
+        }
 
         const client = new SebpayClient({
             publicKey,

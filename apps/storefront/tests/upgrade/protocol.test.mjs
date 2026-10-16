@@ -28,6 +28,10 @@ async function write(root, relative, content) {
     await writeFile(file, content);
 }
 
+async function readText(file) {
+    return (await readFile(file, 'utf8')).replace(/\r\n/g, '\n');
+}
+
 async function installSchemas(root) {
     for (const schema of ['storefront.schema.json', 'upgrade-manifest.schema.json']) {
         await write(root, `schemas/${schema}`, await readFile(path.join(repositoryRoot, 'schemas', schema), 'utf8'));
@@ -235,10 +239,10 @@ test('detached downstream repositories prepare, verify, and finalize an upgrade'
 
     const prepared = await prepareUpgrade(downstream, '1.1.0');
     assert.equal(git(downstream, 'for-each-ref', '--format=%(refname)', 'refs/storefront-upgrades'), '');
-    assert.equal(await readFile(path.join(downstream, 'src/value.txt'), 'utf8'), 'downstream customization\n');
+    assert.equal(await readText(path.join(downstream, 'src/value.txt')), 'downstream customization\n');
     assert.match(await readFile(path.join(prepared.contextDirectory, 'INTEGRATION.md'), 'utf8'), /Downstream intent wins/);
-    assert.equal(await readFile(path.join(prepared.contextDirectory, 'baseline/src/value.txt'), 'utf8'), 'upstream v1\n');
-    assert.equal(await readFile(path.join(prepared.contextDirectory, 'target/src/value.txt'), 'utf8'), 'upstream v1.1\n');
+    assert.equal(await readText(path.join(prepared.contextDirectory, 'baseline/src/value.txt')), 'upstream v1\n');
+    assert.equal(await readText(path.join(prepared.contextDirectory, 'target/src/value.txt')), 'upstream v1.1\n');
 
     const report = `# Upgrade report
 
@@ -293,7 +297,7 @@ test('an explicitly acknowledged moved tag uses the recorded commit as baseline'
 
     await assert.rejects(prepareUpgrade(downstream, '1.1.0'), /--allow-moved-baseline/);
     const prepared = await prepareUpgrade(downstream, '1.1.0', {allowMovedBaseline: initialized.commit});
-    assert.equal(await readFile(path.join(prepared.contextDirectory, 'baseline/src/value.txt'), 'utf8'), 'upstream v1\n');
+    assert.equal(await readText(path.join(prepared.contextDirectory, 'baseline/src/value.txt')), 'upstream v1\n');
 });
 
 test('worktree fingerprints include ignored environment and survive a content-preserving commit', async t => {
@@ -313,10 +317,21 @@ test('worktree fingerprints include ignored environment and survive a content-pr
     assert.notEqual(worktreeFingerprint(temporary), beforeEnvironmentChange);
 
     await write(temporary, 'tracked.txt', 'after\n');
-    await mkdir(path.join(temporary, 'directory'));
-    await symlink('directory', path.join(temporary, 'directory-link'));
-    const beforeCommit = worktreeFingerprint(temporary);
-    git(temporary, 'add', 'tracked.txt', 'directory-link');
-    git(temporary, 'commit', '-m', 'test: preserve fingerprint content');
-    assert.equal(worktreeFingerprint(temporary), beforeCommit);
+    try {
+        await mkdir(path.join(temporary, 'directory'));
+        await symlink('directory', path.join(temporary, 'directory-link'));
+        const beforeCommit = worktreeFingerprint(temporary);
+        git(temporary, 'add', 'tracked.txt', 'directory-link');
+        git(temporary, 'commit', '-m', 'test: preserve fingerprint content');
+        assert.equal(worktreeFingerprint(temporary), beforeCommit);
+    } catch (error) {
+        if (process.platform === 'win32' && error?.code === 'EPERM') {
+            const beforeCommit = worktreeFingerprint(temporary);
+            git(temporary, 'add', 'tracked.txt');
+            git(temporary, 'commit', '-m', 'test: preserve fingerprint content');
+            assert.equal(worktreeFingerprint(temporary), beforeCommit);
+        } else {
+            throw error;
+        }
+    }
 });

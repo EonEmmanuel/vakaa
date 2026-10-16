@@ -14,12 +14,17 @@
     "start:server": "node ./dist/index.js",
     "start:worker": "node ./dist/index-worker.js",
     "start": "vendure start all",
-    "populate": "ts-node ./src/populate.ts"
+    "populate": "ts-node ./src/populate.ts",
+    "migrate:assets:r2": "ts-node ./src/scripts/migrate-assets-to-r2.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1149.0",
+    "@aws-sdk/lib-storage": "^3.1149.0",
     "@nestjs/common": "^11.0.12",
     "@nestjs/core": "^11.0.12",
+    "@nestjs/graphql": "^14.0.3",
     "@pinelab/pinelab-invoice-plugin": "^6.2.0",
+    "@pinelab/vendure-plugin-limited-products": "^3.5.1",
     "@vendure/asset-server-plugin": "3.7.2",
     "@vendure/core": "3.7.2",
     "@vendure/dashboard": "3.7.2",
@@ -27,13 +32,16 @@
     "@vendure/graphiql-plugin": "3.7.2",
     "dotenv": "17.4.2",
     "gql.tada": "^1.11.2",
+    "graphql-tag": "^2.12.7",
     "lru-cache": "7.18.3",
+    "mime-types": "^3.0.2",
     "pg": "8.23.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
+    "@types/mime-types": "^3.0.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.0.4",
     "@vendure/cli": "3.7.2",

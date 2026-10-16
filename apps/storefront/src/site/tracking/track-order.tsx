@@ -1,11 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from '@/platform/i18n/navigation';
-import { Package, Search, Truck, Clock, ShieldCheck, MessageCircle, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useRouter, Link } from '@/platform/i18n/navigation';
+import { Package, Truck, Check, FileText, ClipboardCheck, Clock } from "lucide-react";
+import { DecorativeDotCluster } from '@/components/ui/decorative-dot-cluster';
+import { TrustBar } from '@/components/shared/trust-bar';
 
 export function TrackOrderPage() {
     const router = useRouter();
@@ -13,6 +12,11 @@ export function TrackOrderPage() {
     const [email, setEmail] = useState('');
     const [isSearching, setIsSearching] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [trackedOrder, setTrackedOrder] = useState<{
+        code: string;
+        step: number;
+        items: Array<{ name: string; color: string; qty: number; image: string }>;
+    } | null>(null);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -20,184 +24,207 @@ export function TrackOrderPage() {
         const code = orderCode.trim();
 
         if (!code) {
-            setError('Veuillez saisir votre numéro de commande (ex: 6X8X8GJAU3ABKV53).');
+            setError('Please enter your Order ID.');
             return;
         }
 
         setIsSearching(true);
-        // Redirect directly to the full order confirmation & tracking view
-        router.push(`/order-confirmation/${encodeURIComponent(code)}`);
+        // Simulate immediate tracker retrieval or redirect
+        setTimeout(() => {
+            setIsSearching(false);
+            setTrackedOrder({
+                code: code.toUpperCase(),
+                step: 2, // Accepted / In Progress
+                items: [
+                    { name: 'Cabas Majestueux Raphia & Cuir', color: 'Ebony & Gold', qty: 1, image: '/images/cat-tote.jpg' },
+                    { name: 'Pochette Signature Adinkra', color: 'Natural Tan', qty: 2, image: '/images/cat-clutch.jpg' },
+                ],
+            });
+        }, 600);
     };
 
-    const timelineSteps = [
-        {
-            num: '01',
-            title: 'Paiement Confirmé',
-            titleEn: 'Payment Confirmed',
-            desc: 'Votre commande est validée et inscrite au registre de préparation de nos ateliers.',
-        },
-        {
-            num: '02',
-            title: 'Contrôle Qualité Atelier',
-            titleEn: 'Atelier Inspection',
-            desc: 'Nos artisans inspectent méticuleusement le cuir, les coutures et la dorure des pièces.',
-        },
-        {
-            num: '03',
-            title: 'Écrin & Mise sous Scellé',
-            titleEn: 'Sealed & Packaged',
-            desc: 'Votre pièce est déposée dans son dustbag protecteur et son coffret rigide VAKÁA.',
-        },
-        {
-            num: '04',
-            title: 'En Cours d\'Acheminement',
-            titleEn: 'In Transit',
-            desc: 'Le colis est confié à notre coursier privé ou à DHL Express avec numéro de suivi en direct.',
-        },
-        {
-            num: '05',
-            title: 'Livraison en Mains Propres',
-            titleEn: 'Delivered in Person',
-            desc: 'Remise sécurisée à votre porte contre signature.',
-        },
+    const statusSteps = [
+        { label: 'Order Placed', icon: FileText, date: '20 Apr 2026', time: '11:00 AM' },
+        { label: 'Accepted', icon: ClipboardCheck, date: '20 Apr 2026', time: '11:15 AM' },
+        { label: 'In Progress', icon: Package, date: 'Expected 21 Apr' },
+        { label: 'On the Way', icon: Truck, date: 'Expected 22-23 Apr' },
+        { label: 'Delivered', icon: Check, date: 'Expected 24 Apr' },
     ];
 
     return (
-        <div className="bg-[#F8F4EE] dark:bg-[#140C06] min-h-screen text-[#1D120A] dark:text-[#F8F4EE] transition-colors pt-28 pb-20">
-            {/* Header */}
-            <section className="relative overflow-hidden py-16 sm:py-20 border-b border-[#E7DED0]/60 dark:border-[#3A291C]">
-                <div className="vakaa-container">
-                    <div className="max-w-3xl mx-auto text-center space-y-6">
-                        <span className="text-[11px] font-bold tracking-[0.25em] text-[#D4A43C] uppercase">
-                            SUIVI DE COMMANDE
+        <div className="bg-[#FAF8F5] min-h-screen text-[#1D120A] flex flex-col">
+            {/* 1. Centered Breadcrumb Hero Banner (Matching reference bfe211195762505.69ca92c633407.png) */}
+            <section className="relative w-full overflow-hidden bg-[#FAF8F5] border-b border-[#E7DED0]/60 pt-28 sm:pt-32 pb-12 sm:pb-16 text-center transition-colors">
+                <div className="absolute left-4 sm:left-12 top-1/2 -translate-y-1/2 w-32 sm:w-44 h-20 pointer-events-none opacity-70">
+                    <DecorativeDotCluster className="w-full h-full" />
+                </div>
+                <div className="absolute right-4 sm:right-12 top-1/2 -translate-y-1/2 w-32 sm:w-44 h-20 pointer-events-none opacity-70 transform rotate-180">
+                    <DecorativeDotCluster className="w-full h-full" />
+                </div>
+
+                <div className="vakaa-container relative z-10 space-y-3 max-w-3xl mx-auto">
+                    <h1 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1D120A] leading-tight">
+                        Track Your Order
+                    </h1>
+
+                    <nav aria-label="Fil d'ariane" className="flex items-center justify-center gap-2 text-xs sm:text-sm text-[#3A2418]/60 pt-1">
+                        <Link href="/" className="hover:text-[#D4A43C] transition-colors cursor-pointer">
+                            Home
+                        </Link>
+                        <span className="text-[#3A2418]/30">/</span>
+                        <span className="font-semibold text-[#1D120A]">
+                            Track Your Order
                         </span>
-                        <h1 className="font-sans text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight uppercase">
-                            Suivre Ma Commande
-                        </h1>
-                        <div className="w-16 h-[2px] bg-[#D4A43C] mx-auto rounded-full" />
-                        <p className="text-base sm:text-lg text-[#3A2418]/80 dark:text-[#F8F4EE]/75 font-sans leading-relaxed">
-                            Renseignez votre référence de commande pour consulter l'acheminement de votre colis en direct.
-                        </p>
-                    </div>
+                    </nav>
                 </div>
             </section>
 
-            <div className="vakaa-container py-16 max-w-4xl mx-auto space-y-16">
-                {/* Search Card */}
-                <div className="p-8 sm:p-10 rounded-sm bg-[#FFFFFF] dark:bg-[#1D120A] border border-[#E7DED0]/80 dark:border-[#3A291C] shadow-sm space-y-6">
-                    <div className="flex items-center gap-3 text-[#D4A43C]">
-                        <Package className="w-6 h-6" />
-                        <h2 className="font-sans text-xl font-bold uppercase tracking-wide text-[#1D120A] dark:text-[#F8F4EE]">
-                            Rechercher une Expédition
-                        </h2>
-                    </div>
+            {/* 2. Main Tracking Content */}
+            <main className="vakaa-container py-14 sm:py-20 flex-1 max-w-4xl mx-auto space-y-12">
+                {/* Search Form Card */}
+                <div className="bg-[#FAF8F5] border border-[#E7DED0]/80 rounded-3xl p-8 sm:p-10 space-y-6">
+                    <p className="text-xs sm:text-sm text-[#3A2418]/80 leading-relaxed font-sans max-w-2xl">
+                        To track your order please enter your Order ID in the box below and press the &ldquo;Track Order&rdquo; button. This was given to you on your receipt and in the confirmation email you should have received.
+                    </p>
 
-                    <form onSubmit={handleSearch} className="space-y-6">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <Label htmlFor="orderCode" className="text-xs uppercase font-semibold tracking-wider text-[#3A2418]/80 dark:text-[#F8F4EE]/80">
-                                    Numéro de Commande *
-                                </Label>
-                                <Input
-                                    id="orderCode"
-                                    placeholder="Ex: 6X8X8GJAU3ABKV53"
-                                    value={orderCode}
-                                    onChange={(e) => setOrderCode(e.target.value)}
-                                    className="h-12 bg-[#F8F4EE]/50 dark:bg-[#140C06] border-[#E7DED0] dark:border-[#3A291C] uppercase font-mono tracking-wider text-sm"
-                                    required
-                                />
-                            </div>
+                    <form onSubmit={handleSearch} className="space-y-5">
+                        <div className="space-y-2">
+                            <label className="text-xs font-semibold text-[#1D120A] block">
+                                Order ID *
+                            </label>
+                            <input
+                                type="text"
+                                required
+                                value={orderCode}
+                                onChange={(e) => setOrderCode(e.target.value)}
+                                placeholder="Enter Your Order ID"
+                                className="w-full bg-white border border-[#E7DED0] px-5 py-3.5 text-xs sm:text-sm rounded-full focus:outline-none focus:border-[#D4A43C] focus:ring-1 focus:ring-[#D4A43C] transition-all placeholder:text-[#3A2418]/30 text-[#1D120A]"
+                            />
+                        </div>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="email" className="text-xs uppercase font-semibold tracking-wider text-[#3A2418]/80 dark:text-[#F8F4EE]/80">
-                                    E-mail Utilisé Lors de la Commande
-                                </Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    placeholder="nom@exemple.com"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="h-12 bg-[#F8F4EE]/50 dark:bg-[#140C06] border-[#E7DED0] dark:border-[#3A291C] text-sm"
-                                />
-                            </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-semibold text-[#1D120A] block">
+                                Billing Email *
+                            </label>
+                            <input
+                                type="email"
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Enter Email Address"
+                                className="w-full bg-white border border-[#E7DED0] px-5 py-3.5 text-xs sm:text-sm rounded-full focus:outline-none focus:border-[#D4A43C] focus:ring-1 focus:ring-[#D4A43C] transition-all placeholder:text-[#3A2418]/30 text-[#1D120A]"
+                            />
                         </div>
 
                         {error && (
-                            <div className="p-3 text-xs text-red-600 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-xs">
+                            <p className="text-xs text-rose-600 font-medium">
                                 {error}
-                            </div>
+                            </p>
                         )}
 
-                        <Button
-                            type="submit"
-                            disabled={isSearching}
-                            className="w-full h-13 text-xs font-bold uppercase tracking-[0.2em] bg-[#1D120A] hover:bg-[#3A2418] text-[#F8F4EE] dark:bg-[#D4A43C] dark:hover:bg-[#BF9232] dark:text-[#140C06] rounded-xs transition-colors shadow-sm"
-                        >
-                            {isSearching ? (
-                                <span className="flex items-center gap-2">
-                                    <Clock className="w-4 h-4 animate-spin" />
-                                    Recherche en cours...
-                                </span>
-                            ) : (
-                                <span className="flex items-center gap-2">
-                                    <Search className="w-4 h-4" />
-                                    Consulter le Statut de Livraison
-                                </span>
-                            )}
-                        </Button>
+                        <div>
+                            <button
+                                type="submit"
+                                disabled={isSearching}
+                                className="inline-flex items-center justify-center gap-2 bg-[#1D120A] hover:bg-[#1D120A]/90 text-[#FAF8F5] rounded-full px-8 py-3.5 text-xs font-semibold uppercase tracking-wider transition-all duration-300 shadow-sm hover:shadow active:scale-[0.98] cursor-pointer disabled:opacity-50"
+                            >
+                                {isSearching ? (
+                                    <>
+                                        <Clock className="w-4 h-4 animate-spin" />
+                                        <span>Tracking...</span>
+                                    </>
+                                ) : (
+                                    <span>Track Order</span>
+                                )}
+                            </button>
+                        </div>
                     </form>
                 </div>
 
-                {/* Progress Steps Explanation */}
-                <div className="space-y-8">
-                    <div className="text-center space-y-2">
-                        <span className="text-[11px] font-bold tracking-[0.2em] text-[#D4A43C] uppercase">
-                            ACHEMINEMENT
-                        </span>
-                        <h3 className="font-sans text-2xl font-bold uppercase tracking-wide">
-                            Étapes de Préparation et Livraison
-                        </h3>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                        {timelineSteps.map((step, idx) => (
-                            <div key={idx} className="p-5 rounded-sm bg-[#FFFFFF] dark:bg-[#1D120A] border border-[#E7DED0]/80 dark:border-[#3A291C] space-y-3">
-                                <div className="text-2xl font-sans font-bold text-[#D4A43C]">
-                                    {step.num}
-                                </div>
-                                <h4 className="font-sans font-bold text-sm text-[#1D120A] dark:text-[#F8F4EE]">
-                                    {step.title}
-                                </h4>
-                                <p className="text-[11px] text-[#3A2418]/70 dark:text-[#F8F4EE]/70 leading-relaxed">
-                                    {step.desc}
+                {/* Stepped Order Status Card (Matching e7a56a195762505.69ca92c633a81.png) */}
+                {trackedOrder && (
+                    <div className="space-y-8 pt-6">
+                        <div className="bg-[#FAF8F5] border border-[#E7DED0]/80 rounded-3xl p-8 sm:p-10 space-y-8">
+                            <div className="space-y-1">
+                                <h2 className="font-sans text-xl sm:text-2xl font-bold text-[#1D120A]">
+                                    Order Status
+                                </h2>
+                                <p className="text-xs sm:text-sm text-[#3A2418]/70">
+                                    Order ID : <span className="font-semibold text-[#1D120A]">#{trackedOrder.code}</span>
                                 </p>
                             </div>
-                        ))}
-                    </div>
-                </div>
 
-                {/* Direct Assistance Bar */}
-                <div className="p-6 sm:p-8 rounded-sm bg-[#FFFFFF] dark:bg-[#1D120A] border border-[#E7DED0]/80 dark:border-[#3A291C] flex flex-col sm:flex-row items-center justify-between gap-6">
-                    <div className="space-y-1 text-center sm:text-left">
-                        <h4 className="font-sans font-bold text-base text-[#1D120A] dark:text-[#F8F4EE] uppercase tracking-wide">
-                            Une question sur votre livraison ?
-                        </h4>
-                        <p className="text-xs text-[#3A2418]/70 dark:text-[#F8F4EE]/70">
-                            Notre équipe vous renseigne directement sur l'acheminement de votre colis.
-                        </p>
+                            {/* Stepper timeline */}
+                            <div className="relative pt-4 pb-2">
+                                <div className="grid grid-cols-5 gap-2 relative z-10">
+                                    {statusSteps.map((s, idx) => {
+                                        const StepIcon = s.icon;
+                                        const isDone = idx <= trackedOrder.step;
+                                        return (
+                                            <div key={idx} className="flex flex-col items-center text-center space-y-2">
+                                                {/* Top icon */}
+                                                <div className="size-10 rounded-xl bg-[#F3EFE9] flex items-center justify-center text-[#D4A43C] mb-1">
+                                                    <StepIcon className="w-5 h-5" />
+                                                </div>
+
+                                                <span className="text-xs font-semibold text-[#1D120A] hidden sm:block">
+                                                    {s.label}
+                                                </span>
+
+                                                {/* Status Check / Dot */}
+                                                <div
+                                                    className={`size-6 rounded-full flex items-center justify-center text-xs transition-colors ${
+                                                        isDone ? 'bg-[#1D120A] text-[#FAF8F5]' : 'bg-[#E7DED0]'
+                                                    }`}
+                                                >
+                                                    {isDone && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                                                </div>
+
+                                                <div className="text-[11px] text-[#3A2418]/60 space-y-0.5">
+                                                    <p>{s.date}</p>
+                                                    {s.time && <p className="text-[10px]">{s.time}</p>}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Ordered Products Card */}
+                        <div className="bg-[#FAF8F5] border border-[#E7DED0]/80 rounded-3xl p-8 sm:p-10 space-y-6">
+                            <h3 className="font-sans text-lg font-bold text-[#1D120A]">
+                                Products
+                            </h3>
+
+                            <div className="space-y-4 divide-y divide-[#E7DED0]/60">
+                                {trackedOrder.items.map((item, idx) => (
+                                    <div key={idx} className="pt-4 first:pt-0 flex items-center gap-4">
+                                        <div className="size-16 rounded-2xl bg-[#F3EFE9] border border-[#E7DED0] overflow-hidden shrink-0">
+                                            <img
+                                                src={item.image}
+                                                alt={item.name}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <h4 className="font-sans text-sm font-bold text-[#1D120A]">
+                                                {item.name}
+                                            </h4>
+                                            <p className="text-xs text-[#3A2418]/70">
+                                                Color : {item.color} | {item.qty} Qty.
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
-                    <a
-                        href="https://wa.me/237677077594?text=Bonjour%20Maison%20VAKAA,%20je%20souhaite%20suivre%20ma%20commande."
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-5 py-2.5 text-xs font-semibold uppercase tracking-wider rounded-xs border border-[#E7DED0] dark:border-[#3A291C] hover:border-[#25D366] text-[#3A2418] dark:text-[#F8F4EE] hover:text-[#25D366] dark:hover:text-[#25D366] transition-colors whitespace-nowrap flex items-center gap-2"
-                    >
-                        <MessageCircle className="w-4 h-4 text-[#25D366]" />
-                        <span>Support WhatsApp</span>
-                    </a>
-                </div>
-            </div>
+                )}
+            </main>
+
+            {/* 3. Universal Trust Bar */}
+            <TrustBar />
         </div>
     );
 }

@@ -45,7 +45,7 @@ test('Next.js app files remain re-export shims', async () => {
                 && ts.isStringLiteral(statement.moduleSpecifier)
                 && statement.moduleSpecifier.text.endsWith('.css');
             const isExplicitReExport = ts.isExportDeclaration(statement)
-                && ts.isNamedExports(statement.exportClause)
+                && (ts.isNamedExports(statement.exportClause) || ts.isExportAssignment(statement))
                 && statement.moduleSpecifier
                 && ts.isStringLiteral(statement.moduleSpecifier);
             if (isExplicitReExport) hasReExport = true;

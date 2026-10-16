@@ -49,15 +49,24 @@ export class SebpayController {
             return res.status(HttpStatus.BAD_REQUEST).json({ error: 'Missing transaction details' });
         }
 
-        // 1. Verify HMAC signature
+        // 1. Verify HMAC signature and bounds
         const rawBody =
             (req as any).rawBody?.toString('utf8') ||
             (typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
 
+        if (rawBody.length > 65536) {
+            Logger.warn(`SebPay webhook payload exceeded max size: ${rawBody.length} bytes`, loggerCtx);
+            return res.status(HttpStatus.PAYLOAD_TOO_LARGE).json({ error: 'Payload too large' });
+        }
+
         const isValid = this.sebpayService.client.verifyWebhookSignature(rawBody, signature || '');
 
-        // If not valid and not running in mock mode, reject with 401
-        if (!isValid && !process.env.SEBPAY_SANDBOX && process.env.SEBPAY_SECRET_KEY) {
+        // Environment variables are strings: `"false"` is truthy, so use an
+        // explicit boolean comparison. Sandbox/dev keeps mock webhook testing
+        // frictionless; every production webhook fails closed.
+        const isSandbox = process.env.APP_ENV === 'dev' || process.env.SEBPAY_SANDBOX === 'true';
+        const hasSecret = Boolean(process.env.SEBPAY_SECRET_KEY);
+        if (!isSandbox && (!hasSecret || !isValid)) {
             Logger.warn(`Invalid signature received on SebPay webhook. Ref: ${payload.external_reference}`, loggerCtx);
             return res.status(HttpStatus.UNAUTHORIZED).json({ error: 'Invalid HMAC signature' });
         }
@@ -89,6 +98,12 @@ export class SebpayController {
      */
     @Get('status/:identifier')
     async checkPaymentStatus(@Param('identifier') identifier: string) {
+        if (!identifier || identifier.length > 128) {
+            return {
+                success: false,
+                error: 'Invalid payment identifier',
+            };
+        }
         try {
             const ctx = await this.requestContextService.create({ apiType: 'shop' });
             const result = await this.sebpayService.reconcilePayment(ctx, identifier);

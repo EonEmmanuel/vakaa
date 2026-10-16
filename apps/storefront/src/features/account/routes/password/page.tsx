@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useActionState, useEffect } from 'react';
 import { updatePasswordAction } from '@/features/account/routes/profile/actions';
@@ -104,7 +104,7 @@ export default function PasswordPage() {
                     <Button
                         type="submit"
                         disabled={isPending}
-                        className="bg-[#0F291E] hover:bg-[#1A382B] text-white rounded-full px-8 py-3.5 text-sm font-semibold transition-all shadow-xs cursor-pointer active:scale-[0.98]"
+                        className="bg-[#1D120A] hover:bg-[#1D120A]/90 text-[#FAF8F5] rounded-full px-8 py-3.5 text-sm font-semibold transition-all shadow-xs cursor-pointer active:scale-[0.98]"
                     >
                         <Lock className="mr-2 h-4 w-4" />
                         {isPending ? t('updating') : t('updatePassword')}

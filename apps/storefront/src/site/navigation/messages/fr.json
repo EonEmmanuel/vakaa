@@ -15,6 +15,17 @@
     "shoppingCart": "Panier",
     "switchLanguage": "Changer de langue",
     "switchCurrency": "Changer de devise",
-    "announcement": "LIVRAISON OFFERTE DÈS 50 000 FCFA | FAÇONNÉ EN AFRIQUE, PORTÉ DANS LE MONDE ENTIER"
+    "announcement": "LIVRAISON OFFERTE DÈS 50 000 FCFA | FAÇONNÉ EN AFRIQUE, PORTÉ DANS LE MONDE ENTIER",
+    "searchPlaceholder": "Rechercher dans la boutique...",
+    "noResultsFound": "Aucun résultat trouvé.",
+    "typeToSearch": "Tapez pour rechercher...",
+    "home": "Accueil",
+    "shop": "Boutique",
+    "ourStory": "Notre Histoire",
+    "artisans": "Artisans",
+    "journal": "Journal",
+    "contact": "Contact",
+    "explore": "Explorer",
+    "viewAllResultsFor": "Voir tous les résultats pour « {query} »"
   }
 }

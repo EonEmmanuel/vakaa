@@ -50,7 +50,7 @@ export function CurrencyPicker({ availableCurrencyCodes, activeCurrencyCode }: C
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="gap-1.5 text-xs font-medium"
+                        className="gap-1.5 text-xs font-medium rounded-full h-9 px-2.5 hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer text-[#1D120A] dark:text-[#fbfaf7]"
                         aria-label={t('switchCurrency')}
                     />
                 }

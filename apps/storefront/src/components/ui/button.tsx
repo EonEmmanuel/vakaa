@@ -2,6 +2,8 @@
 
 import { Button as ButtonPrimitive } from "@base-ui/react/button"
 import { cva, type VariantProps } from "class-variance-authority"
+import { useRef } from "react"
+import { useGsapMagnetic } from "@/lib/motion/gsap-hooks"
 
 import { cn } from "@/lib/utils"
 
@@ -46,10 +48,17 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  magnetic = false,
   ...props
-}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
+}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants> & { magnetic?: boolean }) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  // Apply magnetic effect if enabled (called unconditionally for React Rules of Hooks compliance)
+  useGsapMagnetic(buttonRef, { strength: 0.25, disableOnTouch: true, enabled: magnetic });
+
   return (
     <ButtonPrimitive
+      ref={buttonRef}
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}

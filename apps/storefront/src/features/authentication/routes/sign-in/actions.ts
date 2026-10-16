@@ -18,10 +18,10 @@ export async function loginAction(prevState: { error?: string } | undefined, for
         password,
     }, { useAuthToken: true });
 
-    const loginResult = result.data.login;
+    const loginResult = result.data?.login;
 
-    if (loginResult.__typename !== 'CurrentUser') {
-        if (loginResult.__typename === 'NotVerifiedError') {
+    if (!loginResult || loginResult.__typename !== 'CurrentUser') {
+        if (loginResult?.__typename === 'NotVerifiedError') {
             return { error: t('verifyEmailFirst') };
         }
         return { error: t('invalidCredentials') };

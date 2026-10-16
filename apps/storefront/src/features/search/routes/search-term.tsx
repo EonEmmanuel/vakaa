@@ -1,6 +1,7 @@
 import { Link } from '@/platform/i18n/navigation';
 import { getRouteLocale } from '@/platform/i18n/server';
 import { getTranslations } from 'next-intl/server';
+import { SearchInputForm } from '@/features/search/components/search-input-form';
 
 function DecorativeDotCluster({ className = "" }: { className?: string }) {
     return (
@@ -49,6 +50,7 @@ export async function SearchTerm({ searchParams }: SearchTermProps) {
     const category = (searchParamsResolved.category as string) || '';
     const locale = await getRouteLocale();
     const t = await getTranslations({ locale, namespace: 'Search' });
+    const tCommon = await getTranslations({ locale, namespace: 'Common' });
 
     let pageTitle = t('title');
     if (searchTerm) {
@@ -61,53 +63,55 @@ export async function SearchTerm({ searchParams }: SearchTermProps) {
     }
 
     return (
-        <section className="relative w-full overflow-hidden bg-[#FAF8F5] border-b border-[#E7DED0]/60 pt-28 sm:pt-32 pb-12 sm:pb-16 text-center transition-colors">
-            {/* Decorative dot clusters on left and right (FutureCommerce style) */}
-            <div className="absolute left-4 sm:left-12 top-1/2 -translate-y-1/2 w-32 sm:w-44 h-20 pointer-events-none opacity-70">
+        <section className="relative w-full overflow-hidden bg-[#f2efe9] border-b border-[#e2ddd2] pt-28 sm:pt-32 pb-12 sm:pb-16 text-center transition-colors">
+            {/* Decorative dot clusters on left and right */}
+            <div className="absolute left-4 sm:left-12 top-1/2 -translate-y-1/2 w-32 sm:w-44 h-20 pointer-events-none opacity-40">
                 <DecorativeDotCluster className="w-full h-full" />
             </div>
-            <div className="absolute right-4 sm:right-12 top-1/2 -translate-y-1/2 w-32 sm:w-44 h-20 pointer-events-none opacity-70 transform rotate-180">
+            <div className="absolute right-4 sm:right-12 top-1/2 -translate-y-1/2 w-32 sm:w-44 h-20 pointer-events-none opacity-40 transform rotate-180">
                 <DecorativeDotCluster className="w-full h-full" />
             </div>
 
             <div className="vakaa-container relative z-10 space-y-3">
                 {/* Title */}
-                <h1 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1D120A] leading-tight">
+                <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1c1b18] leading-tight">
                     {pageTitle}
                 </h1>
 
                 {/* Breadcrumbs */}
-                <nav aria-label="Fil d'ariane" className="flex items-center justify-center gap-2 text-xs sm:text-sm text-[#3A2418]/60">
+                <nav aria-label="Fil d'ariane" className="flex items-center justify-center gap-2 text-xs sm:text-sm text-[#57544c]">
                     <Link
                         href="/"
-                        className="hover:text-[#A66B2D] transition-colors cursor-pointer"
+                        className="hover:text-[#D4A43C] transition-colors cursor-pointer"
                     >
-                        {t('home')}
+                        {tCommon('home')}
                     </Link>
-                    <span className="text-[#3A2418]/30">/</span>
+                    <span className="text-[#7d796f]">/</span>
                     <Link
                         href="/search"
-                        className={!searchTerm && !category ? "font-semibold text-[#1D120A]" : "hover:text-[#A66B2D] transition-colors cursor-pointer"}
+                        className={!searchTerm && !category ? "font-semibold text-[#1c1b18]" : "hover:text-[#D4A43C] transition-colors cursor-pointer"}
                     >
-                        {t('shop')}
+                        {tCommon('shop')}
                     </Link>
                     {searchTerm && (
                         <>
-                            <span className="text-[#3A2418]/30">/</span>
-                            <span className="font-semibold text-[#1D120A] truncate max-w-xs">
+                            <span className="text-[#7d796f]">/</span>
+                            <span className="font-semibold text-[#1c1b18] truncate max-w-xs">
                                 « {searchTerm} »
                             </span>
                         </>
                     )}
                     {category && !searchTerm && (
                         <>
-                            <span className="text-[#3A2418]/30">/</span>
-                            <span className="font-semibold text-[#1D120A] truncate max-w-xs">
+                            <span className="text-[#7d796f]">/</span>
+                            <span className="font-semibold text-[#1c1b18] truncate max-w-xs">
                                 {pageTitle}
                             </span>
                         </>
                     )}
                 </nav>
+
+                <SearchInputForm initialTerm={searchTerm} />
             </div>
         </section>
     );
@@ -115,10 +119,10 @@ export async function SearchTerm({ searchParams }: SearchTermProps) {
 
 export function SearchTermSkeleton() {
     return (
-        <section className="relative w-full bg-[#FAF8F5] border-b border-[#E7DED0]/60 pt-28 sm:pt-32 pb-12 sm:pb-16 text-center">
+        <section className="relative w-full bg-[#f2efe9] border-b border-[#e2ddd2] pt-28 sm:pt-32 pb-12 sm:pb-16 text-center">
             <div className="vakaa-container space-y-3 flex flex-col items-center">
-                <div className="h-10 w-48 sm:w-72 bg-[#EFE8DD] rounded-xl animate-pulse" />
-                <div className="h-4 w-32 bg-[#EFE8DD]/70 rounded-full animate-pulse" />
+                <div className="h-10 w-48 sm:w-72 bg-[#fbfaf7] border border-[#e2ddd2] rounded-xl animate-pulse" />
+                <div className="h-4 w-32 bg-[#fbfaf7] border border-[#e2ddd2] rounded-full animate-pulse" />
             </div>
         </section>
     );

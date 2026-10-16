@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -156,7 +156,7 @@ export function AddressesClient({ addresses, countries }: AddressesClientProps) 
 
                 <Button
                     onClick={handleAddNew}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0F291E] hover:bg-[#1A3D2E] text-white text-xs sm:text-sm font-medium shadow-xs"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#1D120A] hover:bg-[#1D120A]/90 text-[#FAF8F5] text-xs sm:text-sm font-medium shadow-xs"
                 >
                     <Plus className="h-4 w-4" />
                     <span>{t('addNewAddress')}</span>
@@ -180,7 +180,7 @@ export function AddressesClient({ addresses, countries }: AddressesClientProps) 
                     <div className="pt-2">
                         <Button
                             onClick={handleAddNew}
-                            className="bg-[#0F291E] hover:bg-[#1A3D2E] text-white rounded-xl px-5 py-2.5 text-xs sm:text-sm shadow-xs"
+                            className="bg-[#1D120A] hover:bg-[#1D120A]/90 text-[#FAF8F5] rounded-xl px-5 py-2.5 text-xs sm:text-sm shadow-xs"
                         >
                             <Plus className="mr-2 h-4 w-4" />
                             {t('addFirstAddress')}
@@ -203,12 +203,12 @@ export function AddressesClient({ addresses, countries }: AddressesClientProps) 
                                         {(address.defaultShippingAddress || address.defaultBillingAddress) && (
                                             <div className="flex flex-wrap gap-2 pt-0.5">
                                                 {address.defaultShippingAddress && (
-                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#EAA838]/10 text-[#A66B2D] border border-[#EAA838]/30">
+                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#D4A43C]/10 text-[#A66B2D] border border-[#D4A43C]/30">
                                                         {t('defaultShipping')}
                                                     </span>
                                                 )}
                                                 {address.defaultBillingAddress && (
-                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#0F291E]/10 text-[#0F291E] dark:text-[#A6D4B8] border border-[#0F291E]/20">
+                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#1D120A]/10 text-[#1D120A] dark:text-[#E8D9C8] border border-[#1D120A]/20">
                                                         {t('defaultBilling')}
                                                     </span>
                                                 )}

@@ -1,74 +1,63 @@
 'use client';
 
 import {Link, usePathname} from '@/platform/i18n/navigation';
-
-interface NavItem {
-    label: string;
-    href: string;
-    isActive: (pathname: string) => boolean;
-}
-
-const navItems: NavItem[] = [
-    {
-        label: 'Home',
-        href: '/',
-        isActive: (pathname) => pathname === '/',
-    },
-    {
-        label: 'Shop',
-        href: '/search',
-        isActive: (pathname) =>
-            pathname === '/search' ||
-            pathname.startsWith('/collection/') ||
-            pathname.startsWith('/product/'),
-    },
-    {
-        label: 'Our Story',
-        href: '/our-story',
-        isActive: (pathname) => pathname === '/our-story',
-    },
-    {
-        label: 'Artisans',
-        href: '/artisans',
-        isActive: (pathname) => pathname === '/artisans',
-    },
-    {
-        label: 'Journal',
-        href: '/journal',
-        isActive: (pathname) => pathname === '/journal',
-    },
-    {
-        label: 'Contact',
-        href: '/contact',
-        isActive: (pathname) => pathname === '/contact',
-    },
-];
+import {useTranslations} from 'next-intl';
 
 export function DesktopNav() {
+    const t = useTranslations('Navigation');
     const pathname = usePathname();
 
+    const navItems = [
+        {
+            label: t('home'),
+            href: '/',
+            isActive: (path: string) => path === '/',
+        },
+        {
+            label: t('shop'),
+            href: '/search',
+            isActive: (path: string) =>
+                path === '/search' ||
+                path.startsWith('/collection/') ||
+                path.startsWith('/product/'),
+        },
+        {
+            label: t('ourStory'),
+            href: '/our-story',
+            isActive: (path: string) => path === '/our-story',
+        },
+        {
+            label: t('artisans'),
+            href: '/artisans',
+            isActive: (path: string) => path === '/artisans',
+        },
+        {
+            label: t('journal'),
+            href: '/journal',
+            isActive: (path: string) => path === '/journal',
+        },
+        {
+            label: t('contact'),
+            href: '/contact',
+            isActive: (path: string) => path === '/contact',
+        },
+    ];
+
     return (
-        <nav className="hidden lg:flex items-center gap-8 text-[13px] tracking-wide text-[#1D120A] dark:text-[#F8F4EE]">
+        <nav aria-label={t('menu')} className="hidden lg:flex items-center gap-0.5 xl:gap-1.5 text-[13px] xl:text-[14px]">
             {navItems.map((item) => {
                 const active = item.isActive(pathname);
                 return (
                     <Link
                         key={item.href}
                         href={item.href}
-                        className={`group relative py-1 cursor-pointer transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-standard)] ${
+                        className={`rounded-full px-2.5 xl:px-3 py-1.5 font-medium transition-colors cursor-pointer select-none whitespace-nowrap ${
                             active
-                                ? 'font-semibold text-[#1D120A] dark:text-[#F8F4EE]'
-                                : 'font-medium text-[#1D120A]/75 dark:text-[#F8F4EE]/75 hover:text-[#D4A43C] dark:hover:text-[#D4A43C]'
+                                ? 'text-[#1D120A] dark:text-[#fbfaf7] font-semibold bg-black/5 dark:bg-white/5'
+                                : 'text-[#57544c] hover:text-[#1D120A] dark:text-[#a6a29a] dark:hover:text-[#fbfaf7] hover:bg-black/5 dark:hover:bg-white/5'
                         }`}
                     >
-                        <span>{item.label}</span>
-                        <span
-                            className={`absolute bottom-0 left-0 right-0 h-[2px] rounded-full transition-transform duration-[var(--duration-fast)] ease-[var(--ease-out-standard)] origin-left motion-reduce:transition-none ${
-                                active
-                                    ? 'bg-[#1D120A] dark:bg-[#F8F4EE] scale-x-100'
-                                    : 'bg-[#D4A43C] scale-x-0 group-hover:scale-x-100'
-                            }`}
-                        />
+                        {item.label}
                     </Link>
                 );
             })}

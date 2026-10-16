@@ -45,6 +45,8 @@
         "question": "Livrez-vous à l'international ?",
         "answer": "Oui, nous livrons dans plus de 50 pays avec toutes taxes et droits de douane calculés lors du paiement."
       }
-    }
+    },
+    "quickAdd": "Ajout Rapide",
+    "viewCart": "Voir le Panier"
   }
 }

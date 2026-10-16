@@ -4,7 +4,7 @@ try {
 } catch {}
 
 import { bootstrap, runMigrations } from '@vendure/core';
-import { config } from './vendure-config';
+import { config, migrationConfig } from './vendure-config';
 import { syncVakaaAssets } from './sync-assets';
 
 function checkTransientNetworkError(err: any): boolean {
@@ -45,11 +45,20 @@ process.on('unhandledRejection', (reason: any) => {
     console.error('[Vendure Server] Unhandled Rejection:', reason);
 });
 
+// Suppress known TypeORM upstream pg query queue deprecation notice until TypeORM serializes queries in pg 9.0
+process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning' && warning.message.includes('Calling client.query()')) {
+        return;
+    }
+    console.warn(`[Node Warning] ${warning.name}: ${warning.message}`);
+});
+
 // Ensure all product image assets are synchronized to Vendure storage
 syncVakaaAssets();
 
-runMigrations(config)
+runMigrations(migrationConfig)
     .then(() => bootstrap(config))
     .catch(err => {
-        console.error('[Vendure Server] Bootstrap error:', err);
+        console.error('[Vendure Server] Fatal bootstrap error:', err);
+        process.exit(1);
     });

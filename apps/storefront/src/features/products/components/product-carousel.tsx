@@ -17,26 +17,17 @@ export function ProductCarousel({title, products}: ProductCarouselClientProps) {
     const id = useId();
 
     return (
-        <section className="py-14 sm:py-20 bg-[#FAF8F5] transition-colors border-t border-[#E7DED0]/60">
+        <section className="py-14 sm:py-20 bg-[#f2efe9] transition-colors border-t border-[#e2ddd2]">
             <div className="vakaa-container">
-                {/* Header matching ff98ca... reference */}
-                <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
-                    <div className="space-y-1">
-                        <span className="font-sans text-xs font-bold uppercase tracking-wider text-[#A66B2D] flex items-center gap-2">
-                            <span>—</span>
-                            <span>Créations d’Exception</span>
-                        </span>
-                        <h2 className="font-sans text-2xl sm:text-3xl font-bold tracking-tight text-[#1D120A] leading-tight">
-                            {title || 'Explorez les Créations Similaires'}
-                        </h2>
-                    </div>
-                    <Link
-                        href="/search"
-                        className="group inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#A66B2D] hover:text-[#1D120A] transition-colors cursor-pointer"
-                    >
-                        <span>Tout Voir</span>
-                        <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-                    </Link>
+                {/* Centered Editorial Header */}
+                <div className="text-center space-y-2 mb-10 sm:mb-14 max-w-2xl mx-auto">
+                    <p className="font-sans text-xs font-bold uppercase tracking-wider text-[#D4A43C] flex items-center justify-center gap-2">
+                        <span>—</span>
+                        <span>{title ? title : 'Related Products'}</span>
+                    </p>
+                    <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-[#1c1b18] leading-tight">
+                        Explore <span className="text-[#1c1b18]">Related Products</span>
+                    </h2>
                 </div>
 
                 <Carousel
@@ -54,8 +45,8 @@ export function ProductCarousel({title, products}: ProductCarouselClientProps) {
                             </CarouselItem>
                         ))}
                     </CarouselContent>
-                    <CarouselPrevious className="hidden md:flex -left-4 bg-white/90 dark:bg-[#20150D]/90 border border-[#E7DED0] dark:border-[#3A291C] hover:bg-[#D4A43C] hover:text-[#1D120A] transition-colors"/>
-                    <CarouselNext className="hidden md:flex -right-4 bg-white/90 dark:bg-[#20150D]/90 border border-[#E7DED0] dark:border-[#3A291C] hover:bg-[#D4A43C] hover:text-[#1D120A] transition-colors"/>
+                    <CarouselPrevious className="hidden md:flex -left-4 bg-white/90 border border-[#e2ddd2] hover:bg-[#1D120A] hover:text-white transition-colors cursor-pointer"/>
+                    <CarouselNext className="hidden md:flex -right-4 bg-white/90 border border-[#e2ddd2] hover:bg-[#1D120A] hover:text-white transition-colors cursor-pointer"/>
                 </Carousel>
             </div>
         </section>

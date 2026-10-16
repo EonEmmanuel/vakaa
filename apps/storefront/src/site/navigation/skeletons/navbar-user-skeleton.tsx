@@ -1,9 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton';
 
 export function NavbarUserSkeleton() {
-    return (
-        <div className="flex items-center gap-2">
-            <Skeleton className="h-9 w-24" />
-        </div>
-    );
+    return <div className="size-11 rounded-full animate-pulse bg-black/5 dark:bg-white/5 shrink-0" />;
 }

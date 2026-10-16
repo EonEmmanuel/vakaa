@@ -1,93 +1,130 @@
-'use client';
-
 import Image from 'next/image';
 import { Link } from '@/platform/i18n/navigation';
-import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
+import { getRouteLocale } from '@/platform/i18n/server';
 
-export function CollectionGridPreview() {
+export async function CollectionGridPreview() {
+    const locale = await getRouteLocale();
+    const t = await getTranslations({ locale, namespace: 'Home' });
+
     const categories = [
         {
-            title: 'Sacs Cabas',
-            image: '/images/cat-tote.jpg',
-            href: '/search?category=tote-bags',
-            spanClass: 'col-span-2 lg:col-span-2 lg:row-span-2',
-            aspect: 'aspect-[4/3] lg:aspect-auto lg:h-full'
+            title: t('collections.totesTitle'),
+            subtitle: t('collections.totesSubtitle'),
+            image: '/images/bags/maa-tote-transparent.png',
+            href: '/search?category=totes',
+            bgClass: 'bg-[#dbe4d3] dark:bg-[#1c271e]',
+            containerClass: 'col-span-2 lg:col-span-2 lg:row-span-2',
+            minHeight: 'min-h-[300px] lg:min-h-[520px]',
+            titleClass: 'text-3xl sm:text-4xl lg:text-5xl',
+            imgPosClass: 'bottom-[4%] right-[4%] h-[74%] sm:h-[78%] w-[56%] sm:w-[60%]',
         },
         {
-            title: 'Porté Épaule',
-            image: '/images/cat-shoulder.jpg',
+            title: t('collections.shoulderTitle'),
+            subtitle: t('collections.shoulderSubtitle'),
+            image: '/images/bags/kemi-shoulder-transparent.png',
             href: '/search?category=shoulder-bags',
-            spanClass: 'col-span-1',
-            aspect: 'aspect-square'
+            bgClass: 'bg-[#f1e7c6] dark:bg-[#2c281a]',
+            containerClass: '',
+            minHeight: 'min-h-[200px] sm:min-h-[230px] lg:min-h-0',
+            titleClass: 'text-xl sm:text-2xl',
+            imgPosClass: 'bottom-[4%] right-[4%] h-[60%] sm:h-[65%] w-[48%] sm:w-[52%]',
         },
         {
-            title: 'Bandoulière',
-            image: '/images/cat-crossbody.jpg',
+            title: t('collections.crossbodyTitle'),
+            subtitle: t('collections.crossbodySubtitle'),
+            image: '/images/bags/asa-crossbody-transparent.png',
             href: '/search?category=crossbody',
-            spanClass: 'col-span-1',
-            aspect: 'aspect-square'
+            bgClass: 'bg-[#ebe2d4] dark:bg-[#27231f]',
+            containerClass: '',
+            minHeight: 'min-h-[200px] sm:min-h-[230px] lg:min-h-0',
+            titleClass: 'text-xl sm:text-2xl',
+            imgPosClass: 'bottom-[4%] right-[4%] h-[60%] sm:h-[65%] w-[48%] sm:w-[52%]',
         },
         {
-            title: 'Pochettes',
-            image: '/images/cat-clutch.jpg',
+            title: t('collections.clutchesTitle'),
+            subtitle: t('collections.clutchesSubtitle'),
+            image: '/images/bags/zuri-clutch-transparent.png',
             href: '/search?category=clutches',
-            spanClass: 'col-span-1',
-            aspect: 'aspect-square'
+            bgClass: 'bg-[#efded7] dark:bg-[#2b1f1d]',
+            containerClass: '',
+            minHeight: 'min-h-[200px] sm:min-h-[230px] lg:min-h-0',
+            titleClass: 'text-xl sm:text-2xl',
+            imgPosClass: 'bottom-[4%] right-[4%] h-[60%] sm:h-[65%] w-[48%] sm:w-[52%]',
         },
         {
-            title: 'Petite Maroquinerie',
-            image: '/images/cat-accessory.jpg',
+            title: t('collections.accessoriesTitle'),
+            subtitle: t('collections.accessoriesSubtitle'),
+            image: '/images/bags/aya-cardholder-transparent.png',
             href: '/search?category=accessories',
-            spanClass: 'col-span-1',
-            aspect: 'aspect-square'
-        }
+            bgClass: 'bg-[#dbe3ee] dark:bg-[#1f2833]',
+            containerClass: '',
+            minHeight: 'min-h-[200px] sm:min-h-[230px] lg:min-h-0',
+            titleClass: 'text-xl sm:text-2xl',
+            imgPosClass: 'bottom-[4%] right-[4%] h-[60%] sm:h-[65%] w-[48%] sm:w-[52%]',
+        },
     ];
 
     return (
-        <section className="py-24 sm:py-32 bg-[#FAF8F5]">
-            <div className="vakaa-container space-y-16">
-                
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '-100px' }}
-                    transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
-                >
-                    <div className="space-y-4">
-                        <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#A66B2D]">
-                            03 Lignes
-                        </span>
-                        <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tighter text-[#1D120A] uppercase leading-none">
-                            Les Volumes
+        <section className="px-3 sm:px-5 bg-[#f2efe9] dark:bg-[#151413] pt-12 sm:pt-20 pb-12 sm:pb-24">
+            <div className="max-w-[1720px] mx-auto">
+                {/* ═══ Header: Eyebrow + Monumental Title + View All Pill ═══ */}
+                <div className="mb-6 sm:mb-10 flex flex-wrap items-end justify-between gap-x-4 gap-y-3">
+                    <div>
+                        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#8C6D23] dark:text-[#D4A43C] font-semibold">
+                            {t('collections.eyebrow')}
+                        </p>
+                        <h2 className="font-display mt-2 text-[clamp(2.15rem,4.5vw,3.75rem)] font-bold text-[#1c1b18] dark:text-[#fbfaf7] tracking-tight leading-[1.05]">
+                            {t('collections.title')}
                         </h2>
                     </div>
-                </motion.div>
+                    <Link
+                        href="/search"
+                        className="group inline-flex items-center gap-2 text-[14px] sm:text-[15px] font-medium text-[#1c1b18] dark:text-[#fbfaf7] hover:text-[#8C6D23] dark:hover:text-[#D4A43C] transition-colors"
+                    >
+                        <span>{t('collections.viewAll')}</span>
+                        <span className="grid size-9 place-items-center rounded-full bg-white dark:bg-white/10 border border-[#e2ddd2]/70 dark:border-white/10 shadow-tile transition-transform duration-300 group-hover:translate-x-1">
+                            <ArrowRight className="size-4" />
+                        </span>
+                    </Link>
+                </div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+                {/* ═══ 4-Column Bento Grid with Asymmetric Pastel Tiles (Exact KVIST Layout) ═══ */}
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:grid-rows-2">
                     {categories.map((cat, idx) => (
-                        <motion.div
-                            key={cat.title}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, margin: '-100px' }}
-                            transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1], delay: idx * 0.1 }}
-                            className={`group relative overflow-hidden bg-[#EFE8DD] ${cat.spanClass}`}
-                        >
-                            <Link href={cat.href} className={`block w-full ${cat.aspect}`}>
-                                <Image
-                                    src={cat.image}
-                                    alt={cat.title}
-                                    fill
-                                    className="object-cover object-center transition-transform duration-1000 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:scale-[1.05]"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-80" />
-                                <div className="absolute bottom-6 left-6 right-6 lg:bottom-10 lg:left-10 transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:-translate-y-2">
-                                    <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight">
-                                        {cat.title}
-                                    </h3>
+                        <div key={idx} className={cat.containerClass}>
+                            <Link
+                                href={cat.href}
+                                className={`group relative flex h-full overflow-hidden rounded-[26px] p-5 sm:p-7 ${cat.bgClass} ${cat.minHeight} border border-black/5 dark:border-white/5 shadow-tile transition-all duration-300 hover:shadow-lift`}
+                            >
+                                {/* Top Label & Rotating Arrow */}
+                                <div className="relative z-10 flex w-full items-start justify-between gap-2">
+                                    <div className="min-w-0 pr-2">
+                                        <p className={`font-display font-semibold tracking-tight text-[#1c1b18] dark:text-[#fbfaf7] ${cat.titleClass}`}>
+                                            {cat.title}
+                                        </p>
+                                        <p className="mt-1 font-mono text-[11px] sm:text-[12px] uppercase tracking-wider text-[#57544c] dark:text-[#a6a29a]">
+                                            {cat.subtitle}
+                                        </p>
+                                    </div>
+                                    <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white/85 dark:bg-white/10 text-[#1c1b18] dark:text-[#fbfaf7] transition-[transform,background-color] sm:size-11 duration-500 ease-out group-hover:-rotate-45 group-hover:bg-[#1c1b18] group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-[#1c1b18] shadow-xs">
+                                        <ArrowRight className="size-4" />
+                                    </span>
+                                </div>
+
+                                {/* Floating Transparent Bag Cutout with Smooth Hover Lift & Tilt */}
+                                <div className={`absolute pointer-events-none select-none transition-transform duration-700 ease-out group-hover:-translate-y-3 group-hover:-rotate-3 ${cat.imgPosClass}`}>
+                                    <Image
+                                        src={cat.image}
+                                        alt={cat.title}
+                                        fill
+                                        sizes="(max-width: 640px) 160px, (max-width: 1024px) 300px, 420px"
+                                        className="object-contain drop-shadow-[0_16px_20px_rgba(28,27,24,0.18)]"
+                                    />
                                 </div>
                             </Link>
-                        </motion.div>
+                        </div>
                     ))}
                 </div>
             </div>

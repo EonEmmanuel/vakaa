@@ -12,6 +12,20 @@
     "description": "Discover VAKAA luxury handcrafted raffia bags, fine leather goods, and architectural accessories worldwide.",
     "ogDescription": "Carrying Africa. Everywhere. Luxury handcrafted bags and accessories.",
     "trust": {
+      "eyebrow": "THE PROMISE",
+      "title": "Buy once, cherish forever",
+      "tile1Stat": "48h",
+      "tile1Title": "Careful Dispatch",
+      "tile1Desc": "In-stock pieces leave our workshop within two business days.",
+      "tile2Stat": "30 days",
+      "tile2Title": "Home Experience",
+      "tile2Desc": "Live with your piece for a month. Enjoy complimentary returns.",
+      "tile3Stat": "10 years",
+      "tile3Title": "Craft Warranty",
+      "tile3Desc": "Every seam, leather strap, and brass hardware guaranteed a decade.",
+      "tile4Stat": "100%",
+      "tile4Title": "Ethical & Fair",
+      "tile4Desc": "Wild raffia hand-harvested sustainably, fair wages, zero plastic.",
       "artisans": {
         "title": "MADE BY AFRICAN ARTISANS",
         "description": "Preserving tradition, empowering communities"
@@ -30,8 +44,19 @@
       }
     },
     "collections": {
-      "title": "SHOP OUR COLLECTION",
-      "viewAll": "VIEW ALL COLLECTIONS"
+      "eyebrow": "COLLECTIONS",
+      "title": "Find Your Signature",
+      "viewAll": "All pieces",
+      "totesTitle": "Totes & Baskets",
+      "totesSubtitle": "Woven architecture",
+      "shoulderTitle": "Shoulder Bags",
+      "shoulderSubtitle": "Nomadic elegance",
+      "crossbodyTitle": "Crossbody Bags",
+      "crossbodySubtitle": "Freedom of movement",
+      "clutchesTitle": "Clutches & Evening",
+      "clutchesSubtitle": "Polished brass & raffia",
+      "accessoriesTitle": "Small Leather Goods",
+      "accessoriesSubtitle": "Jewelry-grade finishes"
     },
     "promise": {
       "eyebrow": "OUR PROMISE",

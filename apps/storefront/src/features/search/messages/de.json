@@ -4,19 +4,37 @@
     "nameDesc": "Name: Z bis A",
     "priceAsc": "Preis: Niedrig bis Hoch",
     "priceDesc": "Preis: Hoch bis Niedrig",
+    "newest": "Neueste Drops",
+    "sortBy": "Sortieren nach",
     "placeholder": "Sortieren nach"
   },
   "Filters": {
-    "title": "Filter",
+    "title": "Filteroptionen",
     "clearAll": "Alle löschen",
-    "filtersButton": "Filter"
+    "filtersButton": "Filter & Sortierung",
+    "categories": "Kategorien & Linien",
+    "priceRange": "Preisspanne",
+    "colors": "Farben & Töne",
+    "materials": "Edle Materialien",
+    "availability": "Verfügbarkeit",
+    "inStock": "Auf Lager",
+    "limitedEdition": "Limitierte Edition",
+    "showingResults": "Zeige 1-{count} von {total} Ergebnissen",
+    "allProducts": "Alle Stücke",
+    "activeFilters": "Aktive Filter:",
+    "reset": "Zurücksetzen"
   },
   "Search": {
-    "title": "Suche",
-    "pageTitle": "Produkte suchen",
-    "resultsFor": "Suchergebnisse für \"{query}\"",
-    "resultsTitle": "Suchergebnisse für \"{query}\"",
-    "metaDescription": "Produkte für \"{query}\" bei {siteName} finden",
-    "metaCatalogDescription": "Durchsuchen Sie unseren Produktkatalog bei {siteName}"
+    "title": "Shop & Kollektionen",
+    "home": "Startseite",
+    "shop": "Shop",
+    "pageTitle": "Luxus Handgefertigte Taschen Boutique",
+    "resultsFor": "Ergebnisse für \"{query}\"",
+    "resultsTitle": "Ergebnisse für \"{query}\"",
+    "metaDescription": "Produkte passend zu \"{query}\" bei {siteName} finden",
+    "metaCatalogDescription": "Entdecken Sie unsere komplette Kollektion handgefertigter Luxus-Leder- und Raffiataschen bei {siteName}",
+    "searchPlaceholder": "Boutique durchsuchen...",
+    "noResultsFound": "Keine Ergebnisse gefunden.",
+    "typeToSearch": "Tippen zum Suchen..."
   }
 }

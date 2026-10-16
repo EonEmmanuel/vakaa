@@ -1,6 +1,8 @@
 {
   "Checkout": {
     "pageTitle": "Kasse",
+    "step": "Schritt",
+    "checkoutProgress": "Bestellfortschritt",
     "steps": {
       "contact": "Kontakt",
       "address": "Adresse",
@@ -80,6 +82,10 @@
     "toBeCalculated": "Wird noch berechnet",
     "total": "Gesamt",
     "item": "Artikel",
-    "items": "Artikel"
+    "items": "Artikel",
+    "settlementCurrency": "Abrechnung in {currency}",
+    "sslSecured": "SSL-verschlüsselte sichere Zahlung",
+    "paymentMethodsAccepted": "Mobile Money, Orange & MTN, Bankkarten",
+    "trackedDelivery": "Versicherter Versand mit Sendungsverfolgung"
   }
 }

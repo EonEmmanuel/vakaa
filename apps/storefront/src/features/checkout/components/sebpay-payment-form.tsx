@@ -203,28 +203,28 @@ export function SebpayPaymentForm({
   };
 
   return (
-    <div className="mt-4 pt-4 border-t space-y-4 bg-muted/20 p-4 rounded-lg">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-          <Smartphone className="h-4 w-4 text-primary" />
+    <div className="space-y-4 bg-[#FAF8F5] dark:bg-stone-900/50 p-4 sm:p-5 rounded-2xl border border-[#E7DED0]/60 dark:border-stone-800">
+      <div className="flex items-center justify-between pb-3 border-b border-[#E7DED0]/50 dark:border-stone-800">
+        <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-stone-900 dark:text-stone-100">
+          <Smartphone className="h-4 w-4 text-[#A66B2D]" />
           <span>Informations Mobile Money</span>
         </div>
-        <Badge variant="outline" className="text-xs font-mono">
-          Devise: {activeCorridor.currency}
+        <Badge variant="outline" className="text-[11px] font-mono border-[#E7DED0] bg-white dark:bg-stone-800">
+          Devise : {activeCorridor.currency}
         </Badge>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Country Selector */}
         <div className="space-y-1.5">
-          <Label htmlFor="sebpay-country" className="text-xs">
+          <Label htmlFor="sebpay-country" className="text-xs font-semibold text-stone-700 dark:text-stone-300">
             Pays
           </Label>
           <NativeSelect
             id="sebpay-country"
             value={country}
             onChange={(e) => handleCountryChange(e.target.value)}
-            className="w-full"
+            className="w-full h-11 rounded-xl border-[#E7DED0] bg-white dark:bg-[#1A120B]"
           >
             {SEBPAY_CORRIDORS.map((c) => (
               <NativeSelectOption key={c.code} value={c.code}>
@@ -236,14 +236,14 @@ export function SebpayPaymentForm({
 
         {/* Operator Selector */}
         <div className="space-y-1.5">
-          <Label htmlFor="sebpay-operator" className="text-xs">
+          <Label htmlFor="sebpay-operator" className="text-xs font-semibold text-stone-700 dark:text-stone-300">
             Opérateur
           </Label>
           <NativeSelect
             id="sebpay-operator"
             value={operator}
             onChange={(e) => setOperator(e.target.value)}
-            className="w-full"
+            className="w-full h-11 rounded-xl border-[#E7DED0] bg-white dark:bg-[#1A120B]"
           >
             {activeCorridor.operators.map((op) => (
               <NativeSelectOption key={op.code} value={op.code}>
@@ -256,11 +256,11 @@ export function SebpayPaymentForm({
 
       {/* Phone Number Input */}
       <div className="space-y-1.5">
-        <Label htmlFor="sebpay-phone" className="text-xs">
+        <Label htmlFor="sebpay-phone" className="text-xs font-semibold text-stone-700 dark:text-stone-300">
           Numéro Mobile Money (sans indicatif)
         </Label>
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center px-3 h-9 rounded-md border bg-muted text-xs text-muted-foreground font-mono">
+          <span className="inline-flex items-center justify-center px-3.5 h-11 rounded-xl border border-[#E7DED0] dark:border-stone-700 bg-white dark:bg-stone-800 text-xs text-stone-700 dark:text-stone-300 font-mono font-medium shrink-0">
             {activeCorridor.dialCode}
           </span>
           <Input
@@ -269,7 +269,7 @@ export function SebpayPaymentForm({
             placeholder="Ex: 97000000"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="flex-1 font-mono text-sm"
+            className="flex-1 h-11 rounded-xl px-4 font-mono text-sm bg-white dark:bg-[#1A120B] border-[#E7DED0] focus-visible:border-[#D4A43C]"
             required
           />
         </div>

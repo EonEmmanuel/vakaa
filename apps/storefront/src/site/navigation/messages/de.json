@@ -15,6 +15,17 @@
     "shoppingCart": "Warenkorb",
     "switchLanguage": "Sprache wechseln",
     "switchCurrency": "Währung wechseln",
-    "announcement": "KOSTENLOSER VERSAND AB 50 000 FCFA | HERGESTELLT IN AFRIKA, WELTWEIT GETRAGEN"
+    "announcement": "KOSTENLOSER VERSAND AB 50 000 FCFA | HERGESTELLT IN AFRIKA, WELTWEIT GETRAGEN",
+    "searchPlaceholder": "Boutique durchsuchen...",
+    "noResultsFound": "Keine Ergebnisse gefunden.",
+    "typeToSearch": "Tippen zum Suchen...",
+    "home": "Startseite",
+    "shop": "Shop",
+    "ourStory": "Über uns",
+    "artisans": "Handwerker",
+    "journal": "Journal",
+    "contact": "Kontakt",
+    "explore": "Entdecken",
+    "viewAllResultsFor": "Alle Ergebnisse für „{query}“ anzeigen"
   }
 }

@@ -12,6 +12,20 @@
     "description": "Découvrez les sacs en raphia sculpté faits main, pièces de cuir noble et créations architecturales de prestige VAKAA.",
     "ogDescription": "Porter l'Afrique. Partout. Maroquinerie d'exception et accessoires d'artisanat africain.",
     "trust": {
+      "eyebrow": "NOTRE ENGAGEMENT",
+      "title": "Créé pour durer, porté pour toujours",
+      "tile1Stat": "48h",
+      "tile1Title": "Expédition Soignée",
+      "tile1Desc": "Pièces en stock expédiées de notre atelier sous deux jours ouvrés.",
+      "tile2Stat": "30 jours",
+      "tile2Title": "Essai Privilège",
+      "tile2Desc": "Vivez avec votre création pendant un mois. Retours offerts.",
+      "tile3Stat": "10 ans",
+      "tile3Title": "Garantie Artisanat",
+      "tile3Desc": "Chaque couture, anse en cuir et fermoir garantis une décennie.",
+      "tile4Stat": "100%",
+      "tile4Title": "Éthique & Durable",
+      "tile4Desc": "Raphia naturel récolté à la main, commerce équitable et zéro plastique.",
       "artisans": {
         "title": "FAÇONNÉ PAR DES ARTISANS AFRICAINS",
         "description": "Préservation des savoir-faire et émancipation des communautés"
@@ -30,8 +44,19 @@
       }
     },
     "collections": {
-      "title": "NOS LIGNES EXCLUSIVES",
-      "viewAll": "TOUTES LES COLLECTIONS"
+      "eyebrow": "COLLECTIONS",
+      "title": "Trouver Votre Signature",
+      "viewAll": "Toutes les pièces",
+      "totesTitle": "Sacs Cabas & Totes",
+      "totesSubtitle": "Architecture tressée",
+      "shoulderTitle": "Porté Épaule",
+      "shoulderSubtitle": "Élégance nomade",
+      "crossbodyTitle": "Sacs Bandoulière",
+      "crossbodySubtitle": "Liberté de mouvement",
+      "clutchesTitle": "Pochettes & Soirée",
+      "clutchesSubtitle": "Laiton poli & raphia",
+      "accessoriesTitle": "Petite Maroquinerie",
+      "accessoriesSubtitle": "Finitions orfèvre"
     },
     "promise": {
       "eyebrow": "NOTRE MANIFESTE",

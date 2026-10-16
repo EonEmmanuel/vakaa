@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
+import { normalizeAssetUrl } from '@/lib/utils';
 import { Link } from '@/platform/i18n/navigation';
 import { query } from '@/platform/vendure/api';
 import { GetProductDetailQuery } from '@/features/products/graphql';
@@ -7,7 +9,8 @@ import { ProductInfo } from '@/features/products/components/product-info';
 import { getDisplayOptionGroups } from '@/features/products/product-options';
 import { RelatedProducts } from '@/features/products/components/related-products';
 import { ProductTabs } from '@/features/products/components/product-tabs';
-import { TrustBar } from '@/site/home/trust-bar';
+import { fetchProductReviews } from '@/features/products/submit-review';
+import {TrustBar} from '@/components/shared/trust-bar';
 import {
     Accordion,
     AccordionContent,
@@ -122,7 +125,7 @@ export async function generateMetadata({
             card: 'summary_large_image',
             title: product.name,
             description: description || fallbackDescription,
-            images: ogImage ? [ogImage] : undefined,
+            images: ogImage ? [normalizeAssetUrl(ogImage)] : undefined,
         },
     };
 }
@@ -136,7 +139,7 @@ export default async function ProductDetailPage({
     const locale = await getRouteLocale();
     const currencyCode = await getActiveCurrencyCode();
     const t = await getTranslations({locale, namespace: 'Product'});
-    const tSearch = await getTranslations({locale, namespace: 'Search'});
+    const tCommon = await getTranslations({locale, namespace: 'Common'});
 
     const result = await getProductData(slug, currencyCode);
     const product = result.data?.product;
@@ -145,59 +148,61 @@ export default async function ProductDetailPage({
         notFound();
     }
 
+    const { reviews: productReviews, summary: reviewsSummary } = await fetchProductReviews(product.id);
+
     // Get the primary collection (prefer deepest nested / most specific)
-    const primaryCollection = product.collections?.find((c: any) => c?.parent?.id) ?? product.collections?.[0];
+    const primaryCollection = product.collections?.find((c) => c?.parent?.id) ?? product.collections?.[0];
 
     // Hide options that belong to a shared option group but have no variant on
     // this product (Vendure 3.6 shared/global option groups).
     const productForDisplay = {...product, optionGroups: getDisplayOptionGroups(product)};
 
     return (
-        <div className="min-h-screen bg-[#FAF8F5] text-[#1D120A] flex flex-col">
-            {/* 1. Full-Width Hero Breadcrumb Banner (FutureCommerce reference: ff98ca195762505.69ca92c62c826.png) */}
-            <section className="relative w-full overflow-hidden bg-[#FAF8F5] border-b border-[#E7DED0]/60 pt-28 sm:pt-32 pb-10 sm:pb-14 text-center transition-colors">
+        <div className="min-h-screen bg-[#f2efe9] text-[#1c1b18] flex flex-col">
+            {/* 1. Full-Width Hero Breadcrumb Banner */}
+            <section className="relative w-full overflow-hidden bg-[#f2efe9] border-b border-[#e2ddd2] pt-28 sm:pt-32 pb-10 sm:pb-14 text-center transition-colors">
                 {/* Decorative dot clusters on left and right */}
-                <div className="absolute left-4 sm:left-12 top-1/2 -translate-y-1/2 w-32 sm:w-44 h-20 pointer-events-none opacity-70">
+                <div className="absolute left-4 sm:left-12 top-1/2 -translate-y-1/2 w-32 sm:w-44 h-20 pointer-events-none opacity-40">
                     <DecorativeDotCluster className="w-full h-full" />
                 </div>
-                <div className="absolute right-4 sm:right-12 top-1/2 -translate-y-1/2 w-32 sm:w-44 h-20 pointer-events-none opacity-70 transform rotate-180">
+                <div className="absolute right-4 sm:right-12 top-1/2 -translate-y-1/2 w-32 sm:w-44 h-20 pointer-events-none opacity-40 transform rotate-180">
                     <DecorativeDotCluster className="w-full h-full" />
                 </div>
 
                 <div className="vakaa-container relative z-10 space-y-3">
                     {/* Banner Title */}
-                    <h1 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1D120A] leading-tight">
-                        {primaryCollection ? primaryCollection.name : tSearch('shop')}
+                    <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1c1b18] leading-tight">
+                        {primaryCollection ? primaryCollection.name : tCommon('shop')}
                     </h1>
 
                     {/* Breadcrumbs */}
-                    <nav aria-label="Fil d'ariane" className="flex items-center justify-center gap-2 text-xs sm:text-sm text-[#3A2418]/60 flex-wrap">
+                    <nav aria-label="Fil d'ariane" className="flex items-center justify-center gap-2 text-xs sm:text-sm text-[#57544c] flex-wrap">
                         <Link
                             href="/"
-                            className="hover:text-[#A66B2D] transition-colors cursor-pointer"
+                            className="hover:text-[#D4A43C] transition-colors cursor-pointer"
                         >
-                            {t('home')}
+                            {tCommon('home')}
                         </Link>
-                        <span className="text-[#3A2418]/30">/</span>
+                        <span className="text-[#7d796f]">/</span>
                         <Link
                             href="/search"
-                            className="hover:text-[#A66B2D] transition-colors cursor-pointer"
+                            className="hover:text-[#D4A43C] transition-colors cursor-pointer"
                         >
-                            {tSearch('shop')}
+                            {tCommon('shop')}
                         </Link>
                         {primaryCollection && (
                             <>
-                                <span className="text-[#3A2418]/30">/</span>
+                                <span className="text-[#7d796f]">/</span>
                                 <Link
                                     href={`/collection/${primaryCollection.slug}`}
-                                    className="hover:text-[#A66B2D] transition-colors cursor-pointer"
+                                    className="hover:text-[#D4A43C] transition-colors cursor-pointer"
                                 >
                                     {primaryCollection.name}
                                 </Link>
                             </>
                         )}
-                        <span className="text-[#3A2418]/30">/</span>
-                        <span className="font-semibold text-[#1D120A] truncate max-w-[200px] sm:max-w-xs">
+                        <span className="text-[#7d796f]">/</span>
+                        <span className="font-semibold text-[#1c1b18] truncate max-w-[200px] sm:max-w-xs">
                             {product.name}
                         </span>
                     </nav>
@@ -218,58 +223,64 @@ export default async function ProductDetailPage({
                             product={productForDisplay}
                             searchParams={searchParamsResolved}
                             currencyCode={currencyCode}
+                            averageRating={reviewsSummary?.averageRating || 5.0}
+                            reviewsCount={reviewsSummary?.totalReviews || (productReviews?.length || 28)}
                         />
                     </div>
                 </div>
 
                 {/* 3. Horizontal Information Tabs (Description, Specifications & Materials, Reviews) */}
                 <ProductTabs
+                    productId={product.id}
                     description={product.description}
                     productName={product.name}
+                    customFields={product.customFields}
+                    initialReviews={productReviews as any}
+                    initialSummary={reviewsSummary as any}
                 />
             </main>
 
             {/* 4. Store FAQ Section */}
-            <section className="py-12 sm:py-16 bg-[#F8F4EE] border-t border-[#E7DED0]/60">
+            <section className="py-12 sm:py-16 bg-[#f2efe9] border-t border-[#e2ddd2]">
                 <div className="vakaa-container max-w-3xl">
                     <div className="text-center space-y-2 mb-8">
-                        <span className="font-sans text-xs font-bold uppercase tracking-wider text-[#A66B2D]">
+                        <span className="font-sans text-xs font-bold uppercase tracking-wider text-[#D4A43C]">
                             — Informations Essentielles
                         </span>
-                        <h2 className="font-sans text-2xl sm:text-3xl font-bold tracking-tight text-[#1D120A]">
+                        <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-[#1c1b18]">
                             {t('faq.title')}
                         </h2>
                     </div>
                     <Accordion className="w-full space-y-3">
-                        <AccordionItem value="shipping" className="border border-[#E7DED0]/80 rounded-xl px-5 bg-[#FAF8F5]">
-                            <AccordionTrigger className="font-sans font-semibold text-sm sm:text-base text-[#1D120A] hover:no-underline py-4">
+                        <AccordionItem value="shipping" className="border border-[#e2ddd2] rounded-2xl px-6 bg-[#fbfaf7] shadow-xs">
+                            <AccordionTrigger className="font-sans font-semibold text-sm sm:text-base text-[#1c1b18] hover:no-underline py-4">
                                 {t('faq.shipping.question')}
                             </AccordionTrigger>
-                            <AccordionContent className="text-xs sm:text-sm text-[#3A2418]/80 leading-relaxed pb-4">
+                            <AccordionContent className="text-xs sm:text-sm text-[#57544c] leading-relaxed pb-4">
                                 {t('faq.shipping.answer')}
                             </AccordionContent>
                         </AccordionItem>
-                        <AccordionItem value="returns" className="border border-[#E7DED0]/80 rounded-xl px-5 bg-[#FAF8F5]">
-                            <AccordionTrigger className="font-sans font-semibold text-sm sm:text-base text-[#1D120A] hover:no-underline py-4">
+                        <AccordionItem value="returns" className="border border-[#e2ddd2] rounded-2xl px-6 bg-[#fbfaf7] shadow-xs">
+                            <AccordionTrigger className="font-sans font-semibold text-sm sm:text-base text-[#1c1b18] hover:no-underline py-4">
                                 {t('faq.returns.question')}
                             </AccordionTrigger>
-                            <AccordionContent className="text-xs sm:text-sm text-[#3A2418]/80 leading-relaxed pb-4">
+                            <AccordionContent className="text-xs sm:text-sm text-[#57544c] leading-relaxed pb-4">
                                 {t('faq.returns.answer')}
                             </AccordionContent>
                         </AccordionItem>
-                        <AccordionItem value="tracking" className="border border-[#E7DED0]/80 rounded-xl px-5 bg-[#FAF8F5]">
-                            <AccordionTrigger className="font-sans font-semibold text-sm sm:text-base text-[#1D120A] hover:no-underline py-4">
+                        <AccordionItem value="tracking" className="border border-[#e2ddd2] rounded-2xl px-6 bg-[#fbfaf7] shadow-xs">
+                            <AccordionTrigger className="font-sans font-semibold text-sm sm:text-base text-[#1c1b18] hover:no-underline py-4">
                                 {t('faq.tracking.question')}
                             </AccordionTrigger>
-                            <AccordionContent className="text-xs sm:text-sm text-[#3A2418]/80 leading-relaxed pb-4">
+                            <AccordionContent className="text-xs sm:text-sm text-[#57544c] leading-relaxed pb-4">
                                 {t('faq.tracking.answer')}
                             </AccordionContent>
                         </AccordionItem>
-                        <AccordionItem value="international" className="border border-[#E7DED0]/80 rounded-xl px-5 bg-[#FAF8F5]">
-                            <AccordionTrigger className="font-sans font-semibold text-sm sm:text-base text-[#1D120A] hover:no-underline py-4">
+                        <AccordionItem value="international" className="border border-[#e2ddd2] rounded-2xl px-6 bg-[#fbfaf7] shadow-xs">
+                            <AccordionTrigger className="font-sans font-semibold text-sm sm:text-base text-[#1c1b18] hover:no-underline py-4">
                                 {t('faq.international.question')}
                             </AccordionTrigger>
-                            <AccordionContent className="text-xs sm:text-sm text-[#3A2418]/80 leading-relaxed pb-4">
+                            <AccordionContent className="text-xs sm:text-sm text-[#57544c] leading-relaxed pb-4">
                                 {t('faq.international.answer')}
                             </AccordionContent>
                         </AccordionItem>
@@ -279,10 +290,18 @@ export default async function ProductDetailPage({
 
             {/* 5. Related Products / Similar Creations */}
             {primaryCollection && (
-                <RelatedProducts
-                    collectionSlug={primaryCollection.slug}
-                    currentProductId={product.id}
-                />
+                <Suspense
+                    fallback={
+                        <div className="vakaa-container py-12">
+                            <div className="h-72 w-full animate-pulse bg-[#F3EFE9]/40 rounded-2xl" />
+                        </div>
+                    }
+                >
+                    <RelatedProducts
+                        collectionSlug={primaryCollection.slug}
+                        currentProductId={product.id}
+                    />
+                </Suspense>
             )}
 
             {/* 6. Universal 4-Pillar Trust Bar */}

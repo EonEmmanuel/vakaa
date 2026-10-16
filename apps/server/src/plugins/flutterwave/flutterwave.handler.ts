@@ -52,7 +52,11 @@ export const flutterwavePaymentHandler = new PaymentMethodHandler({
         metadata
     ): Promise<CreatePaymentResult | CreatePaymentErrorResult> => {
         const isPlaceholder = (val?: string) =>
-            !val || val.includes('your-') || val.includes('your_') || val.includes('placeholder');
+            !val ||
+            val === 'vakaa_flw_secret_hash' ||
+            val.includes('your-') ||
+            val.includes('your_') ||
+            val.includes('placeholder');
 
         // Prioritize active process.env keys if database args contain outdated placeholder strings
         const secretKey = !isPlaceholder(process.env.FLW_SECRET_KEY)
@@ -67,7 +71,19 @@ export const flutterwavePaymentHandler = new PaymentMethodHandler({
             ? process.env.FLW_SECRET_HASH!
             : (!isPlaceholder(args.secretHash) ? args.secretHash : '');
 
-        const isSandbox = args.isSandbox ?? (process.env.FLW_SANDBOX === 'true');
+        // Production configuration is authoritative. This prevents a stale
+        // Dashboard argument from accidentally enabling sandbox/mock behavior.
+        const isSandbox = process.env.APP_ENV === 'dev'
+            ? (args.isSandbox ?? true)
+            : process.env.FLW_SANDBOX === 'true';
+
+        if (!isSandbox && (!publicKey || !secretKey || !secretHash)) {
+            return {
+                amount,
+                state: 'Declined',
+                errorMessage: 'Flutterwave is not configured for live payments.',
+            };
+        }
 
         const client = new FlutterwaveClient({
             secretKey,
@@ -182,7 +198,7 @@ export const flutterwavePaymentHandler = new PaymentMethodHandler({
 
         const checkoutLink = response.data.link;
         Logger.info(
-            `Flutterwave checkout link created for order ${order.code}: ${checkoutLink}`,
+            `Flutterwave checkout link created for order ${order.code}`,
             loggerCtx
         );
 

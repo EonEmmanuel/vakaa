@@ -97,7 +97,7 @@ const STILL_LIFE_BAGS: StillLifeBag[] = [
     shortName: 'Grand Cabas Maa',
     category: 'Architecture Tressée',
     price: '185 000 FCFA',
-    slug: 'cabas-maa-raphia',
+    slug: 'maa-tote',
     image: '/images/bags/maa-tote.jpg',
     desktop: {
       className: 'top-1/2 left-1/2 -translate-x-[48%] -translate-y-[48%]',
@@ -117,7 +117,7 @@ const STILL_LIFE_BAGS: StillLifeBag[] = [
     shortName: 'Pochette Zuri',
     category: 'Maroquinerie du Soir',
     price: '95 000 FCFA',
-    slug: 'pochette-zuri-laiton',
+    slug: 'zuri-clutch',
     image: '/images/bags/zuri-clutch.jpg',
     desktop: {
       className: 'top-1/2 left-[2%] sm:left-[8%] lg:left-[4%] -translate-y-[12%] -rotate-3',
@@ -137,7 +137,7 @@ const STILL_LIFE_BAGS: StillLifeBag[] = [
     shortName: 'Sac Épaule Kemi',
     category: 'Cuir & Kente d’Or',
     price: '165 000 FCFA',
-    slug: 'porte-epaule-kemi',
+    slug: 'kemi-shoulder-bag',
     image: '/images/bags/kemi-shoulder.jpg',
     desktop: {
       className: 'top-1/2 right-[2%] sm:right-[6%] lg:right-[3%] -translate-y-[70%] rotate-2',

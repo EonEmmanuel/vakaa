@@ -30,10 +30,10 @@ export async function registerAction(prevState: { error?: string } | undefined, 
         }
     });
 
-    const registerResult = result.data.registerCustomerAccount;
+    const registerResult = result.data?.registerCustomerAccount;
 
-    if (registerResult.__typename !== 'Success') {
-        return {error: registerResult.message};
+    if (!registerResult || registerResult.__typename !== 'Success') {
+        return {error: registerResult?.message || 'Impossible d\'enregistrer le compte. Veuillez réessayer.'};
     }
 
     const locale = await getLocale();
@@ -45,7 +45,7 @@ export async function registerAction(prevState: { error?: string } | undefined, 
             password,
         }, { useAuthToken: true });
 
-        if (loginResult.data.login.__typename === 'CurrentUser') {
+        if (loginResult.data?.login?.__typename === 'CurrentUser') {
             if (loginResult.token) {
                 await setAuthToken(loginResult.token);
             }
@@ -57,7 +57,7 @@ export async function registerAction(prevState: { error?: string } | undefined, 
         }
     } catch (e) {
         // Allow Next.js NEXT_REDIRECT to propagate normally
-        if ((e as any)?.digest?.startsWith('NEXT_REDIRECT')) {
+        if ((e as { digest?: string })?.digest?.startsWith('NEXT_REDIRECT')) {
             throw e;
         }
     }

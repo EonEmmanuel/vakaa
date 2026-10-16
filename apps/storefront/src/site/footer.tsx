@@ -2,6 +2,7 @@ import {getRouteLocale} from '@/platform/i18n/server';
 import {cacheLife, cacheTag} from 'next/cache';
 import {NavigationLink} from '@/site/navigation/navigation-link';
 import {VakaaLogo} from '@/site/navigation/vakaa-logo';
+import {ArrowUpRight} from 'lucide-react';
 
 const COPYRIGHT_YEAR = 2026;
 
@@ -41,266 +42,252 @@ function PinterestIcon({className = ""}: {className?: string}) {
     );
 }
 
-function AfricanGeometricEmblem({className = ""}: {className?: string}) {
-    return (
-        <svg
-            viewBox="0 0 160 160"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className={`text-[#D4A43C] opacity-85 hover:opacity-100 hover:rotate-3 hover:scale-105 active:scale-95 transition-all duration-300 ease-out cursor-pointer ${className}`}
-        >
-            {/* Center diamond core */}
-            <rect x="70" y="70" width="20" height="20" transform="rotate(45 80 80)" stroke="currentColor" strokeWidth="2.5" />
-            <circle cx="80" cy="80" r="3.5" fill="currentColor" />
-
-            {/* Top Branch */}
-            <g stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <line x1="80" y1="66" x2="80" y2="18" />
-                <line x1="72" y1="62" x2="72" y2="24" />
-                <line x1="88" y1="62" x2="88" y2="24" />
-                <path d="M68 24C68 20.6863 70.6863 18 74 18H86C89.3137 18 92 20.6863 92 24" />
-                <circle cx="80" cy="14" r="3" fill="currentColor" />
-                <circle cx="72" cy="20" r="2.5" fill="currentColor" />
-                <circle cx="88" cy="20" r="2.5" fill="currentColor" />
-            </g>
-
-            {/* Bottom Branch */}
-            <g stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <line x1="80" y1="94" x2="80" y2="142" />
-                <line x1="72" y1="98" x2="72" y2="136" />
-                <line x1="88" y1="98" x2="88" y2="136" />
-                <path d="M68 136C68 139.314 70.6863 142 74 142H86C89.3137 142 92 139.314 92 136" />
-                <circle cx="80" cy="146" r="3" fill="currentColor" />
-                <circle cx="72" cy="140" r="2.5" fill="currentColor" />
-                <circle cx="88" cy="140" r="2.5" fill="currentColor" />
-            </g>
-
-            {/* Left Branch */}
-            <g stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <line x1="66" y1="80" x2="18" y2="80" />
-                <line x1="62" y1="72" x2="24" y2="72" />
-                <line x1="62" y1="88" x2="24" y2="88" />
-                <path d="M24 68C20.6863 68 18 70.6863 18 74V86C18 89.3137 20.6863 92 24 92" />
-                <circle cx="14" cy="80" r="3" fill="currentColor" />
-                <circle cx="20" cy="72" r="2.5" fill="currentColor" />
-                <circle cx="20" cy="88" r="2.5" fill="currentColor" />
-            </g>
-
-            {/* Right Branch */}
-            <g stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <line x1="94" y1="80" x2="142" y2="80" />
-                <line x1="98" y1="72" x2="136" y2="72" />
-                <line x1="98" y1="88" x2="136" y2="88" />
-                <path d="M136 68C139.314 68 142 70.6863 142 74V86C142 89.3137 139.314 92 136 92" />
-                <circle cx="146" cy="80" r="3" fill="currentColor" />
-                <circle cx="140" cy="72" r="2.5" fill="currentColor" />
-                <circle cx="140" cy="88" r="2.5" fill="currentColor" />
-            </g>
-
-            {/* Diagonal interconnecting weave arcs */}
-            <path d="M60 60L52 52M100 60L108 52M60 100L52 108M100 100L108 108" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-    );
-}
-
 export async function Footer() {
-    'use cache'
+    'use cache';
     cacheLife('days');
 
     const locale = await getRouteLocale();
     cacheTag(`footer-${locale}`);
 
+    const isFr = (locale || 'fr').startsWith('fr');
+
     return (
-        <footer className="bg-[#140C06] text-[#F8F4EE] border-t border-[#3A291C] mt-auto transition-colors">
-            <div className="vakaa-container py-10 sm:py-12 lg:py-14">
-                <div className="grid grid-cols-2 md:grid-cols-12 gap-8 lg:gap-8 items-start">
-                    {/* Brand Column */}
-                    <div className="col-span-2 md:col-span-4 lg:col-span-3 space-y-4">
-                        <div className="flex flex-col items-start">
-                            <NavigationLink href="/" className="inline-block">
-                                <VakaaLogo variant="light" height={32} />
+        <footer className="px-3 pb-3 sm:px-5 sm:pb-5 bg-[#f2efe9] dark:bg-[#151413] mt-auto">
+            <div className="relative overflow-hidden rounded-[28px] bg-[#1c1b18] px-5 pt-9 text-[#fbfaf7] sm:rounded-[32px] sm:px-12 sm:pt-14 shadow-tile border border-black/5 dark:border-white/10">
+                {/* ═══ Top Section: Brand Statement & Columns ═══ */}
+                <div className="grid gap-9 md:grid-cols-[1.4fr_2fr] md:gap-12">
+                    {/* Left: Brand Vision & Statement */}
+                    <div>
+                        <div className="flex items-center gap-2 mb-4 sm:mb-5">
+                            <NavigationLink href="/" className="inline-block focus:outline-hidden">
+                                <VakaaLogo variant="light" height={30} />
                             </NavigationLink>
-                            <p className="text-xs text-[#B5A496] font-medium tracking-wide mt-3">
-                                Carrying Africa. Everywhere.
-                            </p>
                         </div>
 
-                        {/* Social Icons */}
-                        <div className="flex items-center gap-3 pt-2 text-[#D4A43C]">
+                        <p className="max-w-sm font-display text-[1.6rem] font-semibold leading-[1.1] tracking-tight sm:text-3xl text-[#fbfaf7]">
+                            {isFr ? "Porter l'Afrique. Partout." : "Carrying Africa. Everywhere."}
+                        </p>
+
+                        <p className="mt-3 max-w-sm text-[14px] leading-relaxed text-[#fbfaf7]/70 sm:mt-4 sm:text-[15px] font-sans">
+                            {isFr
+                                ? "Maroquinerie d'artisanat sculptée à la main en paille de Bolgatanga et cuir pleine fleur. Façonnée pour l'éternité."
+                                : "Fine leather goods hand-sculpted from Bolgatanga elephant grass and full-grain leather. Crafted for eternity."}
+                        </p>
+
+                        {/* Social Links */}
+                        <div className="mt-6 flex items-center gap-2.5 text-[#fbfaf7]/75">
                             <a
                                 href="https://instagram.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label="Instagram"
-                                className="w-8 h-8 rounded-full bg-[#20150D] border border-[#3A291C] flex items-center justify-center hover:bg-[#D4A43C] hover:text-[#140C06] transition-colors"
+                                className="size-8.5 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#D4A43C] hover:text-[#1c1b18] hover:border-[#D4A43C] transition-all duration-200 cursor-pointer"
                             >
-                                <InstagramIcon className="w-4 h-4" />
+                                <InstagramIcon className="size-4" />
                             </a>
                             <a
                                 href="https://facebook.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label="Facebook"
-                                className="w-8 h-8 rounded-full bg-[#20150D] border border-[#3A291C] flex items-center justify-center hover:bg-[#D4A43C] hover:text-[#140C06] transition-colors"
+                                className="size-8.5 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#D4A43C] hover:text-[#1c1b18] hover:border-[#D4A43C] transition-all duration-200 cursor-pointer"
                             >
-                                <FacebookIcon className="w-4 h-4" />
+                                <FacebookIcon className="size-4" />
                             </a>
                             <a
                                 href="https://tiktok.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label="TikTok"
-                                className="w-8 h-8 rounded-full bg-[#20150D] border border-[#3A291C] flex items-center justify-center hover:bg-[#D4A43C] hover:text-[#140C06] transition-colors"
+                                className="size-8.5 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#D4A43C] hover:text-[#1c1b18] hover:border-[#D4A43C] transition-all duration-200 cursor-pointer"
                             >
-                                <TikTokIcon className="w-4 h-4" />
+                                <TikTokIcon className="size-4" />
                             </a>
                             <a
                                 href="https://pinterest.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label="Pinterest"
-                                className="w-8 h-8 rounded-full bg-[#20150D] border border-[#3A291C] flex items-center justify-center hover:bg-[#D4A43C] hover:text-[#140C06] transition-colors"
+                                className="size-8.5 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-[#D4A43C] hover:text-[#1c1b18] hover:border-[#D4A43C] transition-all duration-200 cursor-pointer"
                             >
-                                <PinterestIcon className="w-4 h-4" />
+                                <PinterestIcon className="size-4" />
                             </a>
                         </div>
                     </div>
 
-                    {/* Column 1: SHOP */}
-                    <div className="col-span-1 md:col-span-2 lg:col-span-2 space-y-3">
-                        <p className="text-xs font-bold tracking-[0.2em] text-[#D4A43C] uppercase">SHOP</p>
-                        <ul className="space-y-2 text-xs text-[#B5A496]">
-                            <li>
-                                <NavigationLink href="/search" className="hover:text-[#F8F4EE] transition-colors">
-                                    All Bags
-                                </NavigationLink>
-                            </li>
-                            <li>
-                                <NavigationLink href="/search?category=tote-bags" className="hover:text-[#F8F4EE] transition-colors">
-                                    Tote Bags
-                                </NavigationLink>
-                            </li>
-                            <li>
-                                <NavigationLink href="/search?category=shoulder-bags" className="hover:text-[#F8F4EE] transition-colors">
-                                    Shoulder Bags
-                                </NavigationLink>
-                            </li>
-                            <li>
-                                <NavigationLink href="/search?category=clutches" className="hover:text-[#F8F4EE] transition-colors">
-                                    Clutches
-                                </NavigationLink>
-                            </li>
-                            <li>
-                                <NavigationLink href="/search?category=crossbodies" className="hover:text-[#F8F4EE] transition-colors">
-                                    Crossbodies
-                                </NavigationLink>
-                            </li>
-                            <li>
-                                <NavigationLink href="/search?category=accessories" className="hover:text-[#F8F4EE] transition-colors">
-                                    Accessories
-                                </NavigationLink>
-                            </li>
-                        </ul>
-                    </div>
-
-                    {/* Column 2: ABOUT */}
-                    <div className="col-span-1 md:col-span-2 lg:col-span-2 space-y-3">
-                        <p className="text-xs font-bold tracking-[0.2em] text-[#D4A43C] uppercase">ABOUT</p>
-                        <ul className="space-y-2 text-xs text-[#B5A496]">
-                            <li>
-                                <NavigationLink href="/our-story" className="hover:text-[#F8F4EE] transition-colors">
-                                    Our Story
-                                </NavigationLink>
-                            </li>
-                            <li>
-                                <NavigationLink href="/artisans" className="hover:text-[#F8F4EE] transition-colors">
-                                    Artisans
-                                </NavigationLink>
-                            </li>
-                            <li>
-                                <NavigationLink href="/search?collection=sustainability" className="hover:text-[#F8F4EE] transition-colors">
-                                    Sustainability
-                                </NavigationLink>
-                            </li>
-                            <li>
-                                <NavigationLink href="/journal" className="hover:text-[#F8F4EE] transition-colors">
-                                    Journal
-                                </NavigationLink>
-                            </li>
-                            <li>
-                                <NavigationLink href="/contact" className="hover:text-[#F8F4EE] transition-colors">
-                                    FAQs
-                                </NavigationLink>
-                            </li>
-                        </ul>
-                    </div>
-
-                    {/* Column 3: HELP */}
-                    <div className="col-span-1 md:col-span-2 lg:col-span-2 space-y-3">
-                        <p className="text-xs font-bold tracking-[0.2em] text-[#D4A43C] uppercase">HELP</p>
-                        <ul className="space-y-2 text-xs text-[#B5A496]">
-                            <li>
-                                <NavigationLink href="/shipping-and-delivery" className="hover:text-[#F8F4EE] transition-colors">
-                                    Shipping & Delivery
-                                </NavigationLink>
-                            </li>
-                            <li>
-                                <NavigationLink href="/returns-and-refunds" className="hover:text-[#F8F4EE] transition-colors">
-                                    Returns & Exchanges
-                                </NavigationLink>
-                            </li>
-                            <li>
-                                <NavigationLink href="/contact" className="hover:text-[#F8F4EE] transition-colors">
-                                    Payment Methods
-                                </NavigationLink>
-                            </li>
-                            <li>
-                                <NavigationLink href="/track-order" className="hover:text-[#F8F4EE] transition-colors">
-                                    Track Order
-                                </NavigationLink>
-                            </li>
-                            <li>
-                                <NavigationLink href="/contact" className="hover:text-[#F8F4EE] transition-colors">
-                                    Contact Us
-                                </NavigationLink>
-                            </li>
-                        </ul>
-                    </div>
-
-                    {/* Column 4: LEGAL & Emblem */}
-                    <div className="col-span-1 md:col-span-2 lg:col-span-3 flex flex-col sm:flex-row lg:flex-col justify-between items-start lg:items-end gap-6">
-                        <div className="space-y-3">
-                            <p className="text-xs font-bold tracking-[0.2em] text-[#D4A43C] uppercase">LEGAL</p>
-                            <ul className="space-y-2 text-xs text-[#B5A496]">
+                    {/* Right: 3 Nav Columns */}
+                    <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 sm:gap-8">
+                        {/* Column 1: Boutique / Shop */}
+                        <div>
+                            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#fbfaf7]/60 font-medium">
+                                {isFr ? 'Boutique' : 'Shop'}
+                            </p>
+                            <ul className="mt-2.5 space-y-0.5">
                                 <li>
-                                    <NavigationLink href="/terms" className="hover:text-[#F8F4EE] transition-colors">
-                                        Terms & Conditions
+                                    <NavigationLink
+                                        href="/search"
+                                        className="group inline-flex min-h-8 sm:min-h-9 items-center gap-1 text-[14px] sm:text-[15px] text-[#fbfaf7]/85 transition-colors hover:text-[#fbfaf7]"
+                                    >
+                                        <span>{isFr ? 'Tous les sacs' : 'All bags'}</span>
+                                        <ArrowUpRight className="size-3.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 text-[#D4A43C]" />
                                     </NavigationLink>
                                 </li>
                                 <li>
-                                    <NavigationLink href="/privacy" className="hover:text-[#F8F4EE] transition-colors">
-                                        Privacy Policy
+                                    <NavigationLink
+                                        href="/collection/tote-bags"
+                                        className="group inline-flex min-h-8 sm:min-h-9 items-center gap-1 text-[14px] sm:text-[15px] text-[#fbfaf7]/85 transition-colors hover:text-[#fbfaf7]"
+                                    >
+                                        <span>{isFr ? 'Sacs Cabas & Totes' : 'Totes & Baskets'}</span>
+                                        <ArrowUpRight className="size-3.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 text-[#D4A43C]" />
+                                    </NavigationLink>
+                                </li>
+                                <li>
+                                    <NavigationLink
+                                        href="/collection/shoulder-bags"
+                                        className="group inline-flex min-h-8 sm:min-h-9 items-center gap-1 text-[14px] sm:text-[15px] text-[#fbfaf7]/85 transition-colors hover:text-[#fbfaf7]"
+                                    >
+                                        <span>{isFr ? 'Sacs Épaule' : 'Shoulder Bags'}</span>
+                                        <ArrowUpRight className="size-3.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 text-[#D4A43C]" />
+                                    </NavigationLink>
+                                </li>
+                                <li>
+                                    <NavigationLink
+                                        href="/collection/clutches"
+                                        className="group inline-flex min-h-8 sm:min-h-9 items-center gap-1 text-[14px] sm:text-[15px] text-[#fbfaf7]/85 transition-colors hover:text-[#fbfaf7]"
+                                    >
+                                        <span>{isFr ? 'Pochettes & Soirée' : 'Clutches & Evening'}</span>
+                                        <ArrowUpRight className="size-3.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 text-[#D4A43C]" />
+                                    </NavigationLink>
+                                </li>
+                                <li>
+                                    <NavigationLink
+                                        href="/collection/accessories"
+                                        className="group inline-flex min-h-8 sm:min-h-9 items-center gap-1 text-[14px] sm:text-[15px] text-[#fbfaf7]/85 transition-colors hover:text-[#fbfaf7]"
+                                    >
+                                        <span>{isFr ? 'Petite Maroquinerie' : 'Small Leather Goods'}</span>
+                                        <ArrowUpRight className="size-3.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 text-[#D4A43C]" />
                                     </NavigationLink>
                                 </li>
                             </ul>
                         </div>
 
-                        {/* African Geometric Artisan Motif */}
-                        <div className="pt-2">
-                            <AfricanGeometricEmblem className="w-20 h-20 md:w-24 md:h-24" />
+                        {/* Column 2: La Maison / About */}
+                        <div>
+                            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#fbfaf7]/60 font-medium">
+                                {isFr ? 'La Maison' : 'The House'}
+                            </p>
+                            <ul className="mt-2.5 space-y-0.5">
+                                <li>
+                                    <NavigationLink
+                                        href="/our-story"
+                                        className="group inline-flex min-h-8 sm:min-h-9 items-center gap-1 text-[14px] sm:text-[15px] text-[#fbfaf7]/85 transition-colors hover:text-[#fbfaf7]"
+                                    >
+                                        <span>{isFr ? 'Notre Histoire' : 'Our Story'}</span>
+                                        <ArrowUpRight className="size-3.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 text-[#D4A43C]" />
+                                    </NavigationLink>
+                                </li>
+                                <li>
+                                    <NavigationLink
+                                        href="/artisans"
+                                        className="group inline-flex min-h-8 sm:min-h-9 items-center gap-1 text-[14px] sm:text-[15px] text-[#fbfaf7]/85 transition-colors hover:text-[#fbfaf7]"
+                                    >
+                                        <span>{isFr ? 'Les Artisans' : 'The Artisans'}</span>
+                                        <ArrowUpRight className="size-3.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 text-[#D4A43C]" />
+                                    </NavigationLink>
+                                </li>
+                                <li>
+                                    <NavigationLink
+                                        href="/journal"
+                                        className="group inline-flex min-h-8 sm:min-h-9 items-center gap-1 text-[14px] sm:text-[15px] text-[#fbfaf7]/85 transition-colors hover:text-[#fbfaf7]"
+                                    >
+                                        <span>{isFr ? 'Le Journal' : 'Journal'}</span>
+                                        <ArrowUpRight className="size-3.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 text-[#D4A43C]" />
+                                    </NavigationLink>
+                                </li>
+                                <li>
+                                    <NavigationLink
+                                        href="/contact"
+                                        className="group inline-flex min-h-8 sm:min-h-9 items-center gap-1 text-[14px] sm:text-[15px] text-[#fbfaf7]/85 transition-colors hover:text-[#fbfaf7]"
+                                    >
+                                        <span>{isFr ? 'Contact & FAQ' : 'Contact & FAQ'}</span>
+                                        <ArrowUpRight className="size-3.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 text-[#D4A43C]" />
+                                    </NavigationLink>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {/* Column 3: Compte & Service */}
+                        <div className="col-span-2 sm:col-span-1">
+                            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[#fbfaf7]/60 font-medium">
+                                {isFr ? 'Compte & Service' : 'Account & Care'}
+                            </p>
+                            <ul className="mt-2.5 space-y-0.5">
+                                <li>
+                                    <NavigationLink
+                                        href="/sign-in"
+                                        className="group inline-flex min-h-8 sm:min-h-9 items-center gap-1 text-[14px] sm:text-[15px] text-[#fbfaf7]/85 transition-colors hover:text-[#fbfaf7]"
+                                    >
+                                        <span>{isFr ? 'Se connecter' : 'Sign in'}</span>
+                                        <ArrowUpRight className="size-3.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 text-[#D4A43C]" />
+                                    </NavigationLink>
+                                </li>
+                                <li>
+                                    <NavigationLink
+                                        href="/track-order"
+                                        className="group inline-flex min-h-8 sm:min-h-9 items-center gap-1 text-[14px] sm:text-[15px] text-[#fbfaf7]/85 transition-colors hover:text-[#fbfaf7]"
+                                    >
+                                        <span>{isFr ? 'Suivi de commande' : 'Track order'}</span>
+                                        <ArrowUpRight className="size-3.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 text-[#D4A43C]" />
+                                    </NavigationLink>
+                                </li>
+                                <li>
+                                    <NavigationLink
+                                        href="/shipping-and-delivery"
+                                        className="group inline-flex min-h-8 sm:min-h-9 items-center gap-1 text-[14px] sm:text-[15px] text-[#fbfaf7]/85 transition-colors hover:text-[#fbfaf7]"
+                                    >
+                                        <span>{isFr ? 'Livraison sous 48h' : '48h Shipping'}</span>
+                                        <ArrowUpRight className="size-3.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 text-[#D4A43C]" />
+                                    </NavigationLink>
+                                </li>
+                                <li>
+                                    <NavigationLink
+                                        href="/returns-and-refunds"
+                                        className="group inline-flex min-h-8 sm:min-h-9 items-center gap-1 text-[14px] sm:text-[15px] text-[#fbfaf7]/85 transition-colors hover:text-[#fbfaf7]"
+                                    >
+                                        <span>{isFr ? 'Retours offerts 30j' : 'Free 30-day returns'}</span>
+                                        <ArrowUpRight className="size-3.5 opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 text-[#D4A43C]" />
+                                    </NavigationLink>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
 
-                {/* Bottom Bar */}
-                <div className="mt-8 pt-6 sm:mt-10 sm:pt-6 border-t border-[#2A1D14] flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] text-[#8C7A6D]">
-                    <div>
-                        &copy; {COPYRIGHT_YEAR} VAKAA. All Rights Reserved. Carrying Africa. Everywhere.
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <span>Worldwide Express Shipping</span>
-                        <span className="text-[#3A291C]">|</span>
-                        <span>100% Artisan Handcrafted</span>
+                {/* ═══ Monumental Brand Typographic Statement (Exact KVIST Letter Spacing) ═══ */}
+                <div
+                    aria-hidden="true"
+                    className="mt-10 sm:mt-16 flex justify-between font-display text-[clamp(4.5rem,21.5vw,21rem)] font-bold leading-[0.76] tracking-[-0.055em] text-[#fbfaf7] select-none pointer-events-none"
+                >
+                    <span className="inline-block overflow-hidden"><span className="inline-block">V</span></span>
+                    <span className="inline-block overflow-hidden"><span className="inline-block">A</span></span>
+                    <span className="inline-block overflow-hidden"><span className="inline-block">K</span></span>
+                    <span className="inline-block overflow-hidden"><span className="inline-block">Á</span></span>
+                    <span className="inline-block overflow-hidden"><span className="inline-block">A</span></span>
+                </div>
+
+                {/* ═══ Bottom Bar: Copyright & Legal ═══ */}
+                <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-[#fbfaf7]/15 py-4 text-[12px] text-[#fbfaf7]/60 sm:py-5 sm:text-[13px] font-sans">
+                    <span>© {COPYRIGHT_YEAR} VAKÁA Paris · Maison de Haute Maroquinerie</span>
+                    <div className="flex items-center gap-4">
+                        <NavigationLink href="/terms" className="hover:text-[#fbfaf7] transition-colors">
+                            {isFr ? 'Conditions' : 'Terms'}
+                        </NavigationLink>
+                        <span>·</span>
+                        <NavigationLink href="/privacy" className="hover:text-[#fbfaf7] transition-colors">
+                            {isFr ? 'Confidentialité' : 'Privacy'}
+                        </NavigationLink>
+                        <span>·</span>
+                        <span className="text-[#D4A43C]/90">Bolgatanga · Paris</span>
                     </div>
                 </div>
             </div>

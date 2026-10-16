@@ -169,6 +169,55 @@ export const SetOrderBillingAddressMutation = graphql(`
     }
 `);
 
+export const SetOrderShippingAndBillingAddressMutation = graphql(`
+    mutation SetOrderShippingAndBillingAddress($shippingInput: CreateAddressInput!, $billingInput: CreateAddressInput!) {
+        setOrderShippingAddress(input: $shippingInput) {
+            __typename
+            ... on Order {
+                id
+                code
+                shippingAddress {
+                    fullName
+                    company
+                    streetLine1
+                    streetLine2
+                    city
+                    province
+                    postalCode
+                    country
+                    phoneNumber
+                }
+            }
+            ... on ErrorResult {
+                errorCode
+                message
+            }
+        }
+        setOrderBillingAddress(input: $billingInput) {
+            __typename
+            ... on Order {
+                id
+                code
+                billingAddress {
+                    fullName
+                    company
+                    streetLine1
+                    streetLine2
+                    city
+                    province
+                    postalCode
+                    country
+                    phoneNumber
+                }
+            }
+            ... on ErrorResult {
+                errorCode
+                message
+            }
+        }
+    }
+`);
+
 export const SetOrderShippingMethodMutation = graphql(`
     mutation SetOrderShippingMethod($shippingMethodId: [ID!]!) {
         setOrderShippingMethod(shippingMethodId: $shippingMethodId) {

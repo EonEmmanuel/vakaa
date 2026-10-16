@@ -3,7 +3,10 @@
     "loading": "Chargement...",
     "sending": "Envoi...",
     "sku": "SKU",
-    "siteDescription": "Découvrez l'excellence chez {siteName}. Créations artisanales d'exception, finitions de prestige et livraison sécurisée."
+    "siteDescription": "Découvrez l'excellence chez {siteName}. Créations artisanales d'exception, finitions de prestige et livraison sécurisée.",
+    "home": "Accueil",
+    "shop": "Boutique",
+    "cart": "Panier"
   },
   "Errors": {
     "fieldsRequired": "Tous les champs sont obligatoires",

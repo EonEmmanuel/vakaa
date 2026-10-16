@@ -7,6 +7,19 @@ const VENDURE_CHANNEL_TOKEN = process.env.VENDURE_CHANNEL_TOKEN || process.env.N
 const VENDURE_AUTH_TOKEN_HEADER = process.env.VENDURE_AUTH_TOKEN_HEADER || 'vendure-auth-token';
 const VENDURE_CHANNEL_TOKEN_HEADER = process.env.VENDURE_CHANNEL_TOKEN_HEADER || 'vendure-token';
 
+const queryPrintCache = new WeakMap<object, string>();
+
+function printDocument(document: unknown): string {
+    if (typeof document === 'object' && document !== null) {
+        const cached = queryPrintCache.get(document);
+        if (cached) return cached;
+        const printed = print(document as any);
+        queryPrintCache.set(document, printed);
+        return printed;
+    }
+    return print(document as any);
+}
+
 if (!VENDURE_API_URL) {
     throw new Error('VENDURE_SHOP_API_URL or NEXT_PUBLIC_VENDURE_SHOP_API_URL environment variable is not set');
 }
@@ -19,12 +32,25 @@ interface VendureRequestOptions {
     currencyCode?: string;
     fetch?: RequestInit;
     tags?: string[];
+    /**
+     * Bound interactive mutations separately from slower catalogue reads.
+     * A caller may still provide its own AbortSignal through `fetch`.
+     */
+    timeoutMs?: number;
 }
 
 interface VendureResponse<T> {
     data?: T;
     errors?: Array<{ message: string; [key: string]: unknown }>;
 }
+
+export type VendureRequestError = {
+    kind: 'network' | 'timeout' | 'http' | 'graphql' | 'invalid-response';
+    message?: string;
+    status?: number;
+};
+
+type VendureResult<T> = {data: T; token?: string; error?: VendureRequestError};
 
 /**
  * Extract the Vendure auth token from response headers
@@ -42,7 +68,7 @@ export async function query<TResult, TVariables>(
     ...[variables, options]: TVariables extends Record<string, never>
         ? [variables?: TVariables, options?: VendureRequestOptions]
         : [variables: TVariables, options?: VendureRequestOptions]
-): Promise<{ data: TResult; token?: string }> {
+): Promise<VendureResult<TResult>> {
     const {
         token,
         useAuthToken,
@@ -51,6 +77,7 @@ export async function query<TResult, TVariables>(
         currencyCode,
         fetch: fetchOptions,
         tags,
+        timeoutMs,
     } = options || {};
 
     const headers: Record<string, string> = {
@@ -89,20 +116,28 @@ export async function query<TResult, TVariables>(
             method: 'POST',
             headers,
             body: JSON.stringify({
-                query: print(document),
+                query: printDocument(document),
                 variables: variables || {},
             }),
+            signal: fetchOptions?.signal || AbortSignal.timeout(timeoutMs ?? 35000),
             ...(tags && {next: {tags}}),
         });
     } catch (networkError) {
+        const isTimeout = networkError instanceof Error && networkError.name === 'TimeoutError';
+        console.warn(
+            '[Vendure API Warning]: Network request failed or timed out:',
+            networkError instanceof Error ? networkError.message : networkError
+        );
         return {
             data: {} as TResult,
+            error: {kind: isTimeout ? 'timeout' : 'network'},
         };
     }
 
     if (!response.ok) {
         return {
             data: {} as TResult,
+            error: {kind: 'http', status: response.status},
         };
     }
 
@@ -113,10 +148,14 @@ export async function query<TResult, TVariables>(
         return {
             data: result.data || ({} as TResult),
             ...(newToken && {token: newToken}),
+            ...(result.errors?.length
+                ? {error: {kind: 'graphql' as const, message: result.errors[0]?.message}}
+                : {}),
         };
     } catch {
         return {
             data: {} as TResult,
+            error: {kind: 'invalid-response'},
         };
     }
 }
@@ -129,7 +168,7 @@ export async function mutate<TResult, TVariables>(
     ...[variables, options]: TVariables extends Record<string, never>
         ? [variables?: TVariables, options?: VendureRequestOptions]
         : [variables: TVariables, options?: VendureRequestOptions]
-): Promise<{ data: TResult; token?: string }> {
+): Promise<VendureResult<TResult>> {
     // Mutations use the same underlying implementation as queries in GraphQL
     // @ts-expect-error - Complex conditional type inference, runtime behavior is correct
     return query(document, variables, options);

@@ -30,10 +30,10 @@ export async function NavbarUser() {
                 nativeButton={false}
                 variant="ghost"
                 size="icon"
-                className="w-9 h-9 flex items-center justify-center text-[#1D120A] dark:text-[#F8F4EE] hover:text-[#D4A43C] hover:bg-transparent transition-colors cursor-pointer"
+                className="grid size-11 place-items-center rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-[#1D120A] dark:text-[#fbfaf7] transition-colors cursor-pointer shrink-0"
                 aria-label={t('signIn')}
             >
-                <User className="h-5 w-5 stroke-[1.5]" />
+                <User className="size-5 stroke-[1.5]" />
             </Button>
         );
     }
@@ -45,17 +45,17 @@ export async function NavbarUser() {
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="w-9 h-9 flex items-center justify-center text-[#1D120A] dark:text-[#F8F4EE] hover:text-[#D4A43C] hover:bg-transparent transition-colors cursor-pointer"
+                        className="grid size-11 place-items-center rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-[#1D120A] dark:text-[#fbfaf7] transition-colors cursor-pointer shrink-0"
                         aria-label={t('account')}
                     />
                 }
             >
-                <User className="h-5 w-5 stroke-[1.5]" />
+                <User className="size-5 stroke-[1.5]" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48 bg-[#F8F4EE] dark:bg-[#20150D] border-[#E7DED0] dark:border-[#3A291C]">
+            <DropdownMenuContent align="end" className="w-48 bg-[#fbfaf7] dark:bg-[#1a1916] border-[#e2ddd2] dark:border-[#2e2c28] shadow-lg rounded-xl">
                 <DropdownMenuItem render={<Link href="/account/profile" />}>{t('profile')}</DropdownMenuItem>
                 <DropdownMenuItem render={<Link href="/account/orders" />}>{t('orders')}</DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-[#E7DED0] dark:bg-[#3A291C]" />
+                <DropdownMenuSeparator className="bg-[#e2ddd2] dark:bg-[#2e2c28]" />
                 <DropdownMenuItem render={<LoginButton isLoggedIn={true} />} nativeButton />
             </DropdownMenuContent>
         </DropdownMenu>

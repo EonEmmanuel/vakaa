@@ -7,6 +7,9 @@ import {ActiveCustomerFragment, GetActiveCustomerQuery} from './graphql';
 export const getActiveCustomer = cache(async () => {
     try {
         const token = await getAuthToken();
+        if (!token) {
+            return null;
+        }
         const result = await query(GetActiveCustomerQuery, undefined, {token});
         return readFragment(ActiveCustomerFragment, result.data?.activeCustomer);
     } catch {

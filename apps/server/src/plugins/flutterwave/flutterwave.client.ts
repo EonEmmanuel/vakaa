@@ -9,11 +9,9 @@ import {
 export class FlutterwaveClient {
     private readonly baseUrl = 'https://api.flutterwave.com/v3';
 
-    constructor(private readonly options: FlutterwavePluginOptions) {}
+    constructor(private readonly options: FlutterwavePluginOptions) { }
 
-    /**
-     * Creates a hosted payment checkout link on Flutterwave.
-     */
+    //Creates a hosted payment checkout link on Flutterwave.
     async initializePayment(
         request: FlutterwaveInitializePaymentRequest
     ): Promise<FlutterwaveInitializePaymentResponse> {
@@ -32,6 +30,7 @@ export class FlutterwaveClient {
                 method: 'POST',
                 headers,
                 body: JSON.stringify(request),
+                signal: AbortSignal.timeout(15000),
             });
 
             const data = (await response.json()) as FlutterwaveInitializePaymentResponse;
@@ -62,7 +61,11 @@ export class FlutterwaveClient {
         };
 
         try {
-            const response = await fetch(url, { method: 'GET', headers });
+            const response = await fetch(url, {
+                method: 'GET',
+                headers,
+                signal: AbortSignal.timeout(15000),
+            });
             const data = (await response.json()) as FlutterwaveVerifyTransactionResponse;
             return data;
         } catch (error) {
@@ -78,7 +81,10 @@ export class FlutterwaveClient {
      * Uses constant-time comparison to prevent timing attacks.
      */
     verifyWebhookSignature(signatureHeader?: string): boolean {
-        const secretHash = this.options.secretHash || process.env.FLW_SECRET_HASH;
+        const configuredSecret = this.options.secretHash || process.env.FLW_SECRET_HASH;
+        const secretHash = configuredSecret === 'vakaa_flw_secret_hash' && process.env.APP_ENV !== 'dev'
+            ? ''
+            : configuredSecret;
         if (!signatureHeader || !secretHash) {
             return false;
         }
@@ -99,8 +105,10 @@ export class FlutterwaveClient {
 
     private isMockActive(): boolean {
         if (this.options.mockMode === true) return true;
-        if (!this.options.secretKey) return true;
-        if (this.options.secretKey.includes('your_') || this.options.secretKey.includes('placeholder')) return true;
+        if (!this.options.secretKey) return this.options.isSandbox === true;
+        if (this.options.secretKey.includes('your_') || this.options.secretKey.includes('placeholder')) {
+            return this.options.isSandbox === true;
+        }
         return false;
     }
 

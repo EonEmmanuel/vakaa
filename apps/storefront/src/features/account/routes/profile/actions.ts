@@ -29,10 +29,10 @@ export async function updatePasswordAction(prevState: { error?: string; success?
             newPassword,
         }, {useAuthToken: true});
 
-        const updateResult = result.data.updateCustomerPassword;
+        const updateResult = result.data?.updateCustomerPassword;
 
-        if (updateResult.__typename !== 'Success') {
-            return {error: updateResult.message};
+        if (!updateResult || updateResult.__typename !== 'Success') {
+            return {error: updateResult?.message || t('unexpectedError')};
         }
 
         return {success: true};
@@ -97,10 +97,10 @@ export async function requestEmailUpdateAction(prevState: { error?: string; succ
             newEmailAddress,
         }, {useAuthToken: true});
 
-        const updateResult = result.data.requestUpdateCustomerEmailAddress;
+        const updateResult = result.data?.requestUpdateCustomerEmailAddress;
 
-        if (updateResult.__typename !== 'Success') {
-            return {error: updateResult.message};
+        if (!updateResult || updateResult.__typename !== 'Success') {
+            return {error: updateResult?.message || t('unexpectedError')};
         }
 
         return {success: true};

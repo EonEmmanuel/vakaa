@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useActionState, useEffect } from 'react';
 import { updateCustomerAction } from './actions';
@@ -32,10 +32,10 @@ export function EditProfileForm({ customer }: EditProfileFormProps) {
             {/* Header / Avatar Profile Row */}
             <div className="flex flex-col sm:flex-row items-center gap-5 pb-6 border-b border-[#F0EBE1] dark:border-[#2A1D15]">
                 <div className="relative group">
-                    <div className="w-20 h-20 rounded-full bg-[#FAF8F5] dark:bg-[#22160F] border-2 border-[#EAA838] flex items-center justify-center text-[#1D120A] dark:text-[#F8F4EE] font-sans text-2xl font-bold tracking-wider shadow-xs">
+                    <div className="w-20 h-20 rounded-full bg-[#FAF8F5] dark:bg-[#22160F] border-2 border-[#D4A43C] flex items-center justify-center text-[#1D120A] dark:text-[#F8F4EE] font-sans text-2xl font-bold tracking-wider shadow-xs">
                         {initials}
                     </div>
-                    <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[#0F291E] text-white flex items-center justify-center border-2 border-white dark:border-[#160E08] shadow-xs">
+                    <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[#1D120A] text-[#FAF8F5] flex items-center justify-center border-2 border-white dark:border-[#160E08] shadow-xs">
                         <Camera className="w-3.5 h-3.5" />
                     </div>
                 </div>
@@ -152,7 +152,7 @@ export function EditProfileForm({ customer }: EditProfileFormProps) {
                     <Button
                         type="submit"
                         disabled={isPending}
-                        className="min-w-[200px] h-11 bg-[#0F291E] hover:bg-[#1A3D2E] text-white rounded-xl font-medium shadow-xs"
+                        className="min-w-[200px] h-11 bg-[#1D120A] hover:bg-[#1D120A]/90 text-[#FAF8F5] rounded-xl font-medium shadow-xs"
                     >
                         {isPending ? t('updating') : t('updateProfile')}
                     </Button>

@@ -44,6 +44,14 @@ process.on('unhandledRejection', (reason: any) => {
     console.error('[Vendure Worker] Unhandled Rejection:', reason);
 });
 
+// Suppress known TypeORM upstream pg query queue deprecation notice until TypeORM serializes queries in pg 9.0
+process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning' && warning.message.includes('Calling client.query()')) {
+        return;
+    }
+    console.warn(`[Node Warning] ${warning.name}: ${warning.message}`);
+});
+
 bootstrapWorker(config)
     .then(worker => worker.startJobQueue())
     .catch(err => {

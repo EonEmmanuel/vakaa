@@ -1,16 +1,12 @@
-import {CartItems} from "@/features/cart/routes/cart-items";
-import {OrderSummary} from "@/features/cart/routes/order-summary";
+import {CartView} from "@/features/cart/routes/cart-view";
 import {getRouteLocale} from "@/platform/i18n/server";
 import {getActiveCurrencyCode} from "@/features/currency/currency-server";
-import {cacheLife, cacheTag} from "next/cache";
 import {query} from "@/platform/vendure/api";
 import {GetActiveOrderQuery} from '@/features/cart/graphql';
 
-export async function Cart() {
-    "use cache: private"
-    cacheLife('minutes');
-    cacheTag('cart');
+export const dynamic = 'force-dynamic';
 
+export async function Cart() {
     const locale = await getRouteLocale();
     const currencyCode = await getActiveCurrencyCode();
     let activeOrder = null;
@@ -25,19 +21,5 @@ export async function Cart() {
         activeOrder = null;
     }
 
-    if (!activeOrder || activeOrder.lines.length === 0) {
-        return <CartItems activeOrder={null} />;
-    }
-
-    return (
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-            <div className="lg:col-span-8">
-                <CartItems activeOrder={activeOrder} />
-            </div>
-
-            <div className="lg:col-span-4">
-                <OrderSummary activeOrder={activeOrder} />
-            </div>
-        </div>
-    );
+    return <CartView initialOrder={activeOrder} />;
 }

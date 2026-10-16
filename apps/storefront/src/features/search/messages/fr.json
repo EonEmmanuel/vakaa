@@ -32,6 +32,9 @@
     "resultsFor": "Résultats pour « {query} »",
     "resultsTitle": "Résultats pour « {query} »",
     "metaDescription": "Découvrez les créations correspondant à « {query} » sur {siteName}",
-    "metaCatalogDescription": "Explorez la collection complète de maroquinerie d'art et sacs en raphia faits main {siteName}"
+    "metaCatalogDescription": "Explorez la collection complète de maroquinerie d'art et sacs en raphia faits main {siteName}",
+    "searchPlaceholder": "Rechercher dans la boutique...",
+    "noResultsFound": "Aucun rÃ©sultat trouvÃ©.",
+    "typeToSearch": "Tapez pour rechercher..."
   }
 }

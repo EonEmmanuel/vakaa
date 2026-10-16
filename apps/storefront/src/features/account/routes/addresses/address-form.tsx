@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -189,7 +189,7 @@ export function AddressForm({ countries, address, onSubmit, onCancel, isSubmitti
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="rounded-xl h-11 bg-[#0F291E] hover:bg-[#1A3D2E] text-white shadow-xs px-6"
+          className="rounded-xl h-11 bg-[#1D120A] hover:bg-[#1D120A]/90 text-[#FAF8F5] shadow-xs px-6"
         >
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {address ? t('updateAddress') : t('saveAddress')}

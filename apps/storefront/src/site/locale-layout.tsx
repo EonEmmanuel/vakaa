@@ -1,7 +1,7 @@
 import type {Metadata, Viewport} from "next";
 import {locale as rootLocale} from "next/root-params";
 import {hasLocale, NextIntlClientProvider} from "next-intl";
-import {Plus_Jakarta_Sans, Geist_Mono} from "next/font/google";
+import { Geist, Geist_Mono, Bricolage_Grotesque } from "next/font/google";
 import {getMessages, getTranslations, setRequestLocale} from "next-intl/server";
 import {notFound} from "next/navigation";
 import {routing} from "@/platform/i18n/routing";
@@ -9,11 +9,19 @@ import {toOgLocale} from "@/platform/i18n/locale-utils";
 import {getRouteLocale} from "@/platform/i18n/server";
 import {Toaster} from "@/components/ui/sonner";
 import {ThemeProvider} from "@/site/providers/theme-provider";
+import {LenisProvider} from "@/site/providers/lenis-provider";
 import {CurrencyProvider} from "@/features/currency/currency-context";
 import {SITE_NAME, SITE_URL} from "@/config/metadata";
+import { FlyToCartProvider } from "@/lib/motion/fly-to-cart";
 
-const plusJakartaSans = Plus_Jakarta_Sans({
-    variable: "--font-jakarta",
+const geistSans = Geist({
+    variable: "--font-geist",
+    subsets: ["latin"],
+    display: "swap",
+});
+
+const bricolageGrotesque = Bricolage_Grotesque({
+    variable: "--font-bricolage",
     subsets: ["latin"],
     display: "swap",
 });
@@ -21,6 +29,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 const geistMono = Geist_Mono({
     variable: "--font-geist-mono",
     subsets: ["latin"],
+    display: "swap",
 });
 
 export function generateStaticParams() {
@@ -76,8 +85,8 @@ export const viewport: Viewport = {
     initialScale: 1,
     maximumScale: 5,
     themeColor: [
-        {media: "(prefers-color-scheme: light)", color: "#ffffff"},
-        {media: "(prefers-color-scheme: dark)", color: "#000000"},
+        {media: "(prefers-color-scheme: light)", color: "#f2efe9"},
+        {media: "(prefers-color-scheme: dark)", color: "#151413"},
     ],
 };
 
@@ -92,16 +101,20 @@ export default async function LocaleLayout({children}: {children: React.ReactNod
     const messages = await getMessages({locale});
 
     return (
-        <html lang={locale} data-scroll-behavior="smooth" suppressHydrationWarning>
+        <html lang={locale} suppressHydrationWarning>
             <body
-                className={`${plusJakartaSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
+                className={`${geistSans.variable} ${bricolageGrotesque.variable} ${geistMono.variable} font-sans antialiased flex flex-col min-h-screen`}
             >
                 <NextIntlClientProvider locale={locale} messages={messages}>
                     <ThemeProvider>
-                        <CurrencyProvider initialCurrency="XAF">
-                            {children}
-                            <Toaster/>
-                        </CurrencyProvider>
+                        <LenisProvider>
+                            <CurrencyProvider initialCurrency="XAF">
+                                <FlyToCartProvider>
+                                    {children}
+                                    <Toaster/>
+                                </FlyToCartProvider>
+                            </CurrencyProvider>
+                        </LenisProvider>
                     </ThemeProvider>
                 </NextIntlClientProvider>
             </body>

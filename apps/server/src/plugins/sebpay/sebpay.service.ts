@@ -89,15 +89,16 @@ export class SebpayService implements OnApplicationBootstrap {
                 relations: ['order'],
             });
 
-        // If not found by transactionId, search metadata by externalReference
+        // If not found by transactionId, search metadata by externalReference using indexed/parameterized query
         if (!payment) {
-            const allPayments = await this.connection
+            payment = await this.connection
                 .getRepository(ctx, Payment)
-                .find({ relations: ['order'] });
-
-            payment = allPayments.find(
-                (p) => (p.metadata as any)?.externalReference === transactionIdOrRef
-            ) || null;
+                .createQueryBuilder('payment')
+                .leftJoinAndSelect('payment.order', 'order')
+                .where("payment.metadata LIKE :ref", {
+                    ref: `%"externalReference":"${transactionIdOrRef}"%`,
+                })
+                .getOne();
         }
 
         if (!payment) {

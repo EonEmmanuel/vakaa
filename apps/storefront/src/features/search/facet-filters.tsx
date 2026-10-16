@@ -231,17 +231,17 @@ export function FacetFilters({ productDataPromise }: FacetFiltersProps) {
     }, {});
 
     const renderFilterBody = () => (
-        <div className="space-y-7 text-[#1D120A]">
+        <div className="space-y-7 text-[#1c1b18]">
             {/* Header: Title & Clear All */}
-            <div className="flex items-center justify-between pb-3 border-b border-[#E7DED0]">
-                <h3 className="font-sans text-base sm:text-lg font-bold tracking-tight text-[#1D120A]">
+            <div className="flex items-center justify-between pb-3 border-b border-[#e2ddd2]">
+                <h3 className="font-display text-base sm:text-lg font-bold tracking-tight text-[#1c1b18]">
                     {t('title')}
                 </h3>
                 {hasActiveFilters && (
                     <button
                         type="button"
                         onClick={clearAll}
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#A66B2D] hover:text-[#1D120A] transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#D4A43C] hover:text-[#1D120A] transition-colors cursor-pointer"
                     >
                         <RotateCcw className="w-3 h-3" />
                         <span>{t('clearAll')}</span>
@@ -251,7 +251,7 @@ export function FacetFilters({ productDataPromise }: FacetFiltersProps) {
 
             {/* 1. Category Filter */}
             <div className="space-y-3">
-                <h4 className="font-sans text-xs font-bold uppercase tracking-wider text-[#A66B2D]">
+                <h4 className="font-sans text-xs font-bold uppercase tracking-wider text-[#D4A43C]">
                     {t('categories')}
                 </h4>
                 <div className="space-y-2">
@@ -262,20 +262,20 @@ export function FacetFilters({ productDataPromise }: FacetFiltersProps) {
                                 key={cat.slug}
                                 onClick={() => updateFilter('category', isSelected ? null : cat.slug)}
                                 className={`flex items-center justify-between py-1 px-2 -mx-2 rounded-lg cursor-pointer transition-colors ${
-                                    isSelected ? 'bg-[#F3EFE9] font-semibold text-[#1D120A]' : 'hover:bg-[#F3EFE9]/60 text-[#3A2418]/80'
+                                    isSelected ? 'bg-[#f2efe9] font-semibold text-[#1c1b18]' : 'hover:bg-[#f2efe9]/60 text-[#57544c]'
                                 }`}
                             >
                                 <div className="flex items-center gap-2.5">
                                     <div
                                         className={`size-4 rounded border flex items-center justify-center transition-colors ${
-                                            isSelected ? 'bg-[#1D120A] border-[#1D120A] text-white' : 'border-[#E7DED0] bg-white'
+                                            isSelected ? 'bg-[#D4A43C] border-[#D4A43C] text-[#1D120A]' : 'border-[#e2ddd2] bg-white'
                                         }`}
                                     >
                                         {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                                     </div>
                                     <span className="text-xs sm:text-sm">{cat.label}</span>
                                 </div>
-                                <span className="text-[11px] text-[#3A2418]/50 tabular-nums">({cat.count})</span>
+                                <span className="text-[11px] text-[#7d796f] tabular-nums">({cat.count})</span>
                             </div>
                         );
                     })}
@@ -283,16 +283,16 @@ export function FacetFilters({ productDataPromise }: FacetFiltersProps) {
             </div>
 
             {/* 2. Interactive Price Range Slider Bar */}
-            <div className="space-y-4 pt-2 border-t border-[#E7DED0]/60">
+            <div className="space-y-4 pt-2 border-t border-[#e2ddd2]">
                 <div className="flex items-center justify-between">
-                    <h4 className="font-sans text-xs font-bold uppercase tracking-wider text-[#A66B2D]">
+                    <h4 className="font-sans text-xs font-bold uppercase tracking-wider text-[#D4A43C]">
                         {t('priceRange')}
                     </h4>
                     {isCustomPriceActive && (
                         <button
                             type="button"
                             onClick={resetPriceRange}
-                            className="text-[11px] font-semibold text-[#A66B2D] hover:text-[#1D120A] underline underline-offset-2 transition-colors cursor-pointer"
+                            className="text-[11px] font-semibold text-[#D4A43C] hover:text-[#1D120A] underline underline-offset-2 transition-colors cursor-pointer"
                         >
                             {t('reset')}
                         </button>
@@ -300,9 +300,9 @@ export function FacetFilters({ productDataPromise }: FacetFiltersProps) {
                 </div>
 
                 {/* Real-time Dynamic Price Range Tags */}
-                <div className="flex items-center justify-between text-xs font-semibold text-[#1D120A] bg-[#F3EFE9] px-3 py-2 rounded-xl border border-[#E7DED0]/60">
+                <div className="flex items-center justify-between text-xs font-semibold text-[#1c1b18] bg-[#f2efe9] px-3 py-2 rounded-xl border border-[#e2ddd2]">
                     <span className="tabular-nums">{formatPriceDisplay(sliderValues[0])}</span>
-                    <span className="text-[#3A2418]/30 font-normal">—</span>
+                    <span className="text-[#7d796f] font-normal">—</span>
                     <span className="tabular-nums">{formatPriceDisplay(sliderValues[1])}</span>
                 </div>
 
@@ -320,7 +320,7 @@ export function FacetFilters({ productDataPromise }: FacetFiltersProps) {
 
                 {/* Quick Presets for 1-Tap Access */}
                 <div className="space-y-1.5 pt-1">
-                    <p className="text-[10px] uppercase tracking-wider text-[#3A2418]/50 font-medium">
+                    <p className="text-[10px] uppercase tracking-wider text-[#7d796f] font-medium">
                         Paliers rapides :
                     </p>
                     <div className="grid grid-cols-1 gap-1.5">
@@ -336,8 +336,8 @@ export function FacetFilters({ productDataPromise }: FacetFiltersProps) {
                                     onClick={() => applyPricePreset(bracket.min, bracket.max)}
                                     className={`w-full text-left py-1.5 px-2.5 rounded-lg text-xs transition-colors flex items-center justify-between cursor-pointer ${
                                         isSelected
-                                            ? 'bg-[#1D120A] text-[#FAF8F5] font-semibold shadow-xs'
-                                            : 'bg-[#F3EFE9]/70 text-[#3A2418]/80 hover:bg-[#F3EFE9]'
+                                            ? 'bg-[#1D120A] text-white font-semibold shadow-xs'
+                                            : 'bg-[#f2efe9]/70 text-[#57544c] hover:bg-[#f2efe9]'
                                     }`}
                                 >
                                     <span>{bracket.label}</span>
@@ -350,8 +350,8 @@ export function FacetFilters({ productDataPromise }: FacetFiltersProps) {
             </div>
 
             {/* 3. Color Swatches (FutureCommerce Style) */}
-            <div className="space-y-3 pt-2 border-t border-[#E7DED0]/60">
-                <h4 className="font-sans text-xs font-bold uppercase tracking-wider text-[#A66B2D]">
+            <div className="space-y-3 pt-2 border-t border-[#e2ddd2]">
+                <h4 className="font-sans text-xs font-bold uppercase tracking-wider text-[#D4A43C]">
                     {t('colors')}
                 </h4>
                 <div className="grid grid-cols-2 gap-2">
@@ -363,7 +363,7 @@ export function FacetFilters({ productDataPromise }: FacetFiltersProps) {
                                 type="button"
                                 onClick={() => updateFilter('color', isSelected ? null : color.id)}
                                 className={`flex items-center gap-2 p-1.5 rounded-lg text-left text-xs transition-colors cursor-pointer ${
-                                    isSelected ? 'bg-[#F3EFE9] font-bold text-[#1D120A]' : 'hover:bg-[#F3EFE9]/60 text-[#3A2418]/80'
+                                    isSelected ? 'bg-[#f2efe9] font-bold text-[#1c1b18]' : 'hover:bg-[#f2efe9]/60 text-[#57544c]'
                                 }`}
                             >
                                 <span
@@ -375,7 +375,7 @@ export function FacetFilters({ productDataPromise }: FacetFiltersProps) {
                                             className={`w-2.5 h-2.5 stroke-[3] ${
                                                 color.id === 'black' || color.id === 'indigo' || color.id === 'green'
                                                     ? 'text-white'
-                                                    : 'text-[#1D120A]'
+                                                    : 'text-[#1c1b18]'
                                             }`}
                                         />
                                     )}
@@ -388,8 +388,8 @@ export function FacetFilters({ productDataPromise }: FacetFiltersProps) {
             </div>
 
             {/* 4. Noble Materials Filter */}
-            <div className="space-y-3 pt-2 border-t border-[#E7DED0]/60">
-                <h4 className="font-sans text-xs font-bold uppercase tracking-wider text-[#A66B2D]">
+            <div className="space-y-3 pt-2 border-t border-[#e2ddd2]">
+                <h4 className="font-sans text-xs font-bold uppercase tracking-wider text-[#D4A43C]">
                     {t('materials')}
                 </h4>
                 <div className="space-y-2">
@@ -400,12 +400,12 @@ export function FacetFilters({ productDataPromise }: FacetFiltersProps) {
                                 key={mat.id}
                                 onClick={() => updateFilter('material', isSelected ? null : mat.id)}
                                 className={`flex items-center gap-2.5 py-1 px-2 -mx-2 rounded-lg cursor-pointer transition-colors ${
-                                    isSelected ? 'bg-[#F3EFE9] font-semibold text-[#1D120A]' : 'hover:bg-[#F3EFE9]/60 text-[#3A2418]/80'
+                                    isSelected ? 'bg-[#f2efe9] font-semibold text-[#1c1b18]' : 'hover:bg-[#f2efe9]/60 text-[#57544c]'
                                 }`}
                             >
                                 <div
                                     className={`size-4 rounded border flex items-center justify-center transition-colors ${
-                                        isSelected ? 'bg-[#1D120A] border-[#1D120A] text-white' : 'border-[#E7DED0] bg-white'
+                                        isSelected ? 'bg-[#D4A43C] border-[#D4A43C] text-[#1D120A]' : 'border-[#e2ddd2] bg-white'
                                     }`}
                                 >
                                     {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
@@ -418,20 +418,20 @@ export function FacetFilters({ productDataPromise }: FacetFiltersProps) {
             </div>
 
             {/* 5. Availability Filter */}
-            <div className="space-y-3 pt-2 border-t border-[#E7DED0]/60">
-                <h4 className="font-sans text-xs font-bold uppercase tracking-wider text-[#A66B2D]">
+            <div className="space-y-3 pt-2 border-t border-[#e2ddd2]">
+                <h4 className="font-sans text-xs font-bold uppercase tracking-wider text-[#D4A43C]">
                     {t('availability')}
                 </h4>
                 <div className="space-y-2">
                     <div
                         onClick={() => updateFilter('inStock', activeInStock ? null : 'true')}
                         className={`flex items-center gap-2.5 py-1 px-2 -mx-2 rounded-lg cursor-pointer transition-colors ${
-                            activeInStock ? 'bg-[#F3EFE9] font-semibold text-[#1D120A]' : 'hover:bg-[#F3EFE9]/60 text-[#3A2418]/80'
+                            activeInStock ? 'bg-[#f2efe9] font-semibold text-[#1c1b18]' : 'hover:bg-[#f2efe9]/60 text-[#57544c]'
                         }`}
                     >
                         <div
                             className={`size-4 rounded border flex items-center justify-center transition-colors ${
-                                activeInStock ? 'bg-[#1D120A] border-[#1D120A] text-white' : 'border-[#E7DED0] bg-white'
+                                activeInStock ? 'bg-[#D4A43C] border-[#D4A43C] text-[#1D120A]' : 'border-[#e2ddd2] bg-white'
                             }`}
                         >
                             {activeInStock && <Check className="w-3 h-3 stroke-[3]" />}
@@ -443,10 +443,10 @@ export function FacetFilters({ productDataPromise }: FacetFiltersProps) {
 
             {/* 6. Dynamic Vendure Facets (if present) */}
             {Object.keys(dynamicFacetGroups).length > 0 && (
-                <div className="space-y-4 pt-2 border-t border-[#E7DED0]/60">
+                <div className="space-y-4 pt-2 border-t border-[#e2ddd2]">
                     {Object.entries(dynamicFacetGroups).map(([facetName, facet]) => (
                         <div key={facet.id} className="space-y-2">
-                            <h4 className="font-sans text-xs font-bold uppercase tracking-wider text-[#A66B2D]">
+                            <h4 className="font-sans text-xs font-bold uppercase tracking-wider text-[#D4A43C]">
                                 {facetName}
                             </h4>
                             <div className="space-y-1.5">
@@ -457,20 +457,20 @@ export function FacetFilters({ productDataPromise }: FacetFiltersProps) {
                                             key={val.id}
                                             onClick={() => toggleFacet(val.id)}
                                             className={`flex items-center justify-between py-1 px-2 -mx-2 rounded-lg cursor-pointer transition-colors ${
-                                                isChecked ? 'bg-[#F3EFE9] font-semibold text-[#1D120A]' : 'hover:bg-[#F3EFE9]/60 text-[#3A2418]/80'
+                                                isChecked ? 'bg-[#f2efe9] font-semibold text-[#1c1b18]' : 'hover:bg-[#f2efe9]/60 text-[#57544c]'
                                             }`}
                                         >
                                             <div className="flex items-center gap-2.5">
                                                 <div
                                                     className={`size-4 rounded border flex items-center justify-center transition-colors ${
-                                                        isChecked ? 'bg-[#1D120A] border-[#1D120A] text-white' : 'border-[#E7DED0] bg-white'
+                                                        isChecked ? 'bg-[#D4A43C] border-[#D4A43C] text-[#1D120A]' : 'border-[#e2ddd2] bg-white'
                                                     }`}
                                                 >
                                                     {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
                                                 </div>
                                                 <span className="text-xs sm:text-sm">{val.name}</span>
                                             </div>
-                                            <span className="text-[11px] text-[#3A2418]/50 tabular-nums">({val.count})</span>
+                                            <span className="text-[11px] text-[#7d796f] tabular-nums">({val.count})</span>
                                         </div>
                                     );
                                 })}
@@ -491,23 +491,23 @@ export function FacetFilters({ productDataPromise }: FacetFiltersProps) {
                         render={
                             <Button
                                 variant="outline"
-                                className="w-full flex items-center justify-between py-3 px-4 rounded-xl border-[#E7DED0] bg-white text-xs font-bold uppercase tracking-wider text-[#1D120A] shadow-xs cursor-pointer"
+                                className="w-full flex items-center justify-between py-3 px-4 rounded-xl border-[#e2ddd2] bg-[#fbfaf7] text-xs font-bold uppercase tracking-wider text-[#1c1b18] shadow-xs cursor-pointer"
                             >
                                 <span className="flex items-center gap-2">
-                                    <SlidersHorizontal className="h-4 w-4 text-[#A66B2D]" />
+                                    <SlidersHorizontal className="h-4 w-4 text-[#D4A43C]" />
                                     <span>{t('filtersButton')}</span>
                                 </span>
                                 {hasActiveFilters && (
-                                    <span className="size-5 rounded-full bg-[#1D120A] text-white text-[10px] flex items-center justify-center">
+                                    <span className="size-5 rounded-full bg-[#D4A43C] text-[#1D120A] text-[10px] flex items-center justify-center font-bold">
                                         !
                                     </span>
                                 )}
                             </Button>
                         }
                     />
-                    <SheetContent side="left" className="overflow-y-auto p-6 bg-[#FAF8F5]">
+                    <SheetContent side="left" data-lenis-prevent className="overflow-y-auto p-6 bg-[#f2efe9]">
                         <SheetHeader className="mb-4 text-left">
-                            <SheetTitle className="font-sans font-bold text-lg text-[#1D120A]">
+                            <SheetTitle className="font-display font-bold text-lg text-[#1c1b18]">
                                 {t('title')}
                             </SheetTitle>
                         </SheetHeader>
@@ -517,7 +517,7 @@ export function FacetFilters({ productDataPromise }: FacetFiltersProps) {
             </div>
 
             {/* Desktop Sticky Filter Sidebar */}
-            <div className="hidden lg:block sticky top-28 p-6 rounded-2xl bg-[#FAF8F5] border border-[#E7DED0]/80 shadow-xs">
+            <div className="hidden lg:block sticky top-28 p-6 rounded-2xl bg-[#fbfaf7] border border-[#e2ddd2] shadow-sm">
                 {renderFilterBody()}
             </div>
         </aside>

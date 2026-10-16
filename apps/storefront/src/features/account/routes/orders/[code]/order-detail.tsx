@@ -4,6 +4,7 @@ import { use } from 'react';
 import { ChevronLeft, FileDown, CheckCircle2, Clock, Truck, PackageCheck, Package, ShoppingBag, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import { normalizeAssetUrl } from '@/lib/utils';
 import { Link } from '@/platform/i18n/navigation';
 import { Price } from '@/features/pricing/price';
 import { OrderStatusBadge } from '@/features/orders/order-status-badge';
@@ -100,7 +101,7 @@ export function OrderDetail({ orderPromise, serverUrl = 'http://localhost:3000' 
                         target="_blank"
                         rel="noopener noreferrer"
                         download
-                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#0F291E] hover:bg-[#1A3D2E] text-white text-xs sm:text-sm font-semibold shadow-xs transition-colors"
+                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#1D120A] hover:bg-[#1D120A]/90 text-[#FAF8F5] text-xs sm:text-sm font-semibold shadow-xs transition-colors"
                     >
                         <FileDown className="w-4 h-4" />
                         <span>{t('downloadInvoice')}</span>
@@ -137,7 +138,7 @@ export function OrderDetail({ orderPromise, serverUrl = 'http://localhost:3000' 
                         {/* Connecting Line */}
                         <div className="hidden sm:block absolute top-6 left-[10%] right-[10%] h-0.5 bg-[#EAE6DF] dark:bg-[#3A291C] -z-0">
                             <div
-                                className="h-full bg-[#EAA838] transition-all duration-500"
+                                className="h-full bg-[#D4A43C] transition-all duration-500"
                                 style={{
                                     width: `${Math.max(0, Math.min(100, ((currentStep - 1) / (trackingSteps.length - 1)) * 100))}%`,
                                 }}
@@ -156,7 +157,7 @@ export function OrderDetail({ orderPromise, serverUrl = 'http://localhost:3000' 
                                         <div
                                             className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border-2 transition-colors ${
                                                 isPassed
-                                                    ? 'bg-[#EAA838] text-white border-[#EAA838] shadow-xs'
+                                                    ? 'bg-[#D4A43C] text-white border-[#D4A43C] shadow-xs'
                                                     : 'bg-[#FAF8F5] dark:bg-[#22160F] text-[#8C7A6B] border-[#EAE6DF] dark:border-[#3A291C]'
                                             }`}
                                         >
@@ -166,7 +167,7 @@ export function OrderDetail({ orderPromise, serverUrl = 'http://localhost:3000' 
                                             <p
                                                 className={`text-xs font-semibold ${
                                                     isCurrent
-                                                        ? 'text-[#EAA838]'
+                                                        ? 'text-[#D4A43C]'
                                                         : isPassed
                                                         ? 'text-[#1D120A] dark:text-[#F8F4EE]'
                                                         : 'text-[#8C7A6B]'
@@ -195,7 +196,7 @@ export function OrderDetail({ orderPromise, serverUrl = 'http://localhost:3000' 
                         <div className="divide-y divide-[#F0EBE1] dark:divide-[#2A1D15]">
                             {order.lines.map((line: OrderLineItem) => {
                                 const product = line.productVariant.product;
-                                const previewUrl = product.featuredAsset?.preview;
+                                const previewUrl = normalizeAssetUrl(product.featuredAsset?.preview);
 
                                 return (
                                     <div key={line.id} className="py-4 first:pt-2 last:pb-0 flex gap-4 items-center">
@@ -218,7 +219,7 @@ export function OrderDetail({ orderPromise, serverUrl = 'http://localhost:3000' 
                                         <div className="flex-1 min-w-0 space-y-1">
                                             <Link
                                                 href={`/product/${product.slug}`}
-                                                className="font-sans font-bold text-base text-[#1D120A] dark:text-[#F8F4EE] hover:text-[#EAA838] transition-colors line-clamp-1"
+                                                className="font-sans font-bold text-base text-[#1D120A] dark:text-[#F8F4EE] hover:text-[#D4A43C] transition-colors line-clamp-1"
                                             >
                                                 {product.name}
                                             </Link>

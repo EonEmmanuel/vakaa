@@ -28,6 +28,7 @@ admin-ui/
 apps/server/static/assets/cache/
 apps/server/static/assets/preview/
 apps/server/static/email/test-emails/
+apps/server/invoices/
 
 # Testing & Coverage
 coverage/
@@ -61,3 +62,31 @@ ehthumbs.db
 *.swp
 *.swo
 *~
+
+# Video & Large Media Files
+*.mp4
+*.mov
+*.webm
+*.avi
+
+# Root screenshots & visual verification captures (preserves apps/** images)
+/*.png
+/*.jpg
+/*.jpeg
+/*_verified.png
+/screenshot.png
+
+# Temporary HTML showcases & scratch directories
+/*.html
+scratch/
+temp/
+tmp/
+
+# Sensitive keys & certificates
+*.pem
+*.key
+*.crt
+*.cert
+
+# Temporary Prompts
+*_Prompt.md
