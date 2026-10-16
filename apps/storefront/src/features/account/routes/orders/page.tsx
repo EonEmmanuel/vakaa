@@ -1,4 +1,4 @@
-﻿import type {Metadata} from 'next';
+import type {Metadata} from 'next';
 import Image from 'next/image';
 import { normalizeAssetUrl } from '@/lib/utils';
 import {query} from '@/platform/vendure/api';
@@ -63,7 +63,7 @@ export default async function OrdersPage(props: PageProps<'/[locale]/account/ord
     const totalItems = data.activeCustomer.orders.totalItems;
     const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
-    const shopUrl = process.env.VENDURE_SHOP_API_URL || 'http://localhost:3000/shop-api';
+    const shopUrl = process.env.VENDURE_SHOP_API_URL || process.env.NEXT_PUBLIC_VENDURE_SHOP_API_URL || 'https://api.vakaa.online/shop-api';
     const serverUrl = shopUrl.replace(/\/shop-api\/?$/, '');
     const customerEmail = data.activeCustomer.emailAddress || '';
 

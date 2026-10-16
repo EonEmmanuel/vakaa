@@ -21,7 +21,7 @@ export default async function OrderDetailPage(props: OrderDetailPageProps) {
     const locale = await getRouteLocale();
     const t = await getTranslations({locale, namespace: 'Common'});
 
-    const shopUrl = process.env.VENDURE_SHOP_API_URL || 'http://localhost:3000/shop-api';
+    const shopUrl = process.env.VENDURE_SHOP_API_URL || process.env.NEXT_PUBLIC_VENDURE_SHOP_API_URL || 'https://api.vakaa.online/shop-api';
     const serverUrl = shopUrl.replace(/\/shop-api\/?$/, '');
 
     // Start the fetch in the page (dynamic parent) and pass promise into Suspense.

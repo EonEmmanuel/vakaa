@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-        const shopUrl = process.env.VENDURE_SHOP_API_URL || 'http://localhost:3000/shop-api';
+        const shopUrl = process.env.VENDURE_SHOP_API_URL || process.env.NEXT_PUBLIC_VENDURE_SHOP_API_URL || 'https://api.vakaa.online/shop-api';
         const serverUrl = shopUrl.replace(/\/shop-api\/?$/, '');
 
         // Call Vendure server-to-server verification endpoint with a generous 15-second timeout

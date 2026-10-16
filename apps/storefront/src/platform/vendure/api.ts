@@ -1,11 +1,44 @@
 import type {TadaDocumentNode} from 'gql.tada';
-import {print} from 'graphql';
+import {print, type ASTNode} from 'graphql';
 import {getAuthToken} from './auth-token';
 
-const VENDURE_API_URL = process.env.VENDURE_SHOP_API_URL || process.env.NEXT_PUBLIC_VENDURE_SHOP_API_URL;
-const VENDURE_CHANNEL_TOKEN = process.env.VENDURE_CHANNEL_TOKEN || process.env.NEXT_PUBLIC_VENDURE_CHANNEL_TOKEN || '__default_channel__';
-const VENDURE_AUTH_TOKEN_HEADER = process.env.VENDURE_AUTH_TOKEN_HEADER || 'vendure-auth-token';
-const VENDURE_CHANNEL_TOKEN_HEADER = process.env.VENDURE_CHANNEL_TOKEN_HEADER || 'vendure-token';
+const DEFAULT_VENDURE_API_URL = 'https://api.vakaa.online/shop-api';
+const DEFAULT_CHANNEL_TOKEN = '__default_channel__';
+const DEFAULT_AUTH_TOKEN_HEADER = 'vendure-auth-token';
+const DEFAULT_CHANNEL_TOKEN_HEADER = 'vendure-token';
+
+export function getVendureApiUrl(): string {
+    return (
+        process.env.VENDURE_SHOP_API_URL ||
+        process.env.NEXT_PUBLIC_VENDURE_SHOP_API_URL ||
+        DEFAULT_VENDURE_API_URL
+    );
+}
+
+export function getVendureServerUrl(): string {
+    return getVendureApiUrl().replace(/\/shop-api\/?$/, '');
+}
+
+export function getVendureChannelToken(): string {
+    return (
+        process.env.VENDURE_CHANNEL_TOKEN ||
+        process.env.NEXT_PUBLIC_VENDURE_CHANNEL_TOKEN ||
+        DEFAULT_CHANNEL_TOKEN
+    );
+}
+
+export function getVendureAuthTokenHeader(): string {
+    return process.env.VENDURE_AUTH_TOKEN_HEADER || DEFAULT_AUTH_TOKEN_HEADER;
+}
+
+export function getVendureChannelTokenHeader(): string {
+    return process.env.VENDURE_CHANNEL_TOKEN_HEADER || DEFAULT_CHANNEL_TOKEN_HEADER;
+}
+
+export const VENDURE_API_URL = getVendureApiUrl();
+export const VENDURE_CHANNEL_TOKEN = getVendureChannelToken();
+export const VENDURE_AUTH_TOKEN_HEADER = getVendureAuthTokenHeader();
+export const VENDURE_CHANNEL_TOKEN_HEADER = getVendureChannelTokenHeader();
 
 const queryPrintCache = new WeakMap<object, string>();
 
@@ -13,15 +46,11 @@ function printDocument(document: unknown): string {
     if (typeof document === 'object' && document !== null) {
         const cached = queryPrintCache.get(document);
         if (cached) return cached;
-        const printed = print(document as any);
+        const printed = print(document as ASTNode);
         queryPrintCache.set(document, printed);
         return printed;
     }
-    return print(document as any);
-}
-
-if (!VENDURE_API_URL) {
-    throw new Error('VENDURE_SHOP_API_URL or NEXT_PUBLIC_VENDURE_SHOP_API_URL environment variable is not set');
+    return print(document as ASTNode);
 }
 
 interface VendureRequestOptions {
@@ -56,7 +85,7 @@ type VendureResult<T> = {data: T; token?: string; error?: VendureRequestError};
  * Extract the Vendure auth token from response headers
  */
 function extractAuthToken(headers: Headers): string | null {
-    return headers.get(VENDURE_AUTH_TOKEN_HEADER);
+    return headers.get(getVendureAuthTokenHeader());
 }
 
 
@@ -96,9 +125,14 @@ export async function query<TResult, TVariables>(
     }
 
     // Set the channel token header (use provided channelToken or default)
-    headers[VENDURE_CHANNEL_TOKEN_HEADER] = channelToken || VENDURE_CHANNEL_TOKEN;
+    headers[getVendureChannelTokenHeader()] = channelToken || getVendureChannelToken();
 
-    const url = new URL(VENDURE_API_URL!);
+    let url: URL;
+    try {
+        url = new URL(getVendureApiUrl());
+    } catch {
+        url = new URL(DEFAULT_VENDURE_API_URL);
+    }
     if (languageCode) {
         url.searchParams.set('languageCode', languageCode);
     }

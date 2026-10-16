@@ -132,7 +132,7 @@ export async function OrderConfirmation({ paramsPromise, searchParamsPromise }: 
             : order.payments[0].method
         : 'Paiement Sécurisé';
 
-    const shopUrl = process.env.VENDURE_SHOP_API_URL || 'http://localhost:3000/shop-api';
+    const shopUrl = process.env.VENDURE_SHOP_API_URL || process.env.NEXT_PUBLIC_VENDURE_SHOP_API_URL || 'https://api.vakaa.online/shop-api';
     const serverUrl = shopUrl.replace(/\/shop-api\/?$/, '');
     const customerEmail = order.customer?.emailAddress || '';
     const invoiceDownloadUrl = `${serverUrl}/api/invoices/download/${order.code}${customerEmail ? `?email=${encodeURIComponent(customerEmail)}` : ''}`;
