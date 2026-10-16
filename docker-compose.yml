@@ -14,9 +14,6 @@ services:
       - NODE_ENV=production
     expose:
       - "3000"
-    volumes:
-      # Persistent local asset storage (if local disk used instead of Cloudflare R2 / S3)
-      - vakaa-assets:/app/apps/server/static/assets
     deploy:
       resources:
         limits:
@@ -46,8 +43,6 @@ services:
       - apps/server/.env
     environment:
       - NODE_ENV=production
-    volumes:
-      - vakaa-assets:/app/apps/server/static/assets
     deploy:
       resources:
         limits:
@@ -84,7 +79,6 @@ services:
       - vakaa-network
 
 volumes:
-  vakaa-assets:
   caddy-data:
   caddy-config:
 
