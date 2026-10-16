@@ -131,6 +131,8 @@ export const config: VendureConfig = {
         cors: {
             origin: [
                 'http://localhost:3001',
+                'https://vakaa.online',
+                'https://www.vakaa.online',
                 'https://vakaa.com',
                 'https://www.vakaa.com',
                 /\.vercel\.app$/,

@@ -3,7 +3,7 @@
     email contact@vakaa.com
 }
 
-api.vakaa.com {
+api.vakaa.online, api.vakaa.com {
     # 50MB upload limit for Vendure Admin asset uploads
     request_body {
         max_size 50MB

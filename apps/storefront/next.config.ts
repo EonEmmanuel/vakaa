@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
         remotePatterns: [
             {
                 protocol: 'https',
+                hostname: 'api.vakaa.online',
+            },
+            {
+                protocol: 'https',
                 hostname: 'api.vakaa.com',
             },
             {
