@@ -166,6 +166,18 @@
                    href="{{ storefrontUrl }}/order-confirmation/{{ order.code }}">
             Suivre ma commande &bull; Track My Order
         </mj-button>
+        <mj-button background-color="#FAF8F5"
+                   color="#18181B"
+                   border="1px solid #D4D4D8"
+                   font-size="13px"
+                   font-weight="600"
+                   letter-spacing="0.03em"
+                   border-radius="4px"
+                   inner-padding="12px 24px"
+                   padding-top="10px"
+                   href="{{ storefrontUrl }}/account/orders/{{ order.code }}">
+            Télécharger ma facture (PDF) &bull; Download Invoice
+        </mj-button>
         {{/if}}
     </mj-column>
 </mj-section>
