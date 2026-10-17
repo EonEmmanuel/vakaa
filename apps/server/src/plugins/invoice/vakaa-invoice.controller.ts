@@ -5,6 +5,9 @@ import { InvoiceService } from '@pinelab/pinelab-invoice-plugin';
 
 @Controller('api/invoices')
 export class VakaaInvoiceController {
+    // Deduplicate concurrent on-the-fly generation requests for the same order code
+    private inFlightGenerations = new Map<string, Promise<any>>();
+
     constructor(
         private moduleRef: ModuleRef,
         private channelService: ChannelService,
@@ -23,6 +26,7 @@ export class VakaaInvoiceController {
      * Storefront-friendly direct invoice download:
      * GET /api/invoices/download/:orderCode?email=customer@example.com
      * Automatically resolves the default channel and generates on-the-fly if not already generated.
+     * Subsequent downloads stream directly from Cloudflare R2 in milliseconds without touching Puppeteer.
      */
     @Get('download/:orderCode')
     async download(
@@ -60,26 +64,56 @@ export class VakaaInvoiceController {
         const customerEmail = email ? decodeURIComponent(email).trim().toLowerCase() : '';
         const orderEmail = order.customer?.emailAddress?.trim().toLowerCase();
 
-        // Verify authorization: email must match order customer
-        if (orderEmail && customerEmail && orderEmail !== customerEmail) {
+        // Security check: Must supply customer email and it must match the order's customer email
+        if (!orderEmail || !customerEmail || orderEmail !== customerEmail) {
             Logger.warn(
-                `Unauthorized invoice download attempt for order ${orderCode}: requested with ${customerEmail}, expected ${orderEmail}`,
+                `Unauthorized invoice download attempt for order ${orderCode}: requested with "${email || ''}", expected customer email`,
                 'VakaaInvoicePlugin'
             );
             throw new ForbiddenException('Invalid credentials for this invoice');
         }
 
+        // Prevent generating invoices for unfinalized cart / unplaced orders
+        if (!order.orderPlacedAt) {
+            Logger.warn(`Invoice requested for unplaced order ${orderCode} (state: ${order.state})`, 'VakaaInvoicePlugin');
+            throw new BadRequestException(`Order ${orderCode} is not yet finalized`);
+        }
+
         try {
-            // Check if invoice already exists; if not, create it immediately
-            const existingInvoices = await invoiceService.getInvoicesForOrder(ctx, order.id);
-            if (!existingInvoices || existingInvoices.length === 0) {
+            // Check if invoice already exists with valid storage reference
+            let existingInvoices = await invoiceService.getInvoicesForOrder(ctx, order.id);
+            let hasStoredInvoice = existingInvoices && existingInvoices.length > 0 && Boolean(existingInvoices[0].storageReference);
+
+            // If an invoice record exists but storageReference is null, the worker is currently saving it to R2.
+            // Wait briefly to allow the worker upload to complete rather than generating a duplicate.
+            if (!hasStoredInvoice && existingInvoices && existingInvoices.length > 0) {
+                for (let i = 0; i < 5; i++) {
+                    await new Promise((resolve) => setTimeout(resolve, 500));
+                    existingInvoices = await invoiceService.getInvoicesForOrder(ctx, order.id);
+                    if (existingInvoices && existingInvoices.length > 0 && Boolean(existingInvoices[0].storageReference)) {
+                        hasStoredInvoice = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!hasStoredInvoice) {
                 Logger.info(`Generating invoice on the fly for order ${orderCode}`, 'VakaaInvoicePlugin');
-                await invoiceService.createInvoicesForOrder(channel.token, order.code, false);
+                // Deduplicate concurrent on-the-fly requests for the same order
+                let generationPromise = this.inFlightGenerations.get(order.code);
+                if (!generationPromise) {
+                    generationPromise = invoiceService.createInvoicesForOrder(channel.token, order.code, false)
+                        .finally(() => {
+                            this.inFlightGenerations.delete(order.code);
+                        });
+                    this.inFlightGenerations.set(order.code, generationPromise);
+                }
+                await generationPromise;
             }
 
             const streamOrRedirect = await invoiceService.downloadInvoice(ctx, {
                 orderCode: order.code,
-                customerEmail: order.customer?.emailAddress || customerEmail,
+                customerEmail: order.customer!.emailAddress, // Pass exact DB casing for Pinelab's strict equality
                 invoiceNumber: undefined,
                 res,
             });
@@ -87,13 +121,53 @@ export class VakaaInvoiceController {
             if (typeof streamOrRedirect === 'string' || streamOrRedirect instanceof String) {
                 return res.redirect(302, String(streamOrRedirect));
             } else {
-                res.setHeader('Content-Type', 'application/pdf');
-                res.setHeader('Content-Disposition', `inline; filename="Facture-VAKAA-${order.code}.pdf"`);
+                if (!res.headersSent) {
+                    res.setHeader('Content-Type', 'application/pdf');
+                    res.setHeader('Content-Disposition', `inline; filename="Facture-VAKAA-${order.code}.pdf"`);
+                    res.setHeader('Cache-Control', 'private, max-age=86400, no-transform');
+                }
+                streamOrRedirect.on('error', (streamErr: any) => {
+                    Logger.error(
+                        `Stream error while delivering invoice for ${orderCode}: ${streamErr?.message}`,
+                        'VakaaInvoicePlugin',
+                        streamErr?.stack
+                    );
+                    if (!res.headersSent) {
+                        res.status(500).send('Error streaming invoice');
+                    } else {
+                        res.end();
+                    }
+                });
+                res.on('close', () => {
+                    if (!res.writableEnded && typeof (streamOrRedirect as any).destroy === 'function') {
+                        (streamOrRedirect as any).destroy();
+                    }
+                });
                 return streamOrRedirect.pipe(res);
             }
         } catch (error: any) {
-            Logger.error(`Error streaming invoice for ${orderCode}: ${error?.message}`, 'VakaaInvoicePlugin', error);
-            throw new NotFoundException('Invoice could not be retrieved or generated');
+            if (
+                error instanceof ForbiddenException ||
+                error instanceof BadRequestException ||
+                error instanceof NotFoundException
+            ) {
+                throw error;
+            }
+
+            Logger.error(
+                `Failed to retrieve or generate invoice for order ${orderCode}: ${error?.message}`,
+                'VakaaInvoicePlugin',
+                JSON.stringify({
+                    orderCode,
+                    orderState: order?.state,
+                    orderPlacedAt: order?.orderPlacedAt,
+                    hasR2Bucket: Boolean(process.env.R2_BUCKET_NAME),
+                    puppeteerPath: process.env.PUPPETEER_EXECUTABLE_PATH || 'system-default',
+                    error: error?.message,
+                    stack: error?.stack,
+                })
+            );
+            throw new NotFoundException(`Invoice could not be retrieved or generated: ${error?.message || 'Internal error'}`);
         }
     }
 }

@@ -28,12 +28,27 @@ RUN bun install --production --frozen-lockfile
 # ==========================================
 FROM node:22-alpine AS runner
 
-# Install dumb-init for proper PID 1 signal forwarding and curl for healthchecks
-RUN apk add --no-cache dumb-init curl
+# Install dumb-init, curl, Chromium & rendering font libraries for Puppeteer PDF engine
+RUN apk add --no-cache \
+    dumb-init \
+    curl \
+    chromium \
+    nss \
+    freetype \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont \
+    font-noto
 
 WORKDIR /app/apps/server
 ENV NODE_ENV=production
 ENV PORT=3000
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
+# Create directory for fallback invoices with proper permissions
+RUN mkdir -p /app/apps/server/invoices && chown -R node:node /app/apps/server/invoices
+
 
 # Copy node_modules from builder with correct ownership directly
 COPY --chown=node:node --from=builder /app/node_modules /app/node_modules

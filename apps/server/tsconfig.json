@@ -23,6 +23,8 @@
     "admin-ui",
     "src/plugins/**/dashboard/*",
     "src/gql/*",
+    "src/**/*.test.ts",
+    "src/**/*.spec.ts",
     "vite.*.*ts"
   ],
   "ts-node": {

@@ -16,10 +16,10 @@ import { GraphiqlPlugin } from '@vendure/graphiql-plugin';
 import { VakaaBrandingPlugin } from './plugins/vakaa-branding/vakaa-branding.plugin';
 import { SebpayPlugin, sebpayPaymentHandler } from './plugins/sebpay';
 import { FlutterwavePlugin, flutterwavePaymentHandler } from './plugins/flutterwave';
-import { InvoicePlugin } from '@pinelab/pinelab-invoice-plugin';
+import { InvoicePlugin, LocalFileStrategy } from '@pinelab/pinelab-invoice-plugin';
 import { LimitedProductsPlugin } from '@pinelab/vendure-plugin-limited-products';
 import { VakaaReviewsPlugin } from './plugins/reviews';
-import { vakaaInvoiceLoadDataFn, VakaaInvoicePlugin } from './plugins/invoice';
+import { vakaaInvoiceLoadDataFn, VakaaInvoicePlugin, R2InvoiceStorageStrategy } from './plugins/invoice';
 import { configureR2AssetStorage } from './plugins/r2-storage/r2-storage-strategy';
 import 'dotenv/config';
 import dns from 'dns';
@@ -407,6 +407,26 @@ export const config: VendureConfig = {
         InvoicePlugin.init({
             vendureHost: process.env.VENDURE_HOST || `http://localhost:${serverPort}`,
             loadDataFn: vakaaInvoiceLoadDataFn,
+            storageStrategy: useR2
+                ? new R2InvoiceStorageStrategy({
+                      bucket: process.env.R2_BUCKET_NAME!,
+                      endpoint: process.env.R2_ENDPOINT!,
+                      accessKeyId: process.env.R2_ACCESS_KEY_ID!,
+                      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+                      region: process.env.R2_REGION || 'auto',
+                  })
+                : new LocalFileStrategy(),
+            puppeteerLaunchOptions: {
+                headless: true,
+                args: [
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-gpu',
+                    '--single-process',
+                    '--no-zygote',
+                ],
+            },
         }),
         VakaaInvoicePlugin,
     ],
