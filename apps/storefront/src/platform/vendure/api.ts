@@ -53,6 +53,25 @@ function printDocument(document: unknown): string {
     return print(document as ASTNode);
 }
 
+function getOperationName(document: unknown): string {
+    if (typeof document === 'object' && document !== null && 'definitions' in document) {
+        const doc = document as { definitions?: Array<{ kind?: string; name?: { value?: string } }> };
+        const op = doc.definitions?.find((def) => def.kind === 'OperationDefinition');
+        if (op?.name?.value) {
+            return op.name.value;
+        }
+    }
+    try {
+        const printed = printDocument(document);
+        const match = printed.match(/(?:query|mutation|subscription)\s+([A-Za-z0-9_]+)/);
+        if (match?.[1]) {
+            return match[1];
+        }
+    } catch {}
+    return 'anonymous';
+}
+
+
 interface VendureRequestOptions {
     token?: string;
     useAuthToken?: boolean;
@@ -143,6 +162,7 @@ export async function query<TResult, TVariables>(
         url.searchParams.set('currencyCode', currencyCode);
     }
 
+    const startTime = performance.now();
     let response: Response;
     try {
         response = await fetch(url.toString(), {
@@ -156,7 +176,17 @@ export async function query<TResult, TVariables>(
             signal: fetchOptions?.signal || AbortSignal.timeout(timeoutMs ?? 35000),
             ...(tags && {next: {tags}}),
         });
+        if (process.env.PERF_LOG === '1') {
+            const durationMs = Math.round(performance.now() - startTime);
+            const opName = getOperationName(document);
+            console.info('[vendure-timing]', `${opName} ${durationMs}ms status=${response.status}`);
+        }
     } catch (networkError) {
+        if (process.env.PERF_LOG === '1') {
+            const durationMs = Math.round(performance.now() - startTime);
+            const opName = getOperationName(document);
+            console.info('[vendure-timing]', `${opName} failed after ${durationMs}ms`);
+        }
         const isTimeout = networkError instanceof Error && networkError.name === 'TimeoutError';
         console.warn(
             '[Vendure API Warning]: Network request failed or timed out:',

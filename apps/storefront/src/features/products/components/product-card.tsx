@@ -7,7 +7,7 @@ import { ProductCardFragment } from '@/features/products/graphql';
 import { Price } from '@/features/pricing/price';
 import { Link } from '@/platform/i18n/navigation';
 import { useTranslations } from 'next-intl';
-import { Heart, Plus, Check, Loader2, ChevronLeft, ChevronRight, ShoppingBag, Star } from 'lucide-react';
+import { Heart, Plus, Check, Loader2, Star } from 'lucide-react';
 import Image from 'next/image';
 import { useGsapMagnetic } from '@/lib/motion/gsap-hooks';
 import { useFlyToCart } from '@/lib/motion/fly-to-cart';
@@ -133,6 +133,14 @@ export function ProductCard({ product: productProp, index, className }: ProductC
             triggerFly(rect, defaultImg, product.productName);
         }
 
+        const toastId = toast.success(t('addedToCartMessage'), {
+            description: t('addedToCartDescription', { name: product.productName }),
+            action: {
+                label: t('viewCart'),
+                onClick: () => cart.openCart(),
+            },
+        });
+
         try {
             setIsAdding(true);
             await cart.addItem({
@@ -144,15 +152,10 @@ export function ProductCard({ product: productProp, index, className }: ProductC
                 quantity: 1,
                 openDrawer: false,
             });
-            toast.success(`${product.productName} ajouté au panier`, {
-                action: {
-                    label: 'Voir le panier',
-                    onClick: () => cart.openCart(),
-                },
-            });
-        } catch (err: any) {
+        } catch (err) {
             setIsAdded(false);
-            toast.error(err?.message || t('errorAddToCart'));
+            toast.dismiss(toastId);
+            toast.error(err instanceof Error ? err.message : t('errorAddToCart'));
         } finally {
             setIsAdding(false);
             setTimeout(() => {

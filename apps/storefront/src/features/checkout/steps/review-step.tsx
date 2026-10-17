@@ -31,7 +31,7 @@ export default function ReviewStep({ onComplete: _onComplete, onEditStep }: Revi
     setLoading(true);
     setErrorMessage(null);
     try {
-      const result = await placeOrderAction(selectedPaymentMethodCode, paymentMetadata);
+      const result = await placeOrderAction(selectedPaymentMethodCode, paymentMetadata, order?.state);
       if (result?.redirectUrl) {
         window.location.assign(result.redirectUrl);
         return;

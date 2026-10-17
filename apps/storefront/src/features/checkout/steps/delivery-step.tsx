@@ -1,12 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Loader2, Truck } from 'lucide-react';
 import { useRouter } from '@/platform/i18n/navigation';
 import { useCheckout } from '@/features/checkout/routes/checkout-provider';
-import { setShippingMethod as setShippingMethodAction } from '@/features/checkout/routes/actions';
+import {
+  setShippingMethod as setShippingMethodAction,
+  getEligibleShippingMethods,
+} from '@/features/checkout/routes/actions';
 import { useTranslations } from 'next-intl';
 import { Price } from '@/features/pricing/price';
 import { Button } from '@/components/ui/button';
@@ -18,7 +21,8 @@ interface DeliveryStepProps {
 export default function DeliveryStep({ onComplete }: DeliveryStepProps) {
   const t = useTranslations('Checkout');
   const router = useRouter();
-  const { shippingMethods, order, updateOrder } = useCheckout();
+  const { shippingMethods, setShippingMethods, order, updateOrder } = useCheckout();
+  const [loadingMethods, setLoadingMethods] = useState(shippingMethods.length === 0);
   const [selectedMethodId, setSelectedMethodId] = useState<string | null>(() => {
     if (order.shippingLines && order.shippingLines.length > 0) {
       return order.shippingLines[0].shippingMethod.id;
@@ -26,6 +30,39 @@ export default function DeliveryStep({ onComplete }: DeliveryStepProps) {
     return shippingMethods.length === 1 ? shippingMethods[0].id : null;
   });
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (shippingMethods.length === 0) {
+      setLoadingMethods(true);
+      getEligibleShippingMethods()
+        .then((methods) => {
+          if (!cancelled) {
+            setShippingMethods(methods);
+            if (methods.length > 0) {
+              setSelectedMethodId((current) => {
+                if (current) return current;
+                if (order.shippingLines && order.shippingLines.length > 0) {
+                  return order.shippingLines[0].shippingMethod.id;
+                }
+                return methods.length === 1 ? methods[0].id : methods[0].id;
+              });
+            }
+          }
+        })
+        .catch((error) => {
+          console.error('Failed to load eligible shipping methods:', error);
+        })
+        .finally(() => {
+          if (!cancelled) {
+            setLoadingMethods(false);
+          }
+        });
+    }
+    return () => {
+      cancelled = true;
+    };
+  }, [shippingMethods.length, order.shippingLines, setShippingMethods]);
 
   const handleContinue = async () => {
     if (!selectedMethodId) return;
@@ -47,6 +84,17 @@ export default function DeliveryStep({ onComplete }: DeliveryStepProps) {
       setSubmitting(false);
     }
   };
+
+  if (loadingMethods) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 space-y-4">
+        <Loader2 className="h-6 w-6 animate-spin text-[#A66B2D]" />
+        <p className="text-sm font-medium text-stone-500">
+          Chargement des modes de livraison...
+        </p>
+      </div>
+    );
+  }
 
   if (shippingMethods.length === 0) {
     return (

@@ -1,7 +1,6 @@
 'use server';
 
 import {getLocale, getTranslations} from 'next-intl/server';
-import {updateTag} from 'next/cache';
 import {AddToCartMutation} from '@/features/cart/graphql';
 import {TransitionOrderToStateMutation} from '@/features/checkout/graphql';
 import {getActiveCurrencyCode} from '@/features/currency/currency-server';
@@ -68,17 +67,18 @@ export async function addToCart(variantId: string, quantity = 1) {
         }
 
         if (result.data?.addItemToOrder?.__typename === 'Order') {
-            // The cart context already owns the immediate UI update. Mark cache
-            // entries stale without forcing an expensive route re-render in this
-            // Server Action response.
-            updateTag('cart');
-            updateTag('active-order');
             return {success: true, order: result.data.addItemToOrder};
         }
 
+        const errorPayload = result.data?.addItemToOrder;
+        const errorMessage =
+            errorPayload && 'message' in errorPayload && typeof (errorPayload as { message?: unknown }).message === 'string'
+                ? ((errorPayload as { message: string }).message)
+                : t('failedAddToCart');
+
         return {
             success: false,
-            error: (result.data?.addItemToOrder as any)?.message || t('failedAddToCart'),
+            error: errorMessage,
         };
     } catch {
         return {success: false, error: t('failedAddToCart')};
@@ -113,6 +113,7 @@ export async function addProductToCartBySlug(slug: string, quantity = 1) {
         if (!variants || variants.length === 0) {
             const fallbackId = VARIANT_FALLBACKS[resolvedSlug] || VARIANT_FALLBACKS[slug];
             if (fallbackId) {
+                console.warn(`[add-to-cart] Using VARIANT_FALLBACKS for slug "${slug}" -> variant "${fallbackId}"`);
                 return addToCart(fallbackId, quantity);
             }
             return {success: false, error: t('failedAddToCart')};
@@ -123,6 +124,7 @@ export async function addProductToCartBySlug(slug: string, quantity = 1) {
     } catch {
         const fallbackId = VARIANT_FALLBACKS[resolvedSlug] || VARIANT_FALLBACKS[slug];
         if (fallbackId) {
+            console.warn(`[add-to-cart] Using VARIANT_FALLBACKS after error for slug "${slug}" -> variant "${fallbackId}"`);
             return addToCart(fallbackId, quantity);
         }
         return {success: false, error: t('failedAddToCart')};

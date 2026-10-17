@@ -3,7 +3,6 @@
 import {mutate, query} from '@/platform/vendure/api';
 import {
     SetOrderShippingAddressMutation,
-    SetOrderBillingAddressMutation,
     SetOrderShippingAndBillingAddressMutation,
     SetOrderShippingMethodMutation,
     AddPaymentToOrderMutation,
@@ -41,9 +40,6 @@ export async function setShippingAddress(
     shippingAddress: AddressInput,
     useSameForBilling: boolean
 ): Promise<SetShippingAddressResult> {
-    let shippingOrder: any;
-    let billingOrder: any;
-
     if (useSameForBilling) {
         const result = await mutate(
             SetOrderShippingAndBillingAddressMutation,
@@ -58,8 +54,8 @@ export async function setShippingAddress(
             await setAuthToken(result.token);
         }
 
-        shippingOrder = result.data?.setOrderShippingAddress;
-        billingOrder = result.data?.setOrderBillingAddress;
+        const shippingOrder = result.data?.setOrderShippingAddress;
+        const billingOrder = result.data?.setOrderBillingAddress;
 
         if (!shippingOrder || shippingOrder.__typename !== 'Order') {
             throw new Error('Impossible d\'enregistrer l\'adresse de livraison. Veuillez réessayer.');
@@ -67,45 +63,51 @@ export async function setShippingAddress(
         if (!billingOrder || billingOrder.__typename !== 'Order') {
             throw new Error('Impossible d\'enregistrer l\'adresse de facturation. Veuillez réessayer.');
         }
-    } else {
-        const result = await mutate(
-            SetOrderShippingAddressMutation,
-            {input: shippingAddress},
-            {useAuthToken: true}
-        );
 
-        if (result.token) {
-            await setAuthToken(result.token);
-        }
-
-        shippingOrder = result.data?.setOrderShippingAddress;
-        if (!shippingOrder || shippingOrder.__typename !== 'Order') {
-            throw new Error('Impossible d\'enregistrer l\'adresse de livraison. Veuillez réessayer.');
-        }
+        return {
+            success: true,
+            shippingAddress: shippingOrder.shippingAddress,
+            billingAddress: shippingOrder.shippingAddress,
+        };
     }
 
-    // Refresh eligible shipping methods for the updated shipping destination without full-page revalidation
-    let shippingMethods: ShippingMethod[] | undefined;
-    try {
-        const currencyCode = await getActiveCurrencyCode();
-        const methodsRes = await query(
-            GetEligibleShippingMethodsQuery,
-            {},
-            { useAuthToken: true, currencyCode, timeoutMs: 3000 }
-        );
-        if (methodsRes.data?.eligibleShippingMethods) {
-            shippingMethods = methodsRes.data.eligibleShippingMethods as ShippingMethod[];
-        }
-    } catch {
-        // Non-blocking fallback if query times out or fails
+    const result = await mutate(
+        SetOrderShippingAddressMutation,
+        {input: shippingAddress},
+        {useAuthToken: true}
+    );
+
+    if (result.token) {
+        await setAuthToken(result.token);
+    }
+
+    const shippingOrder = result.data?.setOrderShippingAddress;
+    if (!shippingOrder || shippingOrder.__typename !== 'Order') {
+        throw new Error('Impossible d\'enregistrer l\'adresse de livraison. Veuillez réessayer.');
     }
 
     return {
         success: true,
         shippingAddress: shippingOrder.shippingAddress,
-        billingAddress: useSameForBilling ? shippingOrder.shippingAddress : billingOrder?.billingAddress,
-        shippingMethods,
     };
+}
+
+export async function getEligibleShippingMethods(): Promise<ShippingMethod[]> {
+    try {
+        const currencyCode = await getActiveCurrencyCode();
+        const methodsRes = await query(
+            GetEligibleShippingMethodsQuery,
+            {},
+            { useAuthToken: true, currencyCode, timeoutMs: 10000 }
+        );
+        if (methodsRes.data?.eligibleShippingMethods) {
+            return methodsRes.data.eligibleShippingMethods as ShippingMethod[];
+        }
+        return [];
+    } catch (error) {
+        console.error('Failed to load eligible shipping methods:', error);
+        return [];
+    }
 }
 
 export type SetShippingMethodResult = {
@@ -199,10 +201,13 @@ export type PlaceOrderResult = {
 
 export async function placeOrder(
     paymentMethodCode: string,
-    paymentMetadata?: Record<string, unknown>
+    paymentMetadata?: Record<string, unknown>,
+    currentState?: string
 ): Promise<PlaceOrderResult> {
-    // 1. Transition the order to ArrangingPayment state
-    await transitionToArrangingPayment();
+    // 1. Transition the order to ArrangingPayment state if not already in that state
+    if (currentState !== 'ArrangingPayment') {
+        await transitionToArrangingPayment();
+    }
 
     // 2. Prepare metadata based on payment method
     const metadata: Record<string, unknown> = {

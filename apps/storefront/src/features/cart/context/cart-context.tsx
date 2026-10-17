@@ -69,7 +69,9 @@ export interface AddItemParams {
     slug?: string;
     name: string;
     priceWithTax?: number;
+    price?: number;
     assetPreview?: string;
+    imageUrl?: string;
     sku?: string;
     quantity?: number;
     openDrawer?: boolean;
@@ -135,10 +137,15 @@ export function useCart() {
 
 export function CartProvider({ children }: { children: ReactNode }) {
     const [order, setOrder] = useState<CartOrder | null>(null);
-    const [totalQuantity, setTotalQuantity] = useState<number>(0);
+    const [initialCount, setInitialCount] = useState<number>(0);
     const [isInitialized, setIsInitialized] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [isOpen, setIsOpen] = useState<boolean>(false);
+
+    // Derive totalQuantity directly from order lines / totalQuantity
+    const totalQuantity = order
+        ? (order.totalQuantity ?? order.lines.reduce((acc, l) => acc + l.quantity, 0))
+        : initialCount;
 
     const openCart = useCallback(() => setIsOpen(true), []);
     const closeCart = useCallback(() => setIsOpen(false), []);
@@ -149,9 +156,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const operationVersionRef = useRef<Record<string, number>>({});
 
     // FIFO Promise queue to serialize all server mutations and eliminate race conditions
-    const mutationQueueRef = useRef<Promise<any>>(Promise.resolve());
+    const mutationQueueRef = useRef<Promise<unknown>>(Promise.resolve());
     // Active optimistic lines awaiting server resolution
     const inFlightTempLinesRef = useRef<Map<string, CartLine>>(new Map());
+    // Active modifiers on in-flight optimistic lines (e.g. removed or updated before server add resolved)
+    type TempLineModifier = {
+        removed?: boolean;
+        quantity?: number;
+        variantId?: string;
+        slug?: string;
+    };
+    const pendingTempModifiersRef = useRef<Map<string, TempLineModifier>>(new Map());
 
     const enqueueCartMutation = useCallback(<T,>(mutationFn: () => Promise<T>): Promise<T> => {
         const nextPromise = mutationQueueRef.current.then(mutationFn, mutationFn);
@@ -164,7 +179,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
         const cached = loadFromStorage();
         if (cached) {
             setOrder((curr) => curr ?? cached);
-            setTotalQuantity((curr) => curr || cached.totalQuantity || cached.lines.reduce((acc, l) => acc + l.quantity, 0));
             setIsInitialized(true);
         }
     }, []);
@@ -179,18 +193,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
         const latestOrder = snapshot.order;
         if (latestOrder && latestOrder.lines.length > 0) {
             setOrder(latestOrder);
-            setTotalQuantity(latestOrder.totalQuantity ?? latestOrder.lines.reduce((acc, l) => acc + l.quantity, 0));
             saveToStorage(latestOrder);
         } else if (inFlightTempLinesRef.current.size === 0) {
             setOrder(EMPTY_CART);
-            setTotalQuantity(0);
             saveToStorage(null);
         }
         setError(null);
     }, []);
 
     const applyCanonicalOrder = useCallback((serverOrder: CartOrder | null) => {
-        setOrder((currentOrder) => {
+        setOrder(() => {
             if (!serverOrder) {
                 if (inFlightTempLinesRef.current.size > 0) {
                     const pendingLines = Array.from(inFlightTempLinesRef.current.values());
@@ -204,41 +216,49 @@ export function CartProvider({ children }: { children: ReactNode }) {
                         totalWithTax: subTotal,
                     };
                     saveToStorage(pendingOrder);
-                    setTotalQuantity(totalQty);
                     return pendingOrder;
                 }
-                setTotalQuantity(0);
                 saveToStorage(null);
                 return EMPTY_CART;
             }
 
-            // Merge server lines with any still-pending optimistic lines
+            // Merge server lines with any still-pending optimistic lines.
+            // Clone server lines to avoid mutating the original input.
+            const mergedLines = serverOrder.lines.map((l) => ({ ...l }));
             const pendingLines = Array.from(inFlightTempLinesRef.current.values());
-            const mergedLines = [...serverOrder.lines];
 
             for (const tempLine of pendingLines) {
-                const alreadyInServer = serverOrder.lines.some(
+                const existingIndex = mergedLines.findIndex(
                     (l) => (tempLine.productVariant.id && l.productVariant.id === tempLine.productVariant.id) ||
                            (tempLine.productVariant.product.slug && l.productVariant.product.slug === tempLine.productVariant.product.slug)
                 );
-                if (!alreadyInServer) {
-                    mergedLines.push(tempLine);
+                if (existingIndex > -1) {
+                    const existing = mergedLines[existingIndex];
+                    const nextQty = existing.quantity + tempLine.quantity;
+                    mergedLines[existingIndex] = {
+                        ...existing,
+                        quantity: nextQty,
+                        linePriceWithTax: nextQty * existing.unitPriceWithTax,
+                    };
+                } else {
+                    mergedLines.push({ ...tempLine });
                 }
             }
 
             const totalQty = mergedLines.reduce((acc, l) => acc + l.quantity, 0);
             const subTotal = mergedLines.reduce((acc, l) => acc + l.linePriceWithTax, 0);
+            const discountTotal = (serverOrder.discounts || []).reduce((acc, d) => acc + d.amountWithTax, 0);
+            const totalWithTax = Math.max(0, subTotal + (serverOrder.shippingWithTax || 0) - discountTotal);
 
             const reconciled: CartOrder = {
                 ...serverOrder,
                 lines: mergedLines,
                 totalQuantity: totalQty,
                 subTotalWithTax: subTotal,
-                totalWithTax: Math.max(0, subTotal + (serverOrder.shippingWithTax || 0)),
+                totalWithTax,
             };
 
             saveToStorage(reconciled.lines.length > 0 ? reconciled : null);
-            setTotalQuantity(totalQty);
             return reconciled;
         });
     }, []);
@@ -258,7 +278,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
         if (initialOrder && initialOrder.lines && initialOrder.lines.length > 0) {
             if (inFlightTempLinesRef.current.size === 0) {
                 setOrder(initialOrder);
-                setTotalQuantity(initialOrder.totalQuantity ?? initialOrder.lines.reduce((acc, l) => acc + l.quantity, 0));
                 saveToStorage(initialOrder);
             } else {
                 applyCanonicalOrder(initialOrder);
@@ -266,34 +285,40 @@ export function CartProvider({ children }: { children: ReactNode }) {
             setIsInitialized(true);
         } else {
             // Server returned empty/null order: protect against wiping in-memory optimistic or stored cart
+            const stored = loadFromStorage();
             setOrder((current) => {
-                const stored = loadFromStorage();
                 const active = current || stored;
                 if (active && active.lines && active.lines.length > 0) {
-                    setTotalQuantity(active.totalQuantity || active.lines.reduce((acc, l) => acc + l.quantity, 0));
-                    void reconcileCart();
                     return active;
                 }
-                setTotalQuantity(0);
                 saveToStorage(null);
                 return EMPTY_CART;
             });
+            if (stored && stored.lines.length > 0) {
+                void reconcileCart();
+            }
             setIsInitialized(true);
         }
     }, [applyCanonicalOrder, reconcileCart]);
 
     const initCount = useCallback((count: number) => {
-        setTotalQuantity((curr) => (curr > 0 ? curr : count));
+        setInitialCount((curr) => (curr > 0 ? curr : count));
         setIsInitialized(true);
     }, []);
 
-    const updateQuantity = useCallback((lineId: string, newQty: number) => {
+    const removeItem = useCallback(async (lineId: string) => {
         setError(null);
         const operationVersion = cancelPendingLineUpdate(lineId);
 
-        if (newQty <= 0) {
+        if (lineId.startsWith('temp-')) {
+            // Track removal in pending modifier for in-flight server add
+            const modifier = pendingTempModifiersRef.current.get(lineId);
+            if (modifier) {
+                modifier.removed = true;
+            }
             inFlightTempLinesRef.current.delete(lineId);
-            // Remove item optimistically
+
+            // Optimistic 0ms removal
             setOrder((prev) => {
                 if (!prev) return EMPTY_CART;
                 const nextLines = prev.lines.filter((l) => l.id !== lineId);
@@ -301,6 +326,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 const nextSubTotal = nextLines.reduce((acc, l) => acc + l.linePriceWithTax, 0);
                 const discountTotal = (prev.discounts || []).reduce((acc, d) => acc + d.amountWithTax, 0);
                 const nextTotal = Math.max(0, nextSubTotal + (prev.shippingWithTax || 0) - discountTotal);
+
                 const updated: CartOrder = {
                     ...prev,
                     lines: nextLines,
@@ -311,21 +337,95 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 saveToStorage(nextLines.length > 0 ? updated : null);
                 return updated;
             });
-            setTotalQuantity((prev) => {
-                const currentLine = order?.lines.find((l) => l.id === lineId);
-                return Math.max(0, prev - (currentLine?.quantity || 1));
-            });
+            return;
+        }
 
-            if (lineId.startsWith('temp-')) {
-                return;
-            }
+        // 1. Optimistic 0ms removal for real server line
+        setOrder((prev) => {
+            if (!prev) return EMPTY_CART;
+            const nextLines = prev.lines.filter((l) => l.id !== lineId);
+            const nextTotalQty = nextLines.reduce((acc, l) => acc + l.quantity, 0);
+            const nextSubTotal = nextLines.reduce((acc, l) => acc + l.linePriceWithTax, 0);
+            const discountTotal = (prev.discounts || []).reduce((acc, d) => acc + d.amountWithTax, 0);
+            const nextTotal = Math.max(0, nextSubTotal + (prev.shippingWithTax || 0) - discountTotal);
 
-            void enqueueCartMutation(async () => {
+            const updated: CartOrder = {
+                ...prev,
+                lines: nextLines,
+                totalQuantity: nextTotalQty,
+                subTotalWithTax: nextSubTotal,
+                totalWithTax: nextTotal,
+            };
+            saveToStorage(nextLines.length > 0 ? updated : null);
+            return updated;
+        });
+
+        // 2. Serialized background sync
+        try {
+            await enqueueCartMutation(async () => {
                 const result = await removeCartAction(lineId);
-                if (!result.success && operationVersionRef.current[lineId] === operationVersion) {
+                if (result.success && result.order) {
+                    if (operationVersionRef.current[lineId] === operationVersion) {
+                        applyCanonicalOrder(result.order);
+                    }
+                } else if (!result.success && operationVersionRef.current[lineId] === operationVersion) {
                     await reconcileCart();
                 }
                 return result;
+            });
+        } catch {
+            await reconcileCart();
+        }
+    }, [applyCanonicalOrder, cancelPendingLineUpdate, enqueueCartMutation, reconcileCart]);
+
+    const updateQuantity = useCallback((lineId: string, newQty: number) => {
+        setError(null);
+        const operationVersion = cancelPendingLineUpdate(lineId);
+
+        if (newQty <= 0) {
+            void removeItem(lineId);
+            return;
+        }
+
+        if (lineId.startsWith('temp-')) {
+            const modifier = pendingTempModifiersRef.current.get(lineId);
+            if (modifier) {
+                modifier.quantity = newQty;
+            }
+            const inFlightLine = inFlightTempLinesRef.current.get(lineId);
+            if (inFlightLine) {
+                inFlightLine.quantity = newQty;
+                inFlightLine.linePriceWithTax = newQty * inFlightLine.unitPriceWithTax;
+            }
+
+            // 1. Optimistic 0ms in-memory update
+            setOrder((prev) => {
+                if (!prev) return null;
+                const nextLines = prev.lines.map((line) => {
+                    if (line.id === lineId) {
+                        return {
+                            ...line,
+                            quantity: newQty,
+                            linePriceWithTax: newQty * line.unitPriceWithTax,
+                        };
+                    }
+                    return line;
+                });
+
+                const nextTotalQty = nextLines.reduce((acc, l) => acc + l.quantity, 0);
+                const nextSubTotal = nextLines.reduce((acc, l) => acc + l.linePriceWithTax, 0);
+                const discountTotal = (prev.discounts || []).reduce((acc, d) => acc + d.amountWithTax, 0);
+                const nextTotal = Math.max(0, nextSubTotal + (prev.shippingWithTax || 0) - discountTotal);
+
+                const updated: CartOrder = {
+                    ...prev,
+                    lines: nextLines,
+                    totalQuantity: nextTotalQty,
+                    subTotalWithTax: nextSubTotal,
+                    totalWithTax: nextTotal,
+                };
+                saveToStorage(updated);
+                return updated;
             });
             return;
         }
@@ -360,21 +460,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             return updated;
         });
 
-        // 2. Optimistic 0ms totalQuantity update for live badges
-        setOrder((curr) => {
-            if (curr) {
-                const nextCount = curr.lines.reduce((acc, l) => acc + l.quantity, 0);
-                setTotalQuantity(nextCount);
-            }
-            return curr;
-        });
-
-        if (lineId.startsWith('temp-')) {
-            // Temporary line is still in-flight; in-memory update suffices until server response
-            return;
-        }
-
-        // 3. Debounce network mutation to avoid flooding server on rapid clicks, queued via FIFO mutex
+        // 2. Debounce network mutation to avoid flooding server on rapid clicks, queued via FIFO mutex
         debounceTimersRef.current[lineId] = setTimeout(async () => {
             await enqueueCartMutation(async () => {
                 const result = await adjustQuantity(lineId, newQty);
@@ -388,70 +474,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 return result;
             });
         }, 300);
-    }, [applyCanonicalOrder, cancelPendingLineUpdate, enqueueCartMutation, order, reconcileCart]);
-
-    const removeItem = useCallback(async (lineId: string) => {
-        setError(null);
-        const operationVersion = cancelPendingLineUpdate(lineId);
-        inFlightTempLinesRef.current.delete(lineId);
-
-        // 1. Optimistic 0ms removal
-        let removedQty = 1;
-        setOrder((prev) => {
-            if (!prev) return EMPTY_CART;
-            const target = prev.lines.find((l) => l.id === lineId);
-            if (target) removedQty = target.quantity;
-
-            const nextLines = prev.lines.filter((l) => l.id !== lineId);
-            const nextTotalQty = nextLines.reduce((acc, l) => acc + l.quantity, 0);
-            const nextSubTotal = nextLines.reduce((acc, l) => acc + l.linePriceWithTax, 0);
-            const discountTotal = (prev.discounts || []).reduce((acc, d) => acc + d.amountWithTax, 0);
-            const nextTotal = Math.max(0, nextSubTotal + (prev.shippingWithTax || 0) - discountTotal);
-
-            const updated: CartOrder = {
-                ...prev,
-                lines: nextLines,
-                totalQuantity: nextTotalQty,
-                subTotalWithTax: nextSubTotal,
-                totalWithTax: nextTotal,
-            };
-            saveToStorage(nextLines.length > 0 ? updated : null);
-            return updated;
-        });
-
-        setTotalQuantity((prev) => Math.max(0, prev - removedQty));
-
-        if (lineId.startsWith('temp-')) {
-            // Temporary line never reached server; in-memory removal is complete
-            return;
-        }
-
-        // 2. Serialized background sync
-        try {
-            await enqueueCartMutation(async () => {
-                const result = await removeCartAction(lineId);
-                if (result.success && result.order) {
-                    if (operationVersionRef.current[lineId] === operationVersion) {
-                        applyCanonicalOrder(result.order);
-                    }
-                } else if (!result.success && operationVersionRef.current[lineId] === operationVersion) {
-                    await reconcileCart();
-                }
-                return result;
-            });
-        } catch {
-            await reconcileCart();
-        }
-    }, [applyCanonicalOrder, cancelPendingLineUpdate, enqueueCartMutation, reconcileCart]);
+    }, [applyCanonicalOrder, cancelPendingLineUpdate, enqueueCartMutation, reconcileCart, removeItem]);
 
     const clearCart = useCallback(async () => {
         setError(null);
         Object.keys(debounceTimersRef.current).forEach(cancelPendingLineUpdate);
         inFlightTempLinesRef.current.clear();
+        pendingTempModifiersRef.current.clear();
 
         // 1. Optimistic 0ms clear: set EMPTY_CART explicitly (never null) so UI renders empty state instantly
         setOrder(EMPTY_CART);
-        setTotalQuantity(0);
         saveToStorage(null);
 
         // 2. Serialized background sync
@@ -472,7 +504,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     const addItem = useCallback(async (params: AddItemParams) => {
         const qtyToAdd = params.quantity || 1;
-        const unitPrice = params.priceWithTax || 0;
+        const unitPrice = params.priceWithTax ?? params.price ?? 0;
+        const assetPreview = params.assetPreview ?? params.imageUrl;
         const tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(7)}`;
 
         const newLine: CartLine = {
@@ -487,22 +520,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 product: {
                     name: params.name,
                     slug: params.slug || '',
-                    featuredAsset: params.assetPreview ? { preview: params.assetPreview } : null,
+                    featuredAsset: assetPreview ? { preview: assetPreview } : null,
                 },
             },
         };
 
         // Track in-flight optimistic line so server responses don't wipe out subsequent quick additions
         inFlightTempLinesRef.current.set(tempId, newLine);
+        pendingTempModifiersRef.current.set(tempId, {
+            variantId: params.variantId,
+            slug: params.slug,
+        });
 
-        // 1. Optimistic 0ms count increment for live badge
-        setTotalQuantity((prev) => prev + qtyToAdd);
         setIsInitialized(true);
         if (params.openDrawer) {
             setIsOpen(true);
         }
 
-        // 2. Optimistic 0ms in-memory order creation / update
+        // 1. Optimistic 0ms in-memory order creation / update
         setOrder((prev) => {
             const current = (prev && prev.lines.length > 0) ? prev : loadFromStorage();
 
@@ -554,7 +589,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             return updated;
         });
 
-        // 3. Serialized background server mutation via FIFO queue
+        // 2. Serialized background server mutation via FIFO queue
         try {
             await enqueueCartMutation(async () => {
                 const addPromise = params.variantId
@@ -572,7 +607,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
                     }
                 }
 
-                // Temporary line is now processed
+                const modifier = pendingTempModifiersRef.current.get(tempId);
+                pendingTempModifiersRef.current.delete(tempId);
                 inFlightTempLinesRef.current.delete(tempId);
 
                 if (!result.success) {
@@ -581,14 +617,59 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
                 // Intelligently merge server canonical order with any remaining in-flight additions
                 if (result.order) {
-                    const canonical = result.order as unknown as CartOrder;
-                    applyCanonicalOrder(canonical);
+                    let canonical = result.order as unknown as CartOrder;
+                    const serverLine = canonical.lines.find(
+                        (l) => (modifier?.variantId && l.productVariant.id === modifier.variantId) ||
+                               (modifier?.slug && l.productVariant.product.slug === modifier.slug)
+                    );
+
+                    if (modifier?.removed && serverLine) {
+                        // User removed item before server add resolved:
+                        // 1. Exclude from canonical state so it stays removed
+                        canonical = {
+                            ...canonical,
+                            lines: canonical.lines.filter((l) => l.id !== serverLine.id),
+                        };
+                        applyCanonicalOrder(canonical);
+
+                        // 2. Immediately enqueue removal of the created line on the server
+                        void enqueueCartMutation(async () => {
+                            const removeRes = await removeCartAction(serverLine.id);
+                            if (removeRes.success && removeRes.order) {
+                                applyCanonicalOrder(removeRes.order as unknown as CartOrder);
+                            }
+                            return removeRes;
+                        });
+                    } else if (modifier?.quantity && serverLine && modifier.quantity !== serverLine.quantity) {
+                        // User adjusted quantity before server add resolved:
+                        const targetQty = modifier.quantity;
+                        canonical = {
+                            ...canonical,
+                            lines: canonical.lines.map((l) => l.id === serverLine.id ? {
+                                ...l,
+                                quantity: targetQty,
+                                linePriceWithTax: targetQty * l.unitPriceWithTax,
+                            } : l),
+                        };
+                        applyCanonicalOrder(canonical);
+
+                        // Enqueue adjustment of the line on the server
+                        void enqueueCartMutation(async () => {
+                            const adjustRes = await adjustQuantity(serverLine.id, targetQty);
+                            if (adjustRes.success && adjustRes.order) {
+                                applyCanonicalOrder(adjustRes.order as unknown as CartOrder);
+                            }
+                            return adjustRes;
+                        });
+                    } else {
+                        applyCanonicalOrder(canonical);
+                    }
                 }
                 return result;
             });
         } catch (err) {
+            pendingTempModifiersRef.current.delete(tempId);
             inFlightTempLinesRef.current.delete(tempId);
-            setTotalQuantity((prev) => Math.max(0, prev - qtyToAdd));
             void reconcileCart();
             throw err;
         }

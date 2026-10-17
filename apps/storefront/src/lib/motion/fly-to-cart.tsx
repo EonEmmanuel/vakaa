@@ -7,15 +7,20 @@ import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/platform/i18n/navigation';
 
+interface FlyOptions {
+    showToast?: boolean;
+}
+
 interface FlyEvent {
     id: string;
     sourceRect: DOMRect;
     imageSrc: string;
     productName: string;
+    showToast?: boolean;
 }
 
 interface FlyToCartContextType {
-    triggerFly: (sourceRect: DOMRect, imageSrc: string, productName: string) => void;
+    triggerFly: (sourceRect: DOMRect, imageSrc: string, productName: string, options?: FlyOptions) => void;
 }
 
 const FlyToCartContext = createContext<FlyToCartContextType | null>(null);
@@ -31,9 +36,9 @@ export function useFlyToCart() {
 export function FlyToCartProvider({ children }: { children: ReactNode }) {
     const [events, setEvents] = useState<FlyEvent[]>([]);
     
-    const triggerFly = useCallback((sourceRect: DOMRect, imageSrc: string, productName: string) => {
+    const triggerFly = useCallback((sourceRect: DOMRect, imageSrc: string, productName: string, options?: FlyOptions) => {
         const id = Math.random().toString(36).substring(7);
-        setEvents(prev => [...prev, { id, sourceRect, imageSrc, productName }]);
+        setEvents(prev => [...prev, { id, sourceRect, imageSrc, productName, showToast: options?.showToast ?? false }]);
     }, []);
 
     const removeEvent = useCallback((id: string) => {
@@ -79,10 +84,12 @@ function FlyItem({ event, onComplete }: { event: FlyEvent, onComplete: () => voi
         
         const cartIcon = document.querySelector('[data-cart-icon]') || document.getElementById('vakaa-cart-icon');
         const handleComplete = () => {
-            toast.success(t('addedToCart'), {
-                description: event.productName,
-                action: { label: t('viewCart'), onClick: () => router.push('/cart') }
-            });
+            if (event.showToast) {
+                toast.success(t('addedToCart'), {
+                    description: event.productName,
+                    action: { label: t('viewCart'), onClick: () => router.push('/cart') }
+                });
+            }
             onComplete();
         };
 
