@@ -20,12 +20,15 @@ type OrderPayment = NonNullable<OrderByCode['payments']>[number];
 type OrderShippingLine = NonNullable<OrderByCode['shippingLines']>[number];
 
 interface OrderDetailProps {
-    orderPromise: Promise<{ data: ResultOf<typeof GetOrderDetailQuery>; token?: string }>;
-    serverUrl?: string;
+    orderPromise: Promise<{
+        data: ResultOf<typeof GetOrderDetailQuery>;
+        token?: string;
+        invoiceToken?: string;
+    }>;
 }
 
-export function OrderDetail({ orderPromise, serverUrl = 'http://localhost:3000' }: OrderDetailProps) {
-    const { data } = use(orderPromise);
+export function OrderDetail({ orderPromise }: OrderDetailProps) {
+    const { data, invoiceToken } = use(orderPromise);
     const locale = useLocale();
     const t = useTranslations('Account');
     const order = data.orderByCode;
@@ -34,8 +37,9 @@ export function OrderDetail({ orderPromise, serverUrl = 'http://localhost:3000' 
         return null;
     }
 
-    const customerEmail = order.customer?.emailAddress || '';
-    const invoiceDownloadUrl = `${serverUrl}/api/invoices/download/${order.code}?email=${encodeURIComponent(customerEmail)}`;
+    const invoiceDownloadUrl = invoiceToken
+        ? `/invoice/${order.code}?token=${invoiceToken}`
+        : `/invoice/${order.code}`;
 
     // Milestone tracking calculations
     const getActiveStep = (state: string): number => {

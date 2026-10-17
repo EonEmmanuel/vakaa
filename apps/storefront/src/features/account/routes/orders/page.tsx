@@ -19,6 +19,7 @@ import { Link, redirect } from '@/platform/i18n/navigation';
 import {getRouteLocale} from '@/platform/i18n/server';
 import {getTranslations} from 'next-intl/server';
 import { Package, ArrowRight, FileDown, ShoppingBag } from 'lucide-react';
+import { generateInvoiceToken } from '@/features/orders/lib/invoice-security';
 
 export async function generateMetadata(): Promise<Metadata> {
     const locale = await getRouteLocale();
@@ -63,8 +64,6 @@ export default async function OrdersPage(props: PageProps<'/[locale]/account/ord
     const totalItems = data.activeCustomer.orders.totalItems;
     const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
-    const shopUrl = process.env.VENDURE_SHOP_API_URL || process.env.NEXT_PUBLIC_VENDURE_SHOP_API_URL || 'https://api.vakaa.online/shop-api';
-    const serverUrl = shopUrl.replace(/\/shop-api\/?$/, '');
     const customerEmail = data.activeCustomer.emailAddress || '';
 
     return (
@@ -107,7 +106,8 @@ export default async function OrdersPage(props: PageProps<'/[locale]/account/ord
             ) : (
                 <div className="space-y-6">
                     {orders.map((order) => {
-                        const invoiceDownloadUrl = `${serverUrl}/api/invoices/download/${order.code}?email=${encodeURIComponent(customerEmail)}`;
+                        const invoiceToken = generateInvoiceToken(order.code, customerEmail);
+                        const invoiceDownloadUrl = `/invoice/${order.code}?token=${invoiceToken}`;
                         const latestPayment = order.payments?.[order.payments.length - 1];
                         const paymentMethodLabel = latestPayment?.method
                             ? latestPayment.method === 'flutterwave'

@@ -13,6 +13,7 @@ import { PrintReceiptButton } from '@/features/orders/print-receipt-button';
 import {TrustBar} from '@/components/shared/trust-bar';
 import { DecorativeDotCluster } from '@/components/ui/decorative-dot-cluster';
 import { FlutterwaveReconciler } from './flutterwave-reconciler';
+import { generateInvoiceToken } from '../lib/invoice-security';
 
 const GetOrderByCodeQuery = graphql(`
     query GetOrderByCode($code: String!) {
@@ -132,10 +133,9 @@ export async function OrderConfirmation({ paramsPromise, searchParamsPromise }: 
             : order.payments[0].method
         : 'Paiement Sécurisé';
 
-    const shopUrl = process.env.VENDURE_SHOP_API_URL || process.env.NEXT_PUBLIC_VENDURE_SHOP_API_URL || 'https://api.vakaa.online/shop-api';
-    const serverUrl = shopUrl.replace(/\/shop-api\/?$/, '');
     const customerEmail = order.customer?.emailAddress || '';
-    const invoiceDownloadUrl = `${serverUrl}/api/invoices/download/${order.code}${customerEmail ? `?email=${encodeURIComponent(customerEmail)}` : ''}`;
+    const invoiceToken = generateInvoiceToken(order.code, customerEmail);
+    const invoiceDownloadUrl = `/invoice/${order.code}?token=${invoiceToken}`;
 
     return (
         <div className="min-h-screen bg-[#FAF8F5] text-[#1D120A] flex flex-col">

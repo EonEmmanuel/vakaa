@@ -3,6 +3,40 @@ import { ModuleRef } from '@nestjs/core';
 import { ChannelService, RequestContext, OrderService, Logger } from '@vendure/core';
 import { InvoiceService } from '@pinelab/pinelab-invoice-plugin';
 
+import * as crypto from 'crypto';
+
+const INVOICE_SECRET =
+    process.env.INVOICE_SECRET ||
+    process.env.COOKIE_SECRET ||
+    process.env.REVALIDATION_SECRET ||
+    'vakaa-haute-couture-invoice-signature-key-2026';
+
+function generateInvoiceToken(orderCode: string, customerEmail?: string): string {
+    const normalizedCode = (orderCode || '').trim().toUpperCase();
+    const normalizedEmail = (customerEmail || '').trim().toLowerCase();
+    const payload = `${normalizedCode}:${normalizedEmail}`;
+    return crypto
+        .createHmac('sha256', INVOICE_SECRET)
+        .update(payload)
+        .digest('hex')
+        .slice(0, 32);
+}
+
+function verifyInvoiceToken(
+    orderCode: string,
+    customerEmail: string | undefined,
+    token: string | null | undefined
+): boolean {
+    if (!token || typeof token !== 'string') return false;
+    const expected = generateInvoiceToken(orderCode, customerEmail);
+    if (token.length !== expected.length) return false;
+    try {
+        return crypto.timingSafeEqual(Buffer.from(token, 'utf-8'), Buffer.from(expected, 'utf-8'));
+    } catch {
+        return false;
+    }
+}
+
 @Controller('api/invoices')
 export class VakaaInvoiceController {
     // Deduplicate concurrent on-the-fly generation requests for the same order code
@@ -24,7 +58,7 @@ export class VakaaInvoiceController {
 
     /**
      * Storefront-friendly direct invoice download:
-     * GET /api/invoices/download/:orderCode?email=customer@example.com
+     * GET /api/invoices/download/:orderCode?token=... OR ?email=customer@example.com
      * Automatically resolves the default channel and generates on-the-fly if not already generated.
      * Subsequent downloads stream directly from Cloudflare R2 in milliseconds without touching Puppeteer.
      */
@@ -32,6 +66,7 @@ export class VakaaInvoiceController {
     async download(
         @Param('orderCode') orderCode: string,
         @Query('email') email: string,
+        @Query('token') token: string,
         @Req() req: any,
         @Res() res: any
     ) {
@@ -64,10 +99,18 @@ export class VakaaInvoiceController {
         const customerEmail = email ? decodeURIComponent(email).trim().toLowerCase() : '';
         const orderEmail = order.customer?.emailAddress?.trim().toLowerCase();
 
-        // Security check: Must supply customer email and it must match the order's customer email
-        if (!orderEmail || !customerEmail || orderEmail !== customerEmail) {
+        // Cryptographic or email security check
+        let isAuthorized = false;
+        if (token && orderEmail) {
+            isAuthorized = verifyInvoiceToken(order.code, orderEmail, token);
+        }
+        if (!isAuthorized && customerEmail && orderEmail) {
+            isAuthorized = orderEmail === customerEmail;
+        }
+
+        if (!isAuthorized) {
             Logger.warn(
-                `Unauthorized invoice download attempt for order ${orderCode}: requested with "${email || ''}", expected customer email`,
+                `Unauthorized invoice download attempt for order ${orderCode}: requested with token="${token || ''}" email="${email || ''}"`,
                 'VakaaInvoicePlugin'
             );
             throw new ForbiddenException('Invalid credentials for this invoice');
