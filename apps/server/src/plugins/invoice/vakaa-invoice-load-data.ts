@@ -57,6 +57,8 @@ export const vakaaInvoiceLoadDataFn: LoadDataFn = async (
         return {
             name: line.productVariant?.product?.name || productName,
             variantName,
+            sku: line.productVariant?.sku || 'VAK-ART',
+            thumbnail: line.productVariant?.featuredAsset?.preview || line.featuredAsset?.preview || '',
             quantity: line.quantity,
             unitPrice: formatCurrency(line.unitPriceWithTax, currency),
             linePrice: formatCurrency(line.linePriceWithTax, currency),
