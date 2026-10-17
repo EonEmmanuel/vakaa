@@ -79,9 +79,11 @@ export async function GET(
 
     try {
         // Fetch the invoice stream from the private backend API server-to-server
-        const backendInvoiceUrl = token
-            ? `${serverUrl}/api/invoices/download/${order.code}?token=${encodeURIComponent(token)}`
-            : `${serverUrl}/api/invoices/download/${order.code}?email=${encodeURIComponent(customerEmail || '')}`;
+        // Passing email ensures the currently running EC2 container works immediately with zero server rebuild needed.
+        const queryParams = new URLSearchParams();
+        if (customerEmail) queryParams.set('email', customerEmail);
+        if (token) queryParams.set('token', token);
+        const backendInvoiceUrl = `${serverUrl}/api/invoices/download/${order.code}?${queryParams.toString()}`;
 
         const backendResponse = await fetch(backendInvoiceUrl, {
             headers: {
