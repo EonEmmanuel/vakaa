@@ -307,7 +307,9 @@ export const config: VendureConfig = {
             assetUrlPrefix:
                 process.env.ASSET_URL_PREFIX ||
                 process.env.R2_PUBLIC_URL ||
-                `http://localhost:${serverPort}/assets/`,
+                (process.env.VENDURE_HOST
+                    ? `${process.env.VENDURE_HOST}/assets/`
+                    : `http://localhost:${serverPort}/assets/`),
             ...(useR2
                 ? {
                       storageStrategyFactory: configureR2AssetStorage({
