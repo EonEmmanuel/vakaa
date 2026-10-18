@@ -30,23 +30,28 @@ export function HeroBentoGrid({ t }: HeroBentoGridProps) {
                 {...heroTileMotion(0)}
                 className="col-span-1 sm:col-span-2 lg:col-span-7 lg:row-span-4 p-5 sm:p-7 lg:p-8 flex flex-col justify-between rounded-3xl bg-[#fbfaf7] dark:bg-[#1c1b19] border border-[#e2ddd2]/80 dark:border-[#2e2c28] relative overflow-hidden shadow-tile"
             >
-                {/* Top: Status pill */}
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white dark:bg-[#272522] border border-[#e2ddd2] dark:border-[#3a3731] shadow-xs text-[11px] sm:text-xs font-medium text-[#1D120A] dark:text-[#fbfaf7] self-start">
-                    <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4A43C] opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4A43C]" />
+                {/* Top: Status pill with pulsing circle */}
+                <motion.div
+                    initial={{ opacity: 0, x: -16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5, duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
+                    className="inline-flex w-fit items-center gap-2 rounded-full bg-[#f2efe9] dark:bg-[#272522] py-1.5 pl-2 pr-3.5 text-[12px] sm:text-[13px] font-medium text-[#1D120A] dark:text-[#fbfaf7] self-start select-none"
+                >
+                    <span className="relative grid size-5 place-items-center">
+                        <span className="animate-ping absolute size-2 rounded-full bg-[#D4A43C]/60" />
+                        <span className="relative size-2 rounded-full bg-[#D4A43C]" />
                     </span>
-                    <span className="tracking-wide">Nouvelle collection · Pièces d&apos;exception</span>
-                </div>
+                    <span>Nouvelle collection · Pièces d&apos;exception</span>
+                </motion.div>
 
                 {/* Middle: Giant Headline & Refined Editorial Subtext */}
-                <div className="my-auto py-2 sm:py-3 space-y-2.5">
-                    <h1 className="font-display text-4xl sm:text-5xl lg:text-[54px] font-bold tracking-tight text-[#1D120A] dark:text-[#fbfaf7] leading-[1.06]">
+                <div className="my-auto py-2 sm:py-3 space-y-3">
+                    <h1 className="font-display text-[2.6rem] sm:text-[clamp(3.2rem,6.4vw,5.5rem)] lg:text-[clamp(3.8rem,5.6vw,6.4rem)] xl:text-[clamp(4.2rem,6vw,7.6rem)] font-extrabold tracking-[-0.035em] text-[#1D120A] dark:text-[#fbfaf7] leading-[0.95] max-w-[13ch]">
                         <span>{t.titleLine1} </span>
                         <span className="text-[#D4A43C]">{t.titleLine2} </span>
                         <span>{t.titleLine3}</span>
                     </h1>
-                    <p className="text-sm sm:text-[14.5px] lg:text-[15px] text-[#57544c] dark:text-[#a6a29a] max-w-lg font-normal leading-relaxed">
+                    <p className="text-sm sm:text-[15px] lg:text-[16px] text-[#57544c] dark:text-[#a6a29a] max-w-lg font-normal leading-relaxed">
                         {t.subtitle}
                     </p>
                 </div>
@@ -100,21 +105,24 @@ export function HeroBentoGrid({ t }: HeroBentoGridProps) {
                     </div>
 
                     {/* Circular Spinning Artisan Seal */}
-                    <div className="relative size-18 sm:size-22 shrink-0 flex items-center justify-center">
-                        <svg className="size-full animate-spin [animation-duration:22s]" viewBox="0 0 100 100">
+                    <motion.div
+                        initial={{ scale: 0, rotate: -90 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ delay: 0.9, type: 'spring', stiffness: 160, damping: 14 }}
+                        className="relative grid size-[84px] shrink-0 place-items-center rounded-full bg-white/75 dark:bg-[#1c1b19]/75 backdrop-blur-md"
+                    >
+                        <svg className="absolute inset-0 size-full animate-spin [animation-duration:16s]" viewBox="0 0 100 100" aria-hidden="true">
                             <defs>
                                 <path id="hero-badge-path" d="M 50, 50 m -36, 0 a 36,36 0 1,1 72,0 a 36,36 0 1,1 -72,0" />
                             </defs>
-                            <text className="text-[9.2px] uppercase tracking-[0.19em] fill-[#1D120A] dark:fill-[#fbfaf7] font-semibold">
-                                <textPath href="#hero-badge-path">
-                                    Cuir pleine fleur · Paille de Bolgatanga · Fait main ·
+                            <text className="fill-[#1D120A] dark:fill-[#fbfaf7] font-mono text-[9.5px] uppercase tracking-[0.16em]">
+                                <textPath href="#hero-badge-path" textLength="224" lengthAdjust="spacing">
+                                    Cuir pleine fleur · Paille Bolga · Fait main ·
                                 </textPath>
                             </text>
                         </svg>
-                        <div className="absolute size-7 sm:size-8 rounded-full bg-[#D4A43C] flex items-center justify-center text-[#1D120A] shadow-xs">
-                            <Sparkles className="size-3.5 sm:size-4 fill-current" />
-                        </div>
-                    </div>
+                        <Sparkles className="size-5 text-[#1D120A] dark:text-[#fbfaf7]" aria-hidden="true" />
+                    </motion.div>
                 </div>
 
                 {/* Center: Seamless Floating Pure Bag Cutout with Organic Ground Shadow */}

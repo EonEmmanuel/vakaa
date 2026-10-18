@@ -13,7 +13,7 @@ import { FloatingIslandBar } from '@/site/navigation/floating-island-bar';
 
 export function Navbar() {
     return (
-        <header className="fixed inset-x-0 top-0 z-40 px-3 pt-3 sm:px-5 sm:pt-4 pointer-events-none">
+        <header className="fixed inset-x-0 top-0 z-40 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-5 sm:pt-4 pointer-events-none">
             <FloatingIslandBar>
                 {/* Left: Mobile trigger (mobile) | Desktop Nav Links (desktop) */}
                 <div className="flex items-center gap-2 lg:gap-3 min-w-0">
@@ -54,9 +54,11 @@ export function Navbar() {
                     </div>
 
                     {/* Search */}
-                    <Suspense fallback={<div className="size-9 rounded-full animate-pulse bg-black/5" />}>
-                        <NavbarSearch />
-                    </Suspense>
+                    <div className="hidden sm:flex items-center">
+                        <Suspense fallback={<div className="size-9 rounded-full animate-pulse bg-black/5" />}>
+                            <NavbarSearch />
+                        </Suspense>
+                    </div>
 
                     {/* User Account */}
                     <div className="hidden sm:flex items-center">
