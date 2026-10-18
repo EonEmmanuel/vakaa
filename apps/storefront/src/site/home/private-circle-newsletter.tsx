@@ -1,16 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { subscribeToNewsletter } from './subscribe-newsletter';
 
 export function PrivateCircleNewsletter() {
     const [email, setEmail] = useState('');
+    const [consent, setConsent] = useState(false);
+    const [isPending, startTransition] = useTransition();
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [hasError, setHasError] = useState(false);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (email) setIsSubmitted(true);
+        if (!email || !consent) return;
+
+        setHasError(false);
+        startTransition(async () => {
+            const res = await subscribeToNewsletter(email);
+            if (res.ok) {
+                setIsSubmitted(true);
+            } else {
+                setHasError(true);
+            }
+        });
     };
 
     return (
@@ -40,22 +54,43 @@ export function PrivateCircleNewsletter() {
                             <span>Bienvenue dans le Cercle Privé Vakaa.</span>
                         </div>
                     ) : (
-                        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 max-w-md pt-1">
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="votre@adresse.com"
-                                required
-                                className="flex-1 h-11 sm:h-12 px-4 rounded-full bg-white/10 border border-white/15 text-[#fbfaf7] placeholder:text-[#fbfaf7]/40 text-sm focus:outline-hidden focus:border-[#D4A43C] transition-colors font-sans"
-                            />
-                            <button
-                                type="submit"
-                                className="h-11 sm:h-12 px-6 rounded-full bg-[#fbfaf7] text-[#1c1b18] hover:bg-[#D4A43C] hover:text-[#1c1b18] font-medium text-xs uppercase tracking-wider transition-colors shrink-0 cursor-pointer shadow-xs active:scale-95"
-                            >
-                                Rejoindre
-                            </button>
-                        </form>
+                        <div className="max-w-md pt-1 space-y-2.5">
+                            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="votre@adresse.com"
+                                    required
+                                    className="flex-1 h-11 sm:h-12 px-4 rounded-full bg-white/10 border border-white/15 text-[#fbfaf7] placeholder:text-[#fbfaf7]/40 text-sm focus:outline-hidden focus:border-[#D4A43C] transition-colors font-sans"
+                                />
+                                <button
+                                    type="submit"
+                                    disabled={!consent || isPending}
+                                    className="h-11 sm:h-12 px-6 rounded-full bg-[#fbfaf7] text-[#1c1b18] hover:bg-[#D4A43C] hover:text-[#1c1b18] font-medium text-xs uppercase tracking-wider transition-colors shrink-0 cursor-pointer shadow-xs active:scale-95 disabled:opacity-50 disabled:hover:bg-[#fbfaf7] disabled:hover:text-[#1c1b18]"
+                                >
+                                    {isPending ? '…' : 'Rejoindre'}
+                                </button>
+                            </form>
+                            <label className="flex items-start gap-2 text-[11px] leading-snug text-[#fbfaf7]/60 font-sans cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    checked={consent}
+                                    onChange={(e) => setConsent(e.target.checked)}
+                                    className="mt-0.5 accent-[#D4A43C] cursor-pointer"
+                                />
+                                <span>
+                                    J&apos;accepte de recevoir les e-mails du Cercle Privé Vakaa et je peux me
+                                    désinscrire à tout moment.
+                                </span>
+                            </label>
+                            {hasError && (
+                                <p className="text-xs text-[#e08a7c] font-sans">
+                                    L&apos;inscription n&apos;a pas abouti pour le moment. Merci de réessayer plus
+                                    tard.
+                                </p>
+                            )}
+                        </div>
                     )}
                 </div>
 
