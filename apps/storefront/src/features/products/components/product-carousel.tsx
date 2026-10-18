@@ -5,8 +5,6 @@ import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious}
 import {FragmentOf} from "@/platform/vendure/graphql";
 import {ProductCardFragment} from '@/features/products/graphql';
 import {useId} from "react";
-import { Link } from '@/platform/i18n/navigation';
-import { ArrowRight } from "lucide-react";
 
 interface ProductCarouselClientProps {
     title: string;

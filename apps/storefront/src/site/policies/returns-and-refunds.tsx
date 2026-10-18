@@ -1,5 +1,5 @@
 import { getRouteLocale } from '@/platform/i18n/server';
-import { RotateCcw, ShieldCheck, CheckCircle2, AlertCircle, ArrowRight } from "lucide-react";
+import { CheckCircle2, AlertCircle } from "lucide-react";
 import type { Metadata } from 'next';
 import { Link } from '@/platform/i18n/navigation';
 

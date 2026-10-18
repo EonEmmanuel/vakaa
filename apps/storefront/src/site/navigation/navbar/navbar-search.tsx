@@ -5,7 +5,9 @@ import { useTranslations } from 'next-intl';
 import { Search, Loader2, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from '@/platform/i18n/navigation';
-import { clientSearch } from '@/features/search/client-search';
+import { clientSearch, type ClientSearchResult } from '@/features/search/client-search';
+import { readFragment } from '@/platform/vendure/graphql';
+import { ProductCardFragment } from '@/features/products/graphql';
 import {
     CommandDialog,
     CommandEmpty,
@@ -21,7 +23,7 @@ export function NavbarSearch() {
     const t = useTranslations('Navigation');
     const [open, setOpen] = React.useState(false);
     const [query, setQuery] = React.useState('');
-    const [results, setResults] = React.useState<any[]>([]);
+    const [results, setResults] = React.useState<ClientSearchResult[]>([]);
     const [loading, setLoading] = React.useState(false);
     const router = useRouter();
 
@@ -110,7 +112,8 @@ export function NavbarSearch() {
 
                     {results.length > 0 && (
                         <CommandGroup heading={t('searchProducts')}>
-                            {results.map((product) => {
+                            {results.map((result) => {
+                                const product = readFragment(ProductCardFragment, result);
                                 const priceVal =
                                     product.priceWithTax?.__typename === 'PriceRange'
                                         ? product.priceWithTax.min

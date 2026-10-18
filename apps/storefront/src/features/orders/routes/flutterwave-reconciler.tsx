@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { useCart } from '@/features/cart/context/cart-context';
+import { useCart } from '@/features/cart';
 
 interface FlutterwaveReconcilerProps {
     transactionId?: string;

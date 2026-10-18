@@ -53,7 +53,9 @@ export default async function Home() {
             </Suspense>
 
             {/* Editorial Product Spotlight — Asymmetric Split */}
-            <FeaturedBagSpotlight />
+            <Suspense fallback={<div className="h-96 w-full bg-background" />}>
+                <FeaturedBagSpotlight />
+            </Suspense>
 
             {/* The Promise Bento Strip (Exact KVIST 'Buy once, keep for good' Section) */}
             <TrustBar />

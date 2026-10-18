@@ -1,10 +1,9 @@
 'use client';
 
 import { ShoppingBag } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Link } from '@/platform/i18n/navigation';
 import { useTranslations } from 'next-intl';
-import { useCart } from '@/features/cart/context/cart-context';
+import { useCart } from '@/features/cart';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect } from 'react';
 

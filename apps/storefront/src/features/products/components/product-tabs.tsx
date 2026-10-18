@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Star, ShieldCheck, Sparkles, CheckCircle2, ChevronDown } from 'lucide-react';
+import { Star, Sparkles, ChevronDown } from 'lucide-react';
 import { submitProductReviewAction } from '@/features/products/submit-review';
 import { toast } from 'sonner';
 
@@ -59,7 +59,6 @@ function SplitCircleBullet() {
 export function ProductTabs({
     productId,
     description,
-    productName,
     customFields,
     initialReviews = [],
     initialSummary,

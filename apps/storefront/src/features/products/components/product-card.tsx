@@ -12,7 +12,7 @@ import Image from 'next/image';
 import { useFlyToCart } from '@/lib/motion/fly-to-cart';
 import { toast } from 'sonner';
 import { cn, normalizeAssetUrl } from '@/lib/utils';
-import { useCart } from '@/features/cart/context/cart-context';
+import { useCart } from '@/features/cart';
 import { PRIMARY_LOCAL_FALLBACKS, TRANSPARENT_LOCAL_IMAGES } from '../transparent-cutouts';
 
 // Soft Luxury Pastel Color Palette (Exact KVIST bento surface tints allowing bags to blend seamlessly)

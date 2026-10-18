@@ -53,9 +53,9 @@ export async function GET(
             status: 200,
             headers,
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         return NextResponse.json(
-            { error: 'Erreur lors du téléchargement de la facture', message: error?.message },
+            { error: 'Erreur lors du téléchargement de la facture', message: error instanceof Error ? error.message : undefined },
             { status: 500 }
         );
     }

@@ -22,12 +22,6 @@ const carouselVariants: Variants = {
     exit: { x: -20, opacity: 0, transition: { type: 'spring', stiffness: 300, damping: 20 } }
 };
 
-const buttonVariants: Variants = {
-    initial: { scale: 1 },
-    hover: { scale: 1.05, transition: { type: 'spring', stiffness: 300, damping: 20 } },
-    press: { scale: 0.95, transition: { type: 'spring', stiffness: 500, damping: 20 } }
-};
-
 export function ProductImageCarousel({ images }: ProductImageCarouselProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const prevButtonRef = useRef<HTMLButtonElement>(null);

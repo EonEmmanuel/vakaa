@@ -1,8 +1,6 @@
 import {Navbar} from '@/site/navigation/navbar';
 import {Footer} from '@/site/footer';
-import {WhatsAppConcierge} from '@/components/whatsapp-concierge';
-import {CartProvider} from '@/features/cart/context/cart-context';
-import {CartDrawer} from '@/features/cart/components/cart-drawer';
+import {CartProvider, CartDrawer} from '@/features/cart';
 
 export default function StoreLayout({children}: {children: React.ReactNode}) {
     return (
@@ -11,7 +9,6 @@ export default function StoreLayout({children}: {children: React.ReactNode}) {
                 <Navbar />
                 <main className="flex-1">{children}</main>
                 <Footer />
-                <WhatsAppConcierge />
                 <CartDrawer />
             </div>
         </CartProvider>

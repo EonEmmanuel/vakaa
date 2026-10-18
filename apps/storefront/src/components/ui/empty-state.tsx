@@ -81,7 +81,6 @@ export function EmptyState({
   className,
   illustration,
 }: EmptyStateProps) {
-  const t = useTranslations('Common');
   const config = variantConfig[variant];
 
   const displayTitle = title || config.defaultTitle;

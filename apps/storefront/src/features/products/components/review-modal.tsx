@@ -14,13 +14,13 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { submitProductReviewAction } from '../submit-review';
+import { submitProductReviewAction, type ProductReview } from '../submit-review';
 import { useRouter } from '@/platform/i18n/navigation';
 
 interface ReviewModalProps {
     productId: string;
     productName: string;
-    onReviewSubmitted?: (review: any) => void;
+    onReviewSubmitted?: (review: ProductReview) => void;
 }
 
 export function ReviewModal({ productId, productName, onReviewSubmitted }: ReviewModalProps) {

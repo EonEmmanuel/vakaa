@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { X, Check, ShoppingBag, ShieldCheck, ArrowRight, Truck } from 'lucide-react';
-import { addToCart, addProductToCartBySlug } from '@/features/products/add-to-cart';
-import { useCart } from '@/features/cart/context/cart-context';
+import { useCart } from '@/features/cart';
 
 export interface QuickBuyProduct {
     id?: string;

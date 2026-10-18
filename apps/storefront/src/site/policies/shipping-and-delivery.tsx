@@ -1,5 +1,5 @@
 import { getRouteLocale } from '@/platform/i18n/server';
-import { Truck, ShieldCheck, Clock, Globe, PackageCheck, HelpCircle } from "lucide-react";
+import { ShieldCheck, Clock, PackageCheck } from "lucide-react";
 import type { Metadata } from 'next';
 import { Link } from '@/platform/i18n/navigation';
 

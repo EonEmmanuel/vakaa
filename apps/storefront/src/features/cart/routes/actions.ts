@@ -93,7 +93,7 @@ export async function removeFromCart(lineId: string): Promise<CartMutationResult
         // Self-healing: if line was already removed or absent from the order, treat as successful removal
         if (
             result.error?.message?.includes('order-does-not-contain-line-with-id') ||
-            (result.data?.removeOrderLine as any)?.errorCode === 'ORDER_MODIFICATION_ERROR'
+            (result.data?.removeOrderLine as {errorCode?: string} | null)?.errorCode === 'ORDER_MODIFICATION_ERROR'
         ) {
             markCartStale();
             return {success: true};
@@ -166,7 +166,7 @@ export async function adjustQuantity(lineId: string, quantity: number): Promise<
 
         if (
             result.error?.message?.includes('order-does-not-contain-line-with-id') ||
-            (result.data?.adjustOrderLine as any)?.errorCode === 'ORDER_MODIFICATION_ERROR'
+            (result.data?.adjustOrderLine as {errorCode?: string} | null)?.errorCode === 'ORDER_MODIFICATION_ERROR'
         ) {
             markCartStale();
             return {success: false, error: 'request-failed'};

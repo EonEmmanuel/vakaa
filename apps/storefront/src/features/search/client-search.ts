@@ -22,3 +22,5 @@ export async function clientSearch(term: string) {
         return [];
     }
 }
+
+export type ClientSearchResult = Awaited<ReturnType<typeof clientSearch>>[number];

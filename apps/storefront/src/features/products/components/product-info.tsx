@@ -1,11 +1,9 @@
 'use client';
 
-import { useState, useMemo, useTransition } from 'react';
+import { useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { usePathname, useRouter } from '@/platform/i18n/navigation';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import {
     ShoppingCart,
@@ -17,14 +15,12 @@ import {
     Plus,
     Star,
     Check,
-    Share2,
     Sparkles,
 } from 'lucide-react';
-import { addToCart } from '@/features/products/add-to-cart';
 import { toast } from 'sonner';
 import { Price } from '@/features/pricing/price';
 import { useTranslations } from 'next-intl';
-import { useCart } from '@/features/cart/context/cart-context';
+import { useCart } from '@/features/cart';
 
 function FacebookIcon({ className = "size-4" }: { className?: string }) {
     return (
@@ -107,7 +103,6 @@ export function ProductInfo({
     const router = useRouter();
     const currentSearchParams = useSearchParams();
     const cart = useCart();
-    const [isPending, startTransition] = useTransition();
     const [isAdded, setIsAdded] = useState(false);
     const [quantity, setQuantity] = useState(1);
 
@@ -182,10 +177,10 @@ export function ProductInfo({
             toast.success(t('addedToCartMessage'), {
                 description: t('addedToCartDescription', { name: product.name }),
             });
-        } catch (err: any) {
+        } catch (err: unknown) {
             setIsAdded(false);
             toast.error(t('errorTitle'), {
-                description: err?.message || t('errorAddToCart'),
+                description: err instanceof Error && err.message ? err.message : t('errorAddToCart'),
             });
         } finally {
             setTimeout(() => setIsAdded(false), 2000);
@@ -205,9 +200,9 @@ export function ProductInfo({
                 quantity,
             });
             router.push('/checkout');
-        } catch (err: any) {
+        } catch (err: unknown) {
             toast.error(t('errorTitle'), {
-                description: err?.message || t('errorAddToCart'),
+                description: err instanceof Error && err.message ? err.message : t('errorAddToCart'),
             });
         }
     };
@@ -372,7 +367,7 @@ export function ProductInfo({
                     <Button
                         size="lg"
                         className="flex-1 h-12 rounded-full bg-[#1c1b18] hover:bg-[#3A2418] text-[#fbfaf7] text-xs font-bold uppercase tracking-wider shadow-sm transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
-                        disabled={!canAddToCart || isPending}
+                        disabled={!canAddToCart}
                         onClick={handleAddToCart}
                     >
                         {isAdded ? (
@@ -383,12 +378,12 @@ export function ProductInfo({
                         ) : isPreOrder ? (
                             <>
                                 <Sparkles className="mr-2 size-4 text-[#D4A43C]" />
-                                <span>{isPending ? t('adding') : 'Commander sur Mesure'}</span>
+                                <span>Commander sur Mesure</span>
                             </>
                         ) : (
                             <>
                                 <ShoppingCart className="mr-2 size-4" />
-                                <span>{isPending ? t('adding') : t('addToCart')}</span>
+                                <span>{t('addToCart')}</span>
                             </>
                         )}
                     </Button>
@@ -397,7 +392,7 @@ export function ProductInfo({
                     <Button
                         size="lg"
                         className="h-12 px-7 rounded-full bg-[#D4A43C] hover:bg-[#c29330] text-[#1D120A] font-semibold text-xs uppercase tracking-wider shadow-sm transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
-                        disabled={!canAddToCart || isPending}
+                        disabled={!canAddToCart}
                         onClick={handleBuyNow}
                     >
                         <span>Commander</span>
