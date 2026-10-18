@@ -15,6 +15,7 @@ import {
 import {homeMessageLoaders} from '@/site/home/messages';
 import {navigationMessageLoaders} from '@/site/navigation/messages';
 import {siteMessageLoaders} from '@/site/messages';
+import {trackingMessageLoaders} from '@/site/tracking/messages';
 
 const registrations: MessageLoaders[] = [
     accountMessageLoaders,
@@ -29,6 +30,7 @@ const registrations: MessageLoaders[] = [
     homeMessageLoaders,
     navigationMessageLoaders,
     siteMessageLoaders,
+    trackingMessageLoaders,
 ];
 
 const loaders: Record<string, MessageLoader[]> = {};
