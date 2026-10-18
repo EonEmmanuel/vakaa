@@ -4,6 +4,7 @@ import {cacheLife, cacheTag} from "next/cache";
 import {getActiveCurrencyCode} from '@/features/currency/currency-server';
 import {query} from "@/platform/vendure/api";
 import {GetCollectionProductsQuery} from '@/features/collections/graphql';
+import {FEATURED_COLLECTION_SLUG} from '@/features/collections/collection-config';
 import {getTranslations} from 'next-intl/server';
 
 async function getFeaturedCollectionProducts(currencyCode: string) {
@@ -16,9 +17,9 @@ async function getFeaturedCollectionProducts(currencyCode: string) {
 
     try {
         const result = await query(GetCollectionProductsQuery, {
-            slug: "bags",
+            slug: FEATURED_COLLECTION_SLUG,
             input: {
-                collectionSlug: "bags",
+                collectionSlug: FEATURED_COLLECTION_SLUG,
                 take: 8,
                 skip: 0,
                 groupByProduct: true

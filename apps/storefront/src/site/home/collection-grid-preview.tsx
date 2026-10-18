@@ -3,6 +3,14 @@ import { Link } from '@/platform/i18n/navigation';
 import { ArrowRight } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { getRouteLocale } from '@/platform/i18n/server';
+import { COLLECTION_TABS } from '@/features/collections/collection-config';
+
+// Collection tiles link to the real Vendure collection pages; hrefs derive
+// from the canonical config so links never point at nonexistent collections.
+function collectionHref(messageKey: string): string {
+    const tab = COLLECTION_TABS.find(({ messageKey: key }) => key === messageKey);
+    return `/collection/${tab?.slug ?? ''}`;
+}
 
 export async function CollectionGridPreview() {
     const locale = await getRouteLocale();
@@ -13,7 +21,7 @@ export async function CollectionGridPreview() {
             title: t('collections.totesTitle'),
             subtitle: t('collections.totesSubtitle'),
             image: '/images/bags/maa-tote-transparent.png',
-            href: '/search?category=totes',
+            href: collectionHref('toteBags'),
             bgClass: 'bg-[#dbe4d3] dark:bg-[#1c271e]',
             containerClass: 'col-span-2 lg:col-span-2 lg:row-span-2',
             minHeight: 'min-h-[300px] lg:min-h-[520px]',
@@ -24,7 +32,7 @@ export async function CollectionGridPreview() {
             title: t('collections.shoulderTitle'),
             subtitle: t('collections.shoulderSubtitle'),
             image: '/images/bags/kemi-shoulder-transparent.png',
-            href: '/search?category=shoulder-bags',
+            href: collectionHref('shoulderBags'),
             bgClass: 'bg-[#f1e7c6] dark:bg-[#2c281a]',
             containerClass: '',
             minHeight: 'min-h-[190px] sm:min-h-[230px] lg:min-h-0',
@@ -35,7 +43,7 @@ export async function CollectionGridPreview() {
             title: t('collections.crossbodyTitle'),
             subtitle: t('collections.crossbodySubtitle'),
             image: '/images/bags/asa-crossbody-transparent.png',
-            href: '/search?category=crossbody',
+            href: collectionHref('crossbodies'),
             bgClass: 'bg-[#ebe2d4] dark:bg-[#27231f]',
             containerClass: '',
             minHeight: 'min-h-[190px] sm:min-h-[230px] lg:min-h-0',
@@ -46,7 +54,7 @@ export async function CollectionGridPreview() {
             title: t('collections.clutchesTitle'),
             subtitle: t('collections.clutchesSubtitle'),
             image: '/images/bags/zuri-clutch-transparent.png',
-            href: '/search?category=clutches',
+            href: collectionHref('clutches'),
             bgClass: 'bg-[#efded7] dark:bg-[#2b1f1d]',
             containerClass: '',
             minHeight: 'min-h-[190px] sm:min-h-[230px] lg:min-h-0',
@@ -57,7 +65,7 @@ export async function CollectionGridPreview() {
             title: t('collections.accessoriesTitle'),
             subtitle: t('collections.accessoriesSubtitle'),
             image: '/images/bags/aya-cardholder-transparent.png',
-            href: '/search?category=accessories',
+            href: collectionHref('accessories'),
             bgClass: 'bg-[#dbe3ee] dark:bg-[#1f2833]',
             containerClass: '',
             minHeight: 'min-h-[190px] sm:min-h-[230px] lg:min-h-0',

@@ -40,14 +40,6 @@ const VAKAA_CARD_TINTS = [
     'bg-[#e5e2db] dark:bg-[#1e1d1b]', // Raw Stone
 ];
 
-function getCategoryForSlug(slug: string): string {
-    if (slug.includes('tote') || slug.includes('cabas') || slug.includes('maa')) return 'Sacs & Cabas';
-    if (slug.includes('clutch') || slug.includes('pochette') || slug.includes('zuri')) return 'Pochettes & Soirée';
-    if (slug.includes('shoulder') || slug.includes('baguette') || slug.includes('kemi')) return 'Sacs Épaule & Bandoulière';
-    if (slug.includes('cardholder') || slug.includes('aya') || slug.includes('accessoire')) return 'Petite Maroquinerie';
-    return 'Haute Maroquinerie';
-}
-
 interface ProductCardProps {
     product: FragmentOf<typeof ProductCardFragment>;
     index?: number;
@@ -131,7 +123,6 @@ export function ProductCard({ product: productProp, index, className }: ProductC
         }
     };
 
-    const categoryName = getCategoryForSlug(product.slug);
     const specificBg = PRODUCT_SPECIFIC_BG[product.slug];
     const tintClass = specificBg || VAKAA_CARD_TINTS[(index ?? 0) % VAKAA_CARD_TINTS.length];
 
@@ -191,13 +182,10 @@ export function ProductCard({ product: productProp, index, className }: ProductC
 
                 {/* ═══ Exact KVIST Typographic Hierarchy (Calm, Airy, Scandinavian) ═══ */}
                 <div className="grid grid-cols-[1fr_auto] items-baseline gap-x-3 px-1 pt-3 sm:px-1.5 sm:pt-4">
-                    <p className="col-span-2 text-[12px] sm:col-span-1 sm:text-[13px] text-[#57544c] dark:text-[#a6a29a] font-normal leading-none font-sans">
-                        {categoryName}
-                    </p>
-                    <h3 className="col-span-2 text-[14px] sm:text-[15.5px] font-sans font-medium leading-snug sm:col-span-1 sm:row-start-2 sm:truncate text-[#1c1b18] dark:text-[#fbfaf7] tracking-normal group-hover:text-[#D4A43C] dark:group-hover:text-[#D4A43C] transition-colors mt-0.5">
+                    <h3 className="col-span-2 sm:col-span-1 text-[14px] sm:text-[15.5px] font-sans font-medium leading-snug sm:truncate text-[#1c1b18] dark:text-[#fbfaf7] tracking-normal group-hover:text-[#D4A43C] dark:group-hover:text-[#D4A43C] transition-colors mt-0.5">
                         {product.productName}
                     </h3>
-                    <div className="mt-1 text-right font-display text-[15px] sm:col-start-2 sm:row-span-2 sm:row-start-1 sm:mt-0 sm:self-end sm:text-[17px] font-semibold tabular text-[#1c1b18] dark:text-[#fbfaf7]">
+                    <div className="mt-1 text-right font-display text-[15px] sm:col-start-2 sm:mt-0 sm:self-end sm:text-[17px] font-semibold tabular text-[#1c1b18] dark:text-[#fbfaf7]">
                         <Suspense fallback={<span className="h-5 w-16 inline-block rounded bg-muted/40 animate-pulse" />}>
                             {product.priceWithTax ? (
                                 product.priceWithTax?.__typename === 'PriceRange' ? (

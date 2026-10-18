@@ -1,52 +1,33 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FragmentOf, readFragment } from '@/platform/vendure/graphql';
 import { ProductCard, ProductCardFragment } from '@/features/products';
 import { cn } from '@/lib/utils';
 
-export interface CategoryTab {
+export interface ShowcaseTab {
     id: string;
     name: string;
+    items: Array<FragmentOf<typeof ProductCardFragment>>;
 }
 
 interface BestSellersShowcaseProps {
-    products: Array<FragmentOf<typeof ProductCardFragment>>;
+    /** Tabs are computed server-side from real collections; each carries its own items. */
+    tabs: ShowcaseTab[];
     eyebrow: string;
     title: string;
-    viewAllLabel?: string;
-    categories: CategoryTab[];
-}
-
-function getCategoryIdForSlug(slug: string): string {
-    const s = slug.toLowerCase();
-    if (s.includes('tote') || s.includes('cabas') || s.includes('maa') || s.includes('nomade')) return 'cabas';
-    if (s.includes('clutch') || s.includes('pochette') || s.includes('zuri')) return 'pochettes';
-    if (s.includes('cardholder') || s.includes('aya') || s.includes('accessoire') || s.includes('porte-carte')) return 'accessoires';
-    if (s.includes('shoulder') || s.includes('baguette') || s.includes('kemi') || s.includes('crossbody') || s.includes('asa')) return 'epaule';
-    return 'cabas';
 }
 
 export function BestSellersShowcase({
-    products,
+    tabs,
     eyebrow,
     title,
-    categories,
 }: BestSellersShowcaseProps) {
-    const [activeCategory, setActiveCategory] = useState('all');
+    const [activeId, setActiveId] = useState(tabs[0]?.id ?? 'all');
 
-    const filteredProducts = useMemo(() => {
-        if (activeCategory === 'all') {
-            return products.slice(0, 8);
-        }
-        const matching = products.filter((p) => {
-            const unmasked = readFragment(ProductCardFragment, p);
-            const catId = getCategoryIdForSlug(unmasked.slug || '');
-            return catId === activeCategory;
-        });
-        return (matching.length > 0 ? matching : products).slice(0, 8);
-    }, [activeCategory, products]);
+    const activeTab = tabs.find((tab) => tab.id === activeId) ?? tabs[0];
+    const displayed = activeTab ? activeTab.items.slice(0, 8) : [];
 
     return (
         <section className="pt-10 sm:pt-16 pb-20 sm:pb-28 lg:pb-36 bg-[#f2efe9] dark:bg-[#151413]">
@@ -69,14 +50,14 @@ export function BestSellersShowcase({
                             aria-label="Filter pieces"
                             className="flex w-max gap-1 rounded-full bg-[#fbfaf7] dark:bg-[#1a1917] p-1 shadow-tile border border-[#e2ddd2]/70 dark:border-white/10"
                         >
-                            {categories.map((cat) => {
-                                const isActive = activeCategory === cat.id;
+                            {tabs.map((tab) => {
+                                const isActive = activeId === tab.id;
                                 return (
                                     <button
-                                        key={cat.id}
+                                        key={tab.id}
                                         role="tab"
                                         aria-selected={isActive}
-                                        onClick={() => setActiveCategory(cat.id)}
+                                        onClick={() => setActiveId(tab.id)}
                                         className="relative isolate inline-flex h-8 sm:h-8.5 items-center rounded-full px-3 sm:px-3.5 text-[12px] sm:text-[13px] font-medium transition-colors duration-300 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D4A43C]"
                                     >
                                         {isActive && (
@@ -94,7 +75,7 @@ export function BestSellersShowcase({
                                                     : "text-[#57544c] hover:text-[#1c1b18] dark:text-[#a6a29a] dark:hover:text-[#fbfaf7]"
                                             )}
                                         >
-                                            {cat.name}
+                                            {tab.name}
                                         </span>
                                     </button>
                                 );
@@ -109,7 +90,7 @@ export function BestSellersShowcase({
                     className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-4 lg:grid-cols-4 items-start"
                 >
                     <AnimatePresence mode="popLayout" initial={false}>
-                        {filteredProducts.map((product, idx) => {
+                        {displayed.map((product, idx) => {
                             const unmasked = readFragment(ProductCardFragment, product);
                             return (
                                 <motion.div

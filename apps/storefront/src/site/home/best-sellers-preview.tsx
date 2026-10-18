@@ -3,10 +3,12 @@ import { getRouteLocale } from '@/platform/i18n/server';
 import { getActiveCurrencyCode } from '@/features/currency/currency-server';
 import { query } from '@/platform/vendure/api';
 import { SearchProductsQuery } from '@/features/search/graphql';
+import { COLLECTION_TABS } from '@/features/collections/collection-config';
 import { FragmentOf } from '@/platform/vendure/graphql';
 import { ProductCardFragment } from '@/features/products/graphql';
 import { cacheLife, cacheTag } from 'next/cache';
-import { BestSellersShowcase, CategoryTab } from './best-sellers-showcase';
+import { BestSellersShowcase } from './best-sellers-showcase';
+import type { ShowcaseTab } from './best-sellers-showcase';
 
 async function getBestSellerProducts(locale: string, currencyCode: string): Promise<Array<FragmentOf<typeof ProductCardFragment>>> {
     'use cache';
@@ -31,6 +33,30 @@ async function getBestSellerProducts(locale: string, currencyCode: string): Prom
     }
 }
 
+async function getCollectionTabProducts(locale: string, currencyCode: string, collectionSlug: string): Promise<Array<FragmentOf<typeof ProductCardFragment>>> {
+    'use cache';
+    cacheLife('hours');
+    cacheTag('products');
+
+    try {
+        const result = await query(
+            SearchProductsQuery,
+            {
+                input: {
+                    collectionSlug,
+                    take: 8,
+                    skip: 0,
+                    groupByProduct: true,
+                },
+            },
+            { languageCode: locale, currencyCode }
+        );
+        return (result.data?.search?.items as Array<FragmentOf<typeof ProductCardFragment>>) || [];
+    } catch {
+        return [];
+    }
+}
+
 export async function BestSellersPreview() {
     const locale = await getRouteLocale();
     const currencyCode = await getActiveCurrencyCode();
@@ -43,31 +69,24 @@ export async function BestSellersPreview() {
         return null;
     }
 
-    const isFr = (locale || 'fr').startsWith('fr');
+    const collectionResults = await Promise.all(
+        COLLECTION_TABS.map(({ slug }) => getCollectionTabProducts(locale, currencyCode, slug))
+    );
 
-    const categories: CategoryTab[] = isFr
-        ? [
-            { id: 'all', name: 'Tous' },
-            { id: 'cabas', name: 'Sacs & Cabas' },
-            { id: 'epaule', name: 'Sacs Épaule' },
-            { id: 'pochettes', name: 'Pochettes & Soirée' },
-            { id: 'accessoires', name: 'Petite Maroquinerie' },
-        ]
-        : [
-            { id: 'all', name: 'All' },
-            { id: 'cabas', name: 'Totes & Baskets' },
-            { id: 'epaule', name: 'Shoulder Bags' },
-            { id: 'pochettes', name: 'Clutches & Evening' },
-            { id: 'accessoires', name: 'Small Leather Goods' },
-        ];
+    const tabs: ShowcaseTab[] = [
+        { id: 'all', name: t('bestSellers.tabs.all'), items: liveProducts },
+        ...COLLECTION_TABS.map(({ slug, messageKey }, i) => ({
+            id: slug,
+            name: t(`bestSellers.tabs.${messageKey}`),
+            items: collectionResults[i],
+        })),
+    ].filter((tab) => tab.items.length > 0);
 
     return (
         <BestSellersShowcase
-            products={liveProducts}
+            tabs={tabs}
             eyebrow={t('bestSellers.title')}
             title="Atelier Bolgatanga"
-            viewAllLabel={t('bestSellers.viewAll')}
-            categories={categories}
         />
     );
 }
