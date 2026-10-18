@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import { CheckCircle2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { sendContactMessage } from './send-contact-message';
 
 export function ContactForm() {
     const t = useTranslations('Contact');
@@ -19,18 +20,32 @@ export function ContactForm() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!formData.name || !formData.email || !formData.message) {
-            toast.error('Veuillez remplir tous les champs obligatoires.');
+            toast.error(t('formInvalid'));
             return;
         }
 
         startTransition(async () => {
-            // Simulate brief concierge dispatch
-            await new Promise((resolve) => setTimeout(resolve, 800));
-            setIsSubmitted(true);
-            toast.success(t('formSuccess') || 'Votre message a été transmis à notre conciergerie.', {
-                description: 'Un conseiller d’atelier vous répondra sous 24 heures.',
+            const res = await sendContactMessage({
+                name: formData.name,
+                email: formData.email,
+                subject: formData.subject,
+                message: formData.message,
             });
-            setFormData({ name: '', email: '', subject: '', message: '' });
+
+            if (res.ok) {
+                setIsSubmitted(true);
+                toast.success(t('formSuccess'));
+                setFormData({ name: '', email: '', subject: '', message: '' });
+                return;
+            }
+
+            if (res.reason === 'rate_limited') {
+                toast.error(t('formRateLimited'));
+            } else if (res.reason === 'invalid') {
+                toast.error(t('formInvalid'));
+            } else {
+                toast.error(t('formUnavailable'));
+            }
         });
     };
 
