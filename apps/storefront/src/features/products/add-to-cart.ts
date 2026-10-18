@@ -16,19 +16,6 @@ const SLUG_ALIASES: Record<string, string> = {
     'sac-baguette-terre': 'baguette-terre-emeraude',
 };
 
-const VARIANT_FALLBACKS: Record<string, string> = {
-    'baguette-indigo-savane': '94',
-    'baguette-terre-emeraude': '95',
-    'maa-tote': '89',
-    'cabas-maa-raphia': '89',
-    'kemi-shoulder-bag': '90',
-    'porte-epaule-kemi': '90',
-    'zuri-clutch': '91',
-    'pochette-zuri-laiton': '91',
-    'asa-crossbody': '92',
-    'aya-cardholder': '93',
-};
-
 export async function addToCart(variantId: string, quantity = 1) {
     const locale = await getLocale();
     const currencyCode = await getActiveCurrencyCode();
@@ -111,22 +98,13 @@ export async function addProductToCartBySlug(slug: string, quantity = 1) {
 
         const variants = res.data?.product?.variants;
         if (!variants || variants.length === 0) {
-            const fallbackId = VARIANT_FALLBACKS[resolvedSlug] || VARIANT_FALLBACKS[slug];
-            if (fallbackId) {
-                console.warn(`[add-to-cart] Using VARIANT_FALLBACKS for slug "${slug}" -> variant "${fallbackId}"`);
-                return addToCart(fallbackId, quantity);
-            }
+            // Never guess a variant ID: silently adding the wrong product is worse than an honest error.
             return {success: false, error: t('failedAddToCart')};
         }
 
         const targetVariant = variants.find((v) => v.stockLevel !== '0') || variants[0];
         return addToCart(targetVariant.id, quantity);
     } catch {
-        const fallbackId = VARIANT_FALLBACKS[resolvedSlug] || VARIANT_FALLBACKS[slug];
-        if (fallbackId) {
-            console.warn(`[add-to-cart] Using VARIANT_FALLBACKS after error for slug "${slug}" -> variant "${fallbackId}"`);
-            return addToCart(fallbackId, quantity);
-        }
         return {success: false, error: t('failedAddToCart')};
     }
 }
