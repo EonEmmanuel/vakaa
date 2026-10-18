@@ -69,28 +69,7 @@ export function HeroBentoGrid({ t }: HeroBentoGridProps) {
                         </Link>
                     </div>
 
-                    {/* Social proof avatar cluster */}
-                    <div className="flex items-center gap-2.5">
-                        <div className="flex -space-x-2.5">
-                            <div className="size-7.5 w-7.5 h-7.5 shrink-0 rounded-full border-2 border-[#fbfaf7] dark:border-[#1c1b19] overflow-hidden relative bg-[#ebe2d4]">
-                                <Image src="/images/hero-model.jpg" alt="Avis cliente 1" fill className="object-cover" sizes="30px" />
-                            </div>
-                            <div className="size-7.5 w-7.5 h-7.5 shrink-0 rounded-full border-2 border-[#fbfaf7] dark:border-[#1c1b19] overflow-hidden relative bg-[#dbe4d3]">
-                                <Image src="/images/character.png" alt="Avis cliente 2" fill className="object-cover" sizes="30px" />
-                            </div>
-                            <div className="size-7.5 w-7.5 h-7.5 shrink-0 rounded-full border-2 border-[#fbfaf7] dark:border-[#1c1b19] overflow-hidden relative bg-[#f1e7c6]">
-                                <Image src="/images/Hero_Character_vakaa.png" alt="Avis cliente 3" fill className="object-cover" sizes="30px" />
-                            </div>
-                        </div>
-                        <div className="flex flex-col text-[11px] text-[#57544c] dark:text-[#a6a29a] leading-tight">
-                            <div className="flex items-center gap-1 font-semibold text-[#1D120A] dark:text-[#fbfaf7]">
-                                <span className="text-[#D4A43C]">★</span>
-                                <span>4.9</span>
-                                <span className="font-normal text-[#57544c] dark:text-[#a6a29a]">moyenne</span>
-                            </div>
-                            <span className="text-[10px] text-[#7d796f]">2 500+ clientes</span>
-                        </div>
-                    </div>
+                    {/* Social proof: removed — no real review aggregate exists yet */}
                 </div>
             </motion.div>
 

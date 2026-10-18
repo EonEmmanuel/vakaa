@@ -6,6 +6,7 @@ import { query } from '@/platform/vendure/api';
 import { GetProductDetailQuery } from '@/features/products/graphql';
 import { ProductImageCarousel } from '@/features/products/components/product-image-carousel';
 import { ProductInfo } from '@/features/products/components/product-info';
+import type { ReviewItem } from '@/features/products/components/product-tabs';
 import { getDisplayOptionGroups } from '@/features/products/product-options';
 import { RelatedProducts } from '@/features/products/components/related-products';
 import { ProductTabs } from '@/features/products/components/product-tabs';
@@ -223,8 +224,8 @@ export default async function ProductDetailPage({
                             product={productForDisplay}
                             searchParams={searchParamsResolved}
                             currencyCode={currencyCode}
-                            averageRating={reviewsSummary?.averageRating || 5.0}
-                            reviewsCount={reviewsSummary?.totalReviews || (productReviews?.length || 28)}
+                            averageRating={reviewsSummary?.averageRating}
+                            reviewsCount={reviewsSummary?.totalReviews}
                         />
                     </div>
                 </div>
@@ -235,8 +236,8 @@ export default async function ProductDetailPage({
                     description={product.description}
                     productName={product.name}
                     customFields={product.customFields}
-                    initialReviews={productReviews as any}
-                    initialSummary={reviewsSummary as any}
+                    initialReviews={productReviews as ReviewItem[]}
+                    initialSummary={reviewsSummary ?? undefined}
                 />
             </main>
 

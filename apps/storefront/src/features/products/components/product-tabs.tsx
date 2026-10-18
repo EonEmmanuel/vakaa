@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Star, ShieldCheck, Sparkles, CheckCircle2, UploadCloud, ChevronDown } from 'lucide-react';
+import { Star, ShieldCheck, Sparkles, CheckCircle2, ChevronDown } from 'lucide-react';
 import { submitProductReviewAction } from '@/features/products/submit-review';
 import { toast } from 'sonner';
 
@@ -21,7 +21,7 @@ export interface ReviewItem {
     id?: string;
     authorName?: string;
     author?: string;
-    authorLocation?: string;
+    authorLocation?: string | null;
     location?: string;
     rating: number;
     date?: string;
@@ -72,125 +72,67 @@ export function ProductTabs({
     const [newRating, setNewRating] = useState(5);
     const [hoverRating, setHoverRating] = useState(0);
     const [reviewerName, setReviewerName] = useState('');
-    const [reviewerEmail, setReviewerEmail] = useState('');
     const [reviewTitle, setReviewTitle] = useState('');
     const [reviewComment, setReviewComment] = useState('');
 
-    const defaultCuratedReviews: ReviewItem[] = [
-        {
-            id: 'rev-1',
-            authorName: 'Aïssatou D.',
-            authorLocation: 'Dakar & Paris',
-            rating: 5,
-            date: 'Il y a 2 semaines',
-            title: 'Un chef-d’œuvre d’artisanat',
-            comment: 'La qualité du raphia et les finitions en cuir sont exceptionnelles. Le sac attire tous les regards, tout en étant léger et très spacieux. C’est du vrai luxe africain contemporain.',
-            isVerifiedBuyer: true,
-            images: ['/images/bags/baguette-indigo-savane-1.jpg', '/images/bags/maa-tote.jpg'],
-        },
-        {
-            id: 'rev-2',
-            authorName: 'Marc-Antoine B.',
-            authorLocation: 'Douala',
-            rating: 5,
-            date: 'Il y a 1 mois',
-            title: 'Cadeau somptueux',
-            comment: 'Offert pour l’anniversaire de mon épouse. L’emballage soigné, la signature d’atelier et l’odeur du cuir pleine fleur font toute la différence. Livraison express en 24h très appréciée.',
-            isVerifiedBuyer: true,
-        },
-        {
-            id: 'rev-3',
-            authorName: 'Khadija M.',
-            authorLocation: 'Abidjan',
-            rating: 5,
-            date: 'Il y a 1 mois',
-            title: 'Élégance et authenticité',
-            comment: 'Le tressage est d’une régularité incroyable. On sent le temps et l’amour investis par les artisans dans cette pièce. Je recommande sans hésiter !',
-            isVerifiedBuyer: true,
-        },
-        {
-            id: 'rev-4',
-            authorName: 'Éléonore de V.',
-            authorLocation: 'Genève',
-            rating: 5,
-            date: 'Il y a 2 mois',
-            title: 'Raffinement et matières d’exception',
-            comment: 'Une pièce de maroquinerie d’art d’une rareté absolue. Le porté est sublime et la patine végétale s’embellit au fil des semaines.',
-            isVerifiedBuyer: true,
-        },
-    ];
+    // Real reviews only — fabricated testimonials were removed.
+    const [reviewsList, setReviewsList] = useState<ReviewItem[]>(initialReviews);
 
-    const [reviewsList, setReviewsList] = useState<ReviewItem[]>(() => {
-        return initialReviews.length > 0 ? initialReviews : defaultCuratedReviews;
-    });
+    const averageScore = initialSummary?.averageRating ?? 0;
+    const totalCount = initialSummary?.totalReviews ?? 0;
+    const distribution = initialSummary?.distribution ?? [];
 
-    const averageScore = initialSummary?.averageRating || 4.9;
-    const totalCount = initialSummary?.totalReviews || (reviewsList.length > 0 ? 28 : 0);
-
-    const specifications = [
-        { feature: 'Matière Principale', detail: customFields?.material || 'Raphia sauvage naturel d’Afrique & Cuir pleine fleur' },
-        { feature: 'Finitions Cuir', detail: customFields?.leatherOrigin || 'Cuir de vachette à tannage 100% végétal' },
-        { feature: 'Bouclerie & Garnitures', detail: 'Laiton massif patiné, forgé artisanalement' },
-        { feature: 'Dimensions', detail: customFields?.dimensions || 'Format étudié (H 32 cm × L 40 cm × P 14 cm)' },
-        { feature: 'Hauteur d’Anse / Bandoulière', detail: customFields?.strapDrop || 'Porté main ou bandoulière (24 cm)' },
-        { feature: 'Poids Léger', detail: customFields?.weight || 'Environ 650 g (ergonomique et résistant)' },
-        { feature: 'Origine de Confection', detail: customFields?.artisanOrigin || 'Ateliers d’Afrique de l’Ouest & Centrale' },
-        { feature: 'Entretien', detail: customFields?.careInstructions || 'Nourrir au baume naturel végétal, préserver de l’humidité prolongée' },
-    ];
+    // Specifications come strictly from product custom fields — no invented defaults.
+    const specifications = (
+        [
+            { feature: 'Matière Principale', detail: customFields?.material },
+            { feature: 'Finitions Cuir', detail: customFields?.leatherOrigin },
+            { feature: 'Dimensions', detail: customFields?.dimensions },
+            { feature: 'Hauteur d’Anse / Bandoulière', detail: customFields?.strapDrop },
+            { feature: 'Poids', detail: customFields?.weight },
+            { feature: 'Origine de Confection', detail: customFields?.artisanOrigin },
+            { feature: 'Entretien', detail: customFields?.careInstructions },
+        ] as Array<{ feature: string; detail?: string | null }>
+    ).filter((row): row is { feature: string; detail: string } => Boolean(row.detail));
 
     const descriptionBulletPoints = [
-        '100% Matières nobles sélectionnées et certifiées pour une longévité d’exception.',
+        'Matières nobles sélectionnées pour une longévité d’exception.',
         'Tressage sculptural réalisé patiemment à la main selon les traditions ancestrales.',
-        'Finitions et coutures sellier réalisées à la main par nos maîtres artisans.',
-        'Garantie d’authenticité et d’exclusivité avec certificat d’atelier numéroté.',
+        'Finitions et coutures sellier réalisées à la main par nos artisans.',
     ];
 
     const handleSubmitReview = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!reviewerName.trim() || !reviewerEmail.trim() || !reviewTitle.trim() || !reviewComment.trim()) {
+        if (!reviewerName.trim() || !reviewTitle.trim() || !reviewComment.trim()) {
             toast.error('Veuillez remplir tous les champs obligatoires.');
             return;
         }
 
         startTransition(async () => {
-            if (productId) {
-                const res = await submitProductReviewAction({
-                    productId,
-                    authorName: reviewerName,
-                    authorLocation: 'Client Vérifié',
-                    rating: newRating,
-                    title: reviewTitle,
-                    comment: reviewComment,
-                });
-
-                if (res.success && res.review) {
-                    setReviewsList((prev) => [res.review as any, ...prev]);
-                    toast.success('Merci pour votre avis !', {
-                        description: 'Votre témoignage a été publié avec succès.',
-                    });
-                    setReviewTitle('');
-                    setReviewComment('');
-                    return;
-                }
+            if (!productId) {
+                toast.error('La publication des avis est indisponible pour cette pièce.');
+                return;
             }
 
-            // Local fallback simulation
-            const fakeReview: ReviewItem = {
-                id: `rev-${Date.now()}`,
+            const res = await submitProductReviewAction({
+                productId,
                 authorName: reviewerName,
-                authorLocation: 'Client Vérifié',
                 rating: newRating,
-                date: 'À l’instant',
                 title: reviewTitle,
                 comment: reviewComment,
-                isVerifiedBuyer: true,
-            };
-            setReviewsList((prev) => [fakeReview, ...prev]);
-            toast.success('Merci pour votre avis !', {
-                description: 'Votre témoignage a été publié avec succès.',
             });
-            setReviewTitle('');
-            setReviewComment('');
+
+            if (res.success && res.review) {
+                setReviewsList((prev) => [res.review as ReviewItem, ...prev]);
+                toast.success('Merci pour votre avis !', {
+                    description: 'Votre témoignage a été enregistré.',
+                });
+                setReviewTitle('');
+                setReviewComment('');
+                return;
+            }
+
+            toast.error(res.error || 'Une erreur est survenue lors de la publication de votre avis.');
         });
     };
 
@@ -279,8 +221,13 @@ export function ProductTabs({
                 </div>
             )}
 
-            {/* TAB 2: Additional Information */}
+            {/* TAB 2: Additional Information — real custom fields only */}
             {activeTab === 'specifications' && (
+                specifications.length === 0 ? (
+                    <p className="pt-10 max-w-4xl mx-auto text-sm text-[#57544c]">
+                        Les caractéristiques détaillées de cette pièce ne sont pas encore disponibles. Contactez notre conciergerie pour toute question.
+                    </p>
+                ) : (
                 <div className="pt-10 max-w-4xl mx-auto">
                     <div className="overflow-hidden rounded-2xl border border-[#e2ddd2] shadow-xs">
                         {/* Header */}
@@ -309,52 +256,65 @@ export function ProductTabs({
                         </div>
                     </div>
                 </div>
+                )
             )}
 
             {/* TAB 3: Review */}
             {activeTab === 'reviews' && (
                 <div className="pt-10 max-w-4xl mx-auto space-y-12">
-                    {/* 1. Score Summary & Star Progress Breakdown */}
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center bg-[#fbfaf7] p-6 sm:p-8 rounded-2xl border border-[#e2ddd2] shadow-xs">
-                        {/* Left: Overall Score */}
-                        <div className="md:col-span-4 flex flex-col items-center justify-center text-center space-y-2 border-b md:border-b-0 md:border-r border-[#e2ddd2] pb-6 md:pb-0 md:pr-8">
-                            <div className="flex items-baseline gap-2">
-                                <span className="text-4xl sm:text-5xl font-extrabold text-[#1c1b18] tracking-tight font-display">
-                                    {Number(averageScore).toFixed(1)}
-                                </span>
-                                <span className="text-sm font-medium text-[#7d796f]">out of 5</span>
-                            </div>
-                            <div className="flex items-center gap-1 text-[#D4A43C]">
-                                {Array.from({ length: 5 }).map((_, i) => (
-                                    <Star key={i} className="size-4.5 fill-[#D4A43C]" />
-                                ))}
-                            </div>
-                            <p className="text-xs text-[#7d796f] font-medium">
-                                ({totalCount} Review)
-                            </p>
-                        </div>
-
-                        {/* Right: Star Progress Bars */}
-                        <div className="md:col-span-8 space-y-2 text-xs font-medium text-[#1c1b18]">
-                            {[
-                                { star: 5, pct: 85 },
-                                { star: 4, pct: 45 },
-                                { star: 3, pct: 15 },
-                                { star: 2, pct: 8 },
-                                { star: 1, pct: 2 },
-                            ].map((row) => (
-                                <div key={row.star} className="flex items-center gap-4">
-                                    <span className="w-12 text-[#57544c]">{row.star} Star</span>
-                                    <div className="flex-1 h-3 rounded-full bg-[#e2ddd2] overflow-hidden">
-                                        <div
-                                            className="h-full bg-[#D4A43C] rounded-full transition-all duration-500"
-                                            style={{ width: `${row.pct}%` }}
-                                        />
-                                    </div>
+                    {/* 1. Score Summary & Star Progress Breakdown — real data only */}
+                    {totalCount > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center bg-[#fbfaf7] p-6 sm:p-8 rounded-2xl border border-[#e2ddd2] shadow-xs">
+                            {/* Left: Overall Score */}
+                            <div className="md:col-span-4 flex flex-col items-center justify-center text-center space-y-2 border-b md:border-b-0 md:border-r border-[#e2ddd2] pb-6 md:pb-0 md:pr-8">
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-4xl sm:text-5xl font-extrabold text-[#1c1b18] tracking-tight font-display">
+                                        {Number(averageScore).toFixed(1)}
+                                    </span>
+                                    <span className="text-sm font-medium text-[#7d796f]">out of 5</span>
                                 </div>
-                            ))}
+                                <div className="flex items-center gap-1">
+                                    {Array.from({ length: 5 }).map((_, i) => (
+                                        <Star
+                                            key={i}
+                                            className={`size-4.5 ${
+                                                i < Math.round(averageScore)
+                                                    ? 'fill-[#D4A43C]'
+                                                    : 'text-[#e2ddd2]'
+                                            }`}
+                                        />
+                                    ))}
+                                </div>
+                                <p className="text-xs text-[#7d796f] font-medium">
+                                    ({totalCount} {totalCount > 1 ? 'Reviews' : 'Review'})
+                                </p>
+                            </div>
+
+                            {/* Right: Star Progress Bars (from real distribution) */}
+                            <div className="md:col-span-8 space-y-2 text-xs font-medium text-[#1c1b18]">
+                                {[5, 4, 3, 2, 1].map((star) => {
+                                    const count = distribution.find((d) => d.stars === star)?.count ?? 0;
+                                    const pct = Math.round((count / totalCount) * 100);
+                                    return (
+                                        <div key={star} className="flex items-center gap-4">
+                                            <span className="w-12 text-[#57544c]">{star} Star</span>
+                                            <div className="flex-1 h-3 rounded-full bg-[#e2ddd2] overflow-hidden">
+                                                <div
+                                                    className="h-full bg-[#D4A43C] rounded-full transition-all duration-500"
+                                                    style={{ width: `${pct}%` }}
+                                                />
+                                            </div>
+                                            <span className="w-8 text-right text-[#7d796f]">{count}</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
+                    ) : (
+                        <p className="bg-[#fbfaf7] border border-[#e2ddd2] rounded-2xl p-6 sm:p-8 text-sm text-[#57544c]">
+                            Aucun avis pour le moment. Soyez le premier à partager votre expérience.
+                        </p>
+                    )}
 
                     {/* 2. Review List Header & Filters */}
                     <div className="space-y-6">
@@ -364,7 +324,7 @@ export function ProductTabs({
                                     Review List
                                 </h3>
                                 <p className="text-xs text-[#7d796f] mt-0.5">
-                                    Showing 1-{Math.min(4, reviewsList.length)} of {totalCount} results
+                                    Showing {reviewsList.length} of {totalCount} results
                                 </p>
                             </div>
 
@@ -396,7 +356,7 @@ export function ProductTabs({
                                                     <span className="font-sans text-sm font-bold text-[#1c1b18]">
                                                         {rev.authorName || rev.author}
                                                     </span>
-                                                    {rev.isVerifiedBuyer !== false && (
+                                                    {rev.isVerifiedBuyer === true && (
                                                         <span className="text-[11px] text-[#2E7D32] font-semibold">
                                                             (Verified)
                                                         </span>
@@ -405,7 +365,7 @@ export function ProductTabs({
                                             </div>
                                         </div>
                                         <span className="text-xs text-[#7d796f]">
-                                            {rev.date || '1 month ago'}
+                                            {rev.date}
                                         </span>
                                     </div>
 
@@ -460,35 +420,19 @@ export function ProductTabs({
                         </div>
 
                         <form onSubmit={handleSubmitReview} className="space-y-5">
-                            {/* 2-Column: Name & Email */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                <div className="space-y-1.5">
-                                    <label className="text-xs font-semibold text-[#1c1b18]">
-                                        Name *
-                                    </label>
-                                    <input
-                                        type="text"
-                                        required
-                                        value={reviewerName}
-                                        onChange={(e) => setReviewerName(e.target.value)}
-                                        placeholder="Ex. John Doe"
-                                        className="w-full bg-white border border-[#e2ddd2] px-5 py-3 text-xs sm:text-sm rounded-full focus:outline-none focus:border-[#D4A43C] focus:ring-1 focus:ring-[#D4A43C] transition-all text-[#1c1b18]"
-                                    />
-                                </div>
-
-                                <div className="space-y-1.5">
-                                    <label className="text-xs font-semibold text-[#1c1b18]">
-                                        Email *
-                                    </label>
-                                    <input
-                                        type="email"
-                                        required
-                                        value={reviewerEmail}
-                                        onChange={(e) => setReviewerEmail(e.target.value)}
-                                        placeholder="example@gmail.com"
-                                        className="w-full bg-white border border-[#e2ddd2] px-5 py-3 text-xs sm:text-sm rounded-full focus:outline-none focus:border-[#D4A43C] focus:ring-1 focus:ring-[#D4A43C] transition-all text-[#1c1b18]"
-                                    />
-                                </div>
+                            {/* Reviewer Name */}
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-semibold text-[#1c1b18]">
+                                    Name *
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={reviewerName}
+                                    onChange={(e) => setReviewerName(e.target.value)}
+                                    placeholder="Ex. John Doe"
+                                    className="w-full bg-white border border-[#e2ddd2] px-5 py-3 text-xs sm:text-sm rounded-full focus:outline-none focus:border-[#D4A43C] focus:ring-1 focus:ring-[#D4A43C] transition-all text-[#1c1b18]"
+                                />
                             </div>
 
                             {/* Interactive Star Rating */}
@@ -551,22 +495,6 @@ export function ProductTabs({
                                     placeholder="Write here"
                                     className="w-full bg-white border border-[#e2ddd2] p-5 text-xs sm:text-sm rounded-2xl focus:outline-none focus:border-[#D4A43C] focus:ring-1 focus:ring-[#D4A43C] transition-all text-[#1c1b18] resize-none"
                                 />
-                            </div>
-
-                            {/* Photo / Video (Optional) Dropzone */}
-                            <div className="space-y-1.5">
-                                <label className="text-xs font-semibold text-[#1c1b18]">
-                                    Photo / Video (Optional)
-                                </label>
-                                <div className="border border-dashed border-[#e2ddd2] bg-white rounded-2xl p-6 text-center space-y-1.5 cursor-pointer hover:border-[#D4A43C] transition-colors">
-                                    <UploadCloud className="size-6 text-[#D4A43C] mx-auto" />
-                                    <p className="text-xs text-[#57544c]">
-                                        Drag a Photo or Video
-                                    </p>
-                                    <span className="text-xs font-bold text-[#1c1b18] underline underline-offset-2">
-                                        Browse
-                                    </span>
-                                </div>
                             </div>
 
                             {/* Submit Button */}

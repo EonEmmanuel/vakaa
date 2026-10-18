@@ -7,9 +7,8 @@ import { ProductCardFragment } from '@/features/products/graphql';
 import { Price } from '@/features/pricing/price';
 import { Link } from '@/platform/i18n/navigation';
 import { useTranslations } from 'next-intl';
-import { Heart, Plus, Check, Loader2, Star } from 'lucide-react';
+import { Plus, Check, Loader2 } from 'lucide-react';
 import Image from 'next/image';
-import { useGsapMagnetic } from '@/lib/motion/gsap-hooks';
 import { useFlyToCart } from '@/lib/motion/fly-to-cart';
 import { toast } from 'sonner';
 import { cn, normalizeAssetUrl } from '@/lib/utils';
@@ -64,7 +63,6 @@ export function ProductCard({ product: productProp, index, className }: ProductC
     // Products not in the cutout maps show their real backend asset — never another product's image.
     const defaultImg = transparentImg || rawPreview || '/images/placeholder-product.svg';
 
-    const [isFavorited, setIsFavorited] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
     const [isAdded, setIsAdded] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
@@ -76,14 +74,10 @@ export function ProductCard({ product: productProp, index, className }: ProductC
         }
     }, []);
 
-    const heartRef = useRef<HTMLButtonElement>(null);
     const imageContainerRef = useRef<HTMLDivElement>(null);
 
     const { triggerFly } = useFlyToCart();
     const cart = useCart();
-
-    // Apply magnetic effect to the wishlist heart button
-    useGsapMagnetic(heartRef, { strength: 0.15, disableOnTouch: true });
 
     const handleMouseEnterCard = () => {
         setIsHovered(true);
@@ -162,36 +156,6 @@ export function ProductCard({ product: productProp, index, className }: ProductC
                         tintClass
                     )}
                 >
-                    {/* Artisan / Status Badge (Exact KVIST styling) */}
-                    {index !== undefined && index < 2 && (
-                        <span className="absolute left-3.5 sm:left-4 top-3.5 sm:top-4 z-10 rounded-full bg-card/90 dark:bg-[#1c1b18]/90 px-3 py-1 text-[11px] sm:text-[12px] font-medium backdrop-blur shadow-xs text-[#1c1b18] dark:text-[#fbfaf7] border border-black/5 dark:border-white/10 pointer-events-none">
-                            {index === 0 ? 'Bestseller' : 'Nouveau'}
-                        </span>
-                    )}
-
-                    {/* Floating Wishlist Heart */}
-                    <button
-                        ref={heartRef}
-                        type="button"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setIsFavorited(!isFavorited);
-                        }}
-                        aria-label="Ajouter aux favoris"
-                        className={`absolute top-3.5 sm:top-4 right-3.5 sm:right-4 size-8 sm:size-9 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer z-15 ${
-                            isFavorited
-                                ? 'text-[#D4A43C] opacity-100 bg-white/95 shadow-sm'
-                                : 'text-[#1D120A]/50 hover:text-[#D4A43C] bg-white/80 dark:bg-[#1c1b18]/80 hover:bg-white opacity-0 group-hover:opacity-100'
-                        }`}
-                    >
-                        <Heart
-                            className={`w-4 h-4 stroke-[1.75] ${
-                                isFavorited ? 'fill-[#D4A43C] stroke-[#D4A43C]' : ''
-                            }`}
-                        />
-                    </button>
-
                     {/* Contracting Ground Shadow (Exact KVIST Physics) */}
                     <motion.span
                         aria-hidden={true}
@@ -233,11 +197,6 @@ export function ProductCard({ product: productProp, index, className }: ProductC
                     <h3 className="col-span-2 text-[14px] sm:text-[15.5px] font-sans font-medium leading-snug sm:col-span-1 sm:row-start-2 sm:truncate text-[#1c1b18] dark:text-[#fbfaf7] tracking-normal group-hover:text-[#D4A43C] dark:group-hover:text-[#D4A43C] transition-colors mt-0.5">
                         {product.productName}
                     </h3>
-                    <p className="mt-1 flex items-center gap-1 text-[11px] sm:row-start-3 sm:text-[12px] text-[#57544c] dark:text-[#a6a29a] font-sans">
-                        <Star className="size-3 fill-[#1c1b18] text-[#1c1b18] dark:fill-[#fbfaf7] dark:text-[#fbfaf7]" />
-                        <span className="font-medium text-[#1c1b18] dark:text-[#fbfaf7]">4.9</span>
-                        <span className="text-[#7d796f] dark:text-[#7d796f]">(12)</span>
-                    </p>
                     <div className="mt-1 text-right font-display text-[15px] sm:col-start-2 sm:row-span-2 sm:row-start-1 sm:mt-0 sm:self-end sm:text-[17px] font-semibold tabular text-[#1c1b18] dark:text-[#fbfaf7]">
                         <Suspense fallback={<span className="h-5 w-16 inline-block rounded bg-muted/40 animate-pulse" />}>
                             {product.priceWithTax ? (

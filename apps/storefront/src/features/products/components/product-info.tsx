@@ -13,7 +13,6 @@ import {
     MessageCircle,
     ShieldCheck,
     Truck,
-    Heart,
     Minus,
     Plus,
     Star,
@@ -100,8 +99,8 @@ export function ProductInfo({
     product,
     searchParams,
     currencyCode,
-    averageRating = 5.0,
-    reviewsCount = 28,
+    averageRating,
+    reviewsCount,
 }: ProductInfoProps) {
     const t = useTranslations('Product');
     const pathname = usePathname();
@@ -111,7 +110,6 @@ export function ProductInfo({
     const [isPending, startTransition] = useTransition();
     const [isAdded, setIsAdded] = useState(false);
     const [quantity, setQuantity] = useState(1);
-    const [isWishlisted, setIsWishlisted] = useState(false);
 
     // Initialize selected options from URL
     const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(() => {
@@ -267,16 +265,25 @@ export function ProductInfo({
                 {product.name}
             </h1>
 
-            {/* Micro-Rating & Social Proof Row */}
-            <div className="flex items-center gap-3 text-xs sm:text-sm">
-                <div className="flex items-center gap-1 text-[#D4A43C]">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} className="size-4 fill-[#D4A43C] text-[#D4A43C]" />
-                    ))}
+            {/* Micro-Rating Row — rendered only when real review data exists */}
+            {typeof averageRating === 'number' && typeof reviewsCount === 'number' && reviewsCount > 0 && (
+                <div className="flex items-center gap-3 text-xs sm:text-sm">
+                    <div className="flex items-center gap-1">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                            <Star
+                                key={i}
+                                className={`size-4 ${
+                                    i < Math.round(averageRating)
+                                        ? 'fill-[#D4A43C] text-[#D4A43C]'
+                                        : 'text-[#e2ddd2]'
+                                }`}
+                            />
+                        ))}
+                    </div>
+                    <span className="font-bold text-[#1c1b18]">{Number(averageRating).toFixed(1)}</span>
+                    <span className="text-[#7d796f]">({reviewsCount} avis)</span>
                 </div>
-                <span className="font-bold text-[#1c1b18]">{Number(averageRating).toFixed(1)}</span>
-                <span className="text-[#7d796f]">({reviewsCount} {reviewsCount > 1 ? 'avis' : 'avis'})</span>
-            </div>
+            )}
 
             {/* Price Display */}
             {selectedVariant && (
@@ -395,23 +402,6 @@ export function ProductInfo({
                     >
                         <span>Commander</span>
                     </Button>
-
-                    {/* Wishlist Heart Button (Rounded-full) */}
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setIsWishlisted(!isWishlisted);
-                            toast.success(isWishlisted ? 'Retiré de vos favoris' : 'Ajouté à vos favoris d’atelier');
-                        }}
-                        aria-label="Ajouter aux favoris"
-                        className={`size-12 rounded-full border flex items-center justify-center transition-all cursor-pointer ${
-                            isWishlisted
-                                ? 'bg-rose-50 border-rose-200 text-rose-600'
-                                : 'bg-[#fbfaf7] border-[#e2ddd2] text-[#1c1b18] hover:bg-white'
-                        }`}
-                    >
-                        <Heart className={`size-5 ${isWishlisted ? 'fill-rose-600' : ''}`} />
-                    </button>
                 </div>
 
                 {isPreOrder && selectedVariant?.customFields?.preOrderLeadTime && (
@@ -446,17 +436,12 @@ export function ProductInfo({
 
             {/* Metadata & Social Share */}
             <div className="space-y-2 text-xs text-[#57544c]">
-                {selectedVariant && (
+                {selectedVariant?.sku && (
                     <div className="flex items-center gap-2">
                         <span className="font-bold text-[#1c1b18]">SKU :</span>
-                        <span className="font-mono text-[11px]">{selectedVariant.sku || 'VAK-CAB-ART-01'}</span>
+                        <span className="font-mono text-[11px]">{selectedVariant.sku}</span>
                     </div>
                 )}
-
-                <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-bold text-[#1c1b18]">Tags :</span>
-                    <span>Maroquinerie d’Exception, Raphia Sauvage, Fait Main, Cuir Végétal</span>
-                </div>
 
                 <div className="flex items-center gap-3 pt-1">
                     <span className="font-bold text-[#1c1b18]">Partager :</span>
