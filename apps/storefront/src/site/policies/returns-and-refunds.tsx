@@ -134,10 +134,10 @@ export async function ReturnsAndRefundsPage() {
                         </div>
                         <p className="text-xs sm:text-sm text-[#3A2418]/80 dark:text-[#FAF8F5]/80 leading-relaxed">
                             {isFr
-                                ? 'Les pièces personnalisées (gravure de monogrammes, finitions sur-mesure confectionnées à la demande) ne peuvent faire l\'objet d\'un remboursement, mais bénéficient de notre garantie de retouche gracieuse en cas de défaut.'
+                                ? 'Les pièces personnalisées (gravure de monogrammes, finitions sur-mesure confectionnées à la demande) ne peuvent faire l\'objet d\'un remboursement, mais bénéficient de notre garantie atelier de 2 ans en cas de défaut.'
                                 : isDe
-                                ? 'Personalisierte oder individuell gravierte Artikel können nicht erstattet werden, unterliegen jedoch unserer lebenslangen Handwerksgarantie.'
-                                : 'Customized or bespoke engraved items tailored uniquely to client specifications cannot be refunded, but remain covered under our lifetime craftsmanship repair guarantee.'}
+                                ? 'Personalisierte oder individuell gravierte Artikel können nicht erstattet werden, unterliegen jedoch unserer 2-jährigen Ateliergarantie.'
+                                : 'Customized or bespoke engraved items tailored uniquely to client specifications cannot be refunded, but remain covered by our 2-year atelier warranty against manufacturing defects.'}
                         </p>
                     </div>
                 </div>

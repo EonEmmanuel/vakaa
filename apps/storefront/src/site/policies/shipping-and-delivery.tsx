@@ -27,7 +27,7 @@ export async function ShippingAndDeliveryPage() {
             zone: isFr ? 'Cameroun — Douala & Yaoundé' : isDe ? 'Kamerun — Douala & Jaunde' : 'Cameroon — Douala & Yaounde',
             delay: isFr ? '24 à 48 heures' : isDe ? '24 bis 48 Stunden' : '24 to 48 hours',
             carrier: isFr ? 'Coursier Express Privé VAKÁA' : isDe ? 'VAKÁA Privater Express-Kurier' : 'VAKÁA Private Express Courier',
-            rate: isFr ? '2 000 FCFA (Offerte dès 75 000 FCFA)' : isDe ? '2.000 XAF (Kostenlos ab 75.000 XAF)' : '2,000 XAF (Free over 75,000 XAF)',
+            rate: isFr ? '2 000 FCFA (Offerte dès 100 000 FCFA)' : isDe ? '2.000 XAF (Kostenlos ab 100.000 XAF)' : '2,000 XAF (Free over 100,000 XAF)',
             detail: isFr ? 'Livraison sur rendez-vous à domicile ou sur votre lieu de travail.' : isDe ? 'Lieferung nach Terminabsprache nach Hause oder ins Büro.' : 'Scheduled delivery directly to your home or office.',
         },
         {

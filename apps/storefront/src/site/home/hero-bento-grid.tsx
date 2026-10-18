@@ -207,7 +207,7 @@ export function HeroBentoGrid({ t }: HeroBentoGridProps) {
                         Offerte dès 100 000 FCFA
                     </h3>
                     <p className="text-xs sm:text-[13px] text-[#57544c] dark:text-[#a6a29a] mt-1 leading-snug max-w-[270px]">
-                        Expédition sous 48h. Retours offerts sous 30 jours.
+                        Expédition sous 48h. Retours offerts sous 14 jours.
                     </p>
                 </div>
 
