@@ -14,20 +14,7 @@ import { useFlyToCart } from '@/lib/motion/fly-to-cart';
 import { toast } from 'sonner';
 import { cn, normalizeAssetUrl } from '@/lib/utils';
 import { useCart } from '@/features/cart/context/cart-context';
-
-// Transparent Studio Product PNGs (Clean Cutouts)
-export const TRANSPARENT_LOCAL_IMAGES: Record<string, string> = {
-    'maa-tote': '/images/bags/maa-tote-transparent.png',
-    'cabas-maa-raphia': '/images/bags/maa-tote-transparent.png',
-    'kemi-shoulder-bag': '/images/bags/kemi-shoulder-transparent.png',
-    'porte-epaule-kemi': '/images/bags/kemi-shoulder-transparent.png',
-    'zuri-clutch': '/images/bags/zuri-clutch-transparent.png',
-    'pochette-zuri-laiton': '/images/bags/zuri-clutch-transparent.png',
-    'asa-crossbody': '/images/bags/asa-crossbody-transparent.png',
-    'aya-cardholder': '/images/bags/aya-cardholder-transparent.png',
-    'baguette-indigo-savane': '/images/bags/baguette-indigo-savane-transparent.png',
-    'baguette-terre-emeraude': '/images/bags/baguette-terre-emeraude-transparent.png',
-};
+import { PRIMARY_LOCAL_FALLBACKS, TRANSPARENT_LOCAL_IMAGES } from '../transparent-cutouts';
 
 // Soft Luxury Pastel Color Palette (Exact KVIST bento surface tints allowing bags to blend seamlessly)
 const PRODUCT_SPECIFIC_BG: Record<string, string> = {
@@ -54,20 +41,6 @@ const VAKAA_CARD_TINTS = [
     'bg-[#e5e2db] dark:bg-[#1e1d1b]', // Raw Stone
 ];
 
-// Primary studio piece fallbacks
-const PRIMARY_LOCAL_FALLBACKS: Record<string, string> = {
-    'baguette-indigo-savane': '/images/bags/baguette-indigo-savane-transparent.png',
-    'baguette-terre-emeraude': '/images/bags/baguette-terre-emeraude-transparent.png',
-    'maa-tote': '/images/bags/maa-tote-transparent.png',
-    'cabas-maa-raphia': '/images/bags/maa-tote-transparent.png',
-    'kemi-shoulder-bag': '/images/bags/kemi-shoulder-transparent.png',
-    'porte-epaule-kemi': '/images/bags/kemi-shoulder-transparent.png',
-    'zuri-clutch': '/images/bags/zuri-clutch-transparent.png',
-    'pochette-zuri-laiton': '/images/bags/zuri-clutch-transparent.png',
-    'asa-crossbody': '/images/bags/asa-crossbody-transparent.png',
-    'aya-cardholder': '/images/bags/aya-cardholder-transparent.png',
-};
-
 function getCategoryForSlug(slug: string): string {
     if (slug.includes('tote') || slug.includes('cabas') || slug.includes('maa')) return 'Sacs & Cabas';
     if (slug.includes('clutch') || slug.includes('pochette') || slug.includes('zuri')) return 'Pochettes & Soirée';
@@ -89,7 +62,7 @@ export function ProductCard({ product: productProp, index, className }: ProductC
     const rawPreview = normalizeAssetUrl(product.productAsset?.preview);
     const transparentImg = TRANSPARENT_LOCAL_IMAGES[product.slug] || PRIMARY_LOCAL_FALLBACKS[product.slug];
     // Products not in the cutout maps show their real backend asset — never another product's image.
-    const defaultImg = transparentImg || rawPreview || '/images/bags/baguette-indigo-savane-transparent.png';
+    const defaultImg = transparentImg || rawPreview || '/images/placeholder-product.svg';
 
     const [isFavorited, setIsFavorited] = useState(false);
     const [isAdding, setIsAdding] = useState(false);

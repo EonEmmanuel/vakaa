@@ -11,7 +11,7 @@ import { normalizeAssetUrl } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 import { useLenis } from '@/lib/motion/lenis-provider';
 import { toast } from 'sonner';
-import { TRANSPARENT_LOCAL_IMAGES } from '@/features/products/components/product-card';
+import { TRANSPARENT_LOCAL_IMAGES } from '@/features/products/transparent-cutouts';
 
 // Free shipping threshold (100,000 XAF in minor units)
 const FREE_SHIPPING_THRESHOLD = 10000000;
@@ -191,7 +191,7 @@ export function CartDrawer() {
                                                 const transparentImg = slug ? TRANSPARENT_LOCAL_IMAGES[slug] : null;
                                                 const assetUrl = transparentImg || normalizeAssetUrl(
                                                     line.productVariant.product.featuredAsset?.preview
-                                                ) || '/images/bags/maa-tote-transparent.png';
+                                                ) || '/images/placeholder-product.svg';
 
                                                 return (
                                                     <motion.li

@@ -64,7 +64,7 @@ export function ProductImageCarousel({ images }: ProductImageCarouselProps) {
                 {/* Main Image in Editorial Studio Pedestal */}
                 <div className="relative aspect-[3/4] bg-[#fbfaf7] border border-[#e2ddd2] rounded-2xl sm:rounded-3xl overflow-hidden group shadow-sm">
                     <Image
-                        src={normalizeAssetUrl(images[currentIndex].source || images[currentIndex].preview) || '/images/bags/baguette-indigo-savane-1.jpg'}
+                        src={normalizeAssetUrl(images[currentIndex].source || images[currentIndex].preview) || '/images/placeholder-product.svg'}
                         alt={`Vue atelier ${currentIndex + 1}`}
                         fill
                         className="object-cover object-center transition-all duration-500 ease-out"
@@ -135,7 +135,7 @@ export function ProductImageCarousel({ images }: ProductImageCarouselProps) {
                                     onClick={() => setCurrentIndex(index)}
                                 >
                                     <Image
-                                        src={normalizeAssetUrl(image.preview || image.source) || '/images/bags/baguette-indigo-savane-1.jpg'}
+                                        src={normalizeAssetUrl(image.preview || image.source) || '/images/placeholder-product.svg'}
                                         alt={`Miniature ${index + 1}`}
                                         fill
                                         className="object-cover object-center p-1"

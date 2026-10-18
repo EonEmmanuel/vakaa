@@ -3,8 +3,7 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FragmentOf, readFragment } from '@/platform/vendure/graphql';
-import { ProductCardFragment } from '@/features/products/graphql';
-import { ProductCard } from '@/features/products/components/product-card';
+import { ProductCard, ProductCardFragment } from '@/features/products';
 import { cn } from '@/lib/utils';
 
 export interface CategoryTab {
