@@ -11,7 +11,7 @@ import {
     TransactionalConnection,
 } from '@vendure/core';
 import { SebpayClient } from './sebpay.client';
-import { SebpayPluginOptions, SEBPAY_MONEY_MINOR_FACTOR } from './types';
+import { SEBPAY_MONEY_MINOR_FACTOR, type SebpayPluginOptions } from './types';
 
 export const SEBPAY_OPTIONS = Symbol('SEBPAY_OPTIONS');
 const loggerCtx = 'SebpayPlugin';
@@ -92,9 +92,44 @@ export class SebpayService implements OnApplicationBootstrap {
     }
 
     /**
+     * Serializes reconciliation per identifier so a webhook and the storefront
+     * poller racing on the same transaction cannot both attempt to settle the
+     * payment (which would throw a StateTransitionError).
+     */
+    private readonly reconcileQueue = new Map<string, Promise<unknown>>();
+
+    async reconcilePayment(
+        ctx: RequestContext,
+        transactionIdOrRef: string
+    ): Promise<{ settled: boolean; status: string; orderCode?: string }> {
+        const previous = this.reconcileQueue.get(transactionIdOrRef) ?? Promise.resolve();
+        const current = previous.then(
+            () => this.reconcilePaymentInternal(ctx, transactionIdOrRef),
+            () => this.reconcilePaymentInternal(ctx, transactionIdOrRef)
+        );
+        // Track a rejection-safe marker so followers chain off this run, while a
+        // thrown error is still surfaced to the original caller.
+        const marker = current.then(
+            () => undefined,
+            () => undefined
+        );
+        this.reconcileQueue.set(transactionIdOrRef, marker);
+        try {
+            return await current;
+        } finally {
+            if (this.reconcileQueue.get(transactionIdOrRef) === marker) {
+                this.reconcileQueue.delete(transactionIdOrRef);
+            }
+        }
+    }
+
+    /**
      * Reconciles a payment status with SebPay and settles/declines the order.
      */
-    async reconcilePayment(ctx: RequestContext, transactionIdOrRef: string): Promise<{ settled: boolean; status: string; orderCode?: string }> {
+    private async reconcilePaymentInternal(
+        ctx: RequestContext,
+        transactionIdOrRef: string
+    ): Promise<{ settled: boolean; status: string; orderCode?: string }> {
         // Find payment by transactionId
         let payment = await this.connection
             .getRepository(ctx, Payment)
@@ -153,19 +188,39 @@ export class SebpayService implements OnApplicationBootstrap {
             }
 
             Logger.info(`Settling payment ${payment.id} for order ${payment.order?.code}...`, loggerCtx);
-            const result = await this.orderService.settlePayment(ctx, payment.id);
-
-            const isSuccess = !(result as any).errorCode;
-            return {
-                settled: isSuccess,
-                status: 'approved',
-                orderCode: payment.order?.code,
-            };
+            try {
+                const result = await this.orderService.settlePayment(ctx, payment.id);
+                return {
+                    settled: !(result as any).errorCode,
+                    status: 'approved',
+                    orderCode: payment.order?.code,
+                };
+            } catch (err) {
+                // A concurrent reconciliation may have settled it first, in which
+                // case this is success rather than a failure.
+                const current = await this.connection
+                    .getRepository(ctx, Payment)
+                    .findOne({ where: { id: payment.id } });
+                if (current?.state === 'Settled') {
+                    return { settled: true, status: 'approved', orderCode: payment.order?.code };
+                }
+                throw err;
+            }
         }
 
         if (remoteStatus === 'rejected') {
             Logger.info(`Transitioning payment ${payment.id} to Declined...`, loggerCtx);
-            await this.orderService.transitionPaymentToState(ctx, payment.id, 'Declined');
+            try {
+                await this.orderService.transitionPaymentToState(ctx, payment.id, 'Declined');
+            } catch (err) {
+                // Tolerate a concurrent reconciliation having already declined it.
+                const current = await this.connection
+                    .getRepository(ctx, Payment)
+                    .findOne({ where: { id: payment.id } });
+                if (current?.state !== 'Declined' && current?.state !== 'Cancelled') {
+                    throw err;
+                }
+            }
             return {
                 settled: false,
                 status: 'rejected',

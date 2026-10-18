@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import {
+import type {
     SebpayCollectionRequest,
     SebpayCollectionResponse,
     SebpayOperator,
@@ -36,7 +36,7 @@ export class SebpayClient {
             });
 
             const data = (await response.json()) as SebpayCollectionResponse;
-            return data;
+            return { ...data, httpStatus: response.status };
         } catch (error) {
             return {
                 success: false,
@@ -67,7 +67,7 @@ export class SebpayClient {
             });
 
             const data = (await response.json()) as SebpayCollectionResponse;
-            return data;
+            return { ...data, httpStatus: response.status };
         } catch (error) {
             return {
                 success: false,

@@ -75,6 +75,7 @@
     "noPaymentMethod": "No payment method selected",
     "placeOrder": "Place Order",
     "completeAllSteps": "Please complete all previous steps before placing your order",
+    "paymentFailed": "Your payment could not be processed. Please check your details or choose another payment method.",
     "orderSummary": "Order Summary",
     "qty": "Qty: {quantity}",
     "subtotal": "Subtotal",

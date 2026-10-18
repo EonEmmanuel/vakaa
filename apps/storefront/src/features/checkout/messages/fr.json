@@ -75,6 +75,7 @@
     "noPaymentMethod": "Aucun mode de paiement sélectionné",
     "placeOrder": "Confirmer et Régler la Commande",
     "completeAllSteps": "Veuillez compléter les étapes précédentes avant de valider",
+    "paymentFailed": "Votre paiement n'a pas pu être traité. Veuillez vérifier vos informations ou choisir un autre mode de paiement.",
     "orderSummary": "Récapitulatif",
     "qty": "Qté : {quantity}",
     "subtotal": "Sous-total",

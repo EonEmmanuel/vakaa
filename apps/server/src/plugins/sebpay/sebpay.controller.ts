@@ -23,7 +23,7 @@ interface HttpResponse {
 }
 
 import { SebpayService } from './sebpay.service';
-import { SebpayWebhookPayload } from './types';
+import type { SebpayWebhookPayload } from './types';
 
 const loggerCtx = 'SebpayWebhook';
 

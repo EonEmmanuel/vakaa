@@ -9,6 +9,17 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from '@/platform/i18n/navigation';
 import { Button } from '@/components/ui/button';
 
+/**
+ * Payment error codes for which we show a generic, customer-friendly message.
+ * The real provider reason is logged server-side (placeOrder) but must never be
+ * surfaced to shoppers (it can contain API-key / infrastructure details).
+ */
+const PAYMENT_ERROR_CODES = new Set([
+  'PAYMENT_DECLINED_ERROR',
+  'PAYMENT_FAILED_ERROR',
+  'PAYMENT_FAILED',
+]);
+
 interface ReviewStepProps {
   onComplete?: () => void;
   onEditStep?: (step: 'contact' | 'shipping' | 'delivery' | 'payment') => void;
@@ -34,8 +45,12 @@ export default function ReviewStep({ onComplete: _onComplete, onEditStep }: Revi
       const result = await placeOrderAction(selectedPaymentMethodCode, paymentMetadata, order?.state);
 
       if (!result.success) {
+        // Log the real reason for diagnostics, but never expose provider or
+        // infrastructure details (e.g. API-key / IP errors) to the customer.
         console.error('Error placing order:', result.errorCode, result.message);
-        setErrorMessage(result.message);
+        setErrorMessage(
+          PAYMENT_ERROR_CODES.has(result.errorCode) ? t('paymentFailed') : result.message
+        );
         setLoading(false);
         return;
       }

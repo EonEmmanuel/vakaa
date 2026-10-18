@@ -75,6 +75,7 @@
     "noPaymentMethod": "Keine Zahlungsmethode ausgewählt",
     "placeOrder": "Bestellung aufgeben",
     "completeAllSteps": "Bitte schließen Sie alle vorherigen Schritte ab, bevor Sie Ihre Bestellung aufgeben",
+    "paymentFailed": "Ihre Zahlung konnte nicht verarbeitet werden. Bitte prüfen Sie Ihre Angaben oder wählen Sie eine andere Zahlungsmethode.",
     "orderSummary": "Bestellübersicht",
     "qty": "Menge: {quantity}",
     "subtotal": "Zwischensumme",

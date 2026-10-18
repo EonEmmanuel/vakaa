@@ -48,6 +48,8 @@ export interface SebpayCollectionResponse {
     data?: SebpayCollectionResponseData;
     message?: string;
     errors?: Record<string, string[]>;
+    /** HTTP status of the underlying request, when available (diagnostics). */
+    httpStatus?: number;
 }
 
 export interface SebpayWebhookPayload {
