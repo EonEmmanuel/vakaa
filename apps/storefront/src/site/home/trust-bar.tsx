@@ -54,28 +54,28 @@ export async function TrustBar() {
                     </h2>
                 </div>
 
-                {/* ═══ 4 Bento Promise Cards (Exact KVIST Grid & Tokens) ═══ */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+                {/* ═══ 4 Bento Promise Cards (Exact KVIST 2-col mobile / 4-col desktop) ═══ */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-5">
                     {tiles.map((tile, idx) => {
                         const Icon = tile.icon;
                         return (
                             <div
                                 key={idx}
-                                className={`group flex h-full flex-col justify-between gap-6 rounded-[26px] p-5 sm:p-7 ${tile.bgClass} border border-black/5 dark:border-white/5 shadow-tile min-h-[220px] sm:min-h-[260px] transition-all duration-300 hover:shadow-lift`}
+                                className={`group flex h-full flex-col justify-between gap-4 sm:gap-6 rounded-[22px] sm:rounded-[26px] p-4 sm:p-7 ${tile.bgClass} border border-black/5 dark:border-white/5 shadow-tile min-h-[175px] sm:min-h-[240px] transition-all duration-300 hover:shadow-lift`}
                             >
-                                <span className="grid size-11 sm:size-12 place-items-center rounded-2xl bg-white/90 dark:bg-white/10 text-[#1c1b18] dark:text-[#fbfaf7] shadow-xs">
-                                    <Icon className="size-5 stroke-[2]" />
+                                <span className="grid size-9 sm:size-12 place-items-center rounded-xl sm:rounded-2xl bg-white/90 dark:bg-white/10 text-[#1c1b18] dark:text-[#fbfaf7] shadow-xs">
+                                    <Icon className="size-4 sm:size-5 stroke-[2]" />
                                 </span>
 
                                 <div>
-                                    <p className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-[#1c1b18] dark:text-[#fbfaf7]">
+                                    <p className="font-display text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#1c1b18] dark:text-[#fbfaf7] leading-none">
                                         <span className="tabular-nums">{tile.statNum}</span>
-                                        <span className="text-lg sm:text-2xl font-semibold">{tile.statUnit}</span>
+                                        <span className="text-sm sm:text-lg lg:text-2xl font-semibold ml-0.5">{tile.statUnit}</span>
                                     </p>
-                                    <p className="mt-2 sm:mt-3 font-semibold text-[15.5px] sm:text-[16.5px] text-[#1c1b18] dark:text-[#fbfaf7]">
+                                    <p className="mt-1.5 sm:mt-3 font-semibold text-[13.5px] sm:text-[16.5px] leading-snug text-[#1c1b18] dark:text-[#fbfaf7]">
                                         {tile.title}
                                     </p>
-                                    <p className="mt-1 text-[13px] sm:text-[13.5px] leading-snug text-[#57544c] dark:text-[#a6a29a]">
+                                    <p className="mt-1 hidden sm:block text-[13px] sm:text-[13.5px] leading-snug text-[#57544c] dark:text-[#a6a29a]">
                                         {tile.desc}
                                     </p>
                                 </div>

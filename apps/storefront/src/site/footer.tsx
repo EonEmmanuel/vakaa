@@ -266,7 +266,7 @@ export async function Footer() {
                 {/* ═══ Monumental Brand Typographic Statement (Exact KVIST Letter Spacing) ═══ */}
                 <div
                     aria-hidden="true"
-                    className="mt-10 sm:mt-16 flex justify-between font-display text-[clamp(4.5rem,21.5vw,21rem)] font-bold leading-[0.76] tracking-[-0.055em] text-[#fbfaf7] select-none pointer-events-none"
+                    className="mt-8 sm:mt-16 flex justify-between font-display text-[clamp(3.2rem,21vw,21rem)] font-bold leading-[0.76] tracking-[-0.055em] text-[#fbfaf7] select-none pointer-events-none"
                 >
                     <span className="inline-block overflow-hidden"><span className="inline-block">V</span></span>
                     <span className="inline-block overflow-hidden"><span className="inline-block">A</span></span>
@@ -275,8 +275,8 @@ export async function Footer() {
                     <span className="inline-block overflow-hidden"><span className="inline-block">A</span></span>
                 </div>
 
-                {/* ═══ Bottom Bar: Copyright & Legal ═══ */}
-                <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-[#fbfaf7]/15 py-4 text-[12px] text-[#fbfaf7]/60 sm:py-5 sm:text-[13px] font-sans">
+                {/* ═══ Bottom Bar: Copyright & Legal (Clearance for floating actions) ═══ */}
+                <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-[#fbfaf7]/15 pt-4 pb-16 text-[12px] text-[#fbfaf7]/60 sm:py-5 sm:text-[13px] font-sans">
                     <span>© {COPYRIGHT_YEAR} VAKÁA Paris · Maison de Haute Maroquinerie</span>
                     <div className="flex items-center gap-4">
                         <NavigationLink href="/terms" className="hover:text-[#fbfaf7] transition-colors">

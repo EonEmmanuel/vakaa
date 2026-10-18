@@ -54,10 +54,10 @@ export function RollingTextMarquee({
         <div className="flex shrink-0 items-center">
             {items.map((item, index) => (
                 <span key={index} className="flex items-center">
-                    <span className="px-5 sm:px-8 font-display text-[clamp(1.75rem,4.2vw,3.75rem)] font-bold tracking-[-0.03em] uppercase text-[#1c1b18] dark:text-[#fbfaf7] whitespace-nowrap">
+                    <span className="px-4 sm:px-8 font-display text-xl sm:text-3xl lg:text-4xl font-semibold tracking-[-0.02em] text-[#1c1b18] dark:text-[#fbfaf7] whitespace-nowrap">
                         {item}
                     </span>
-                    <span aria-hidden={true} className="size-2.5 sm:size-3 shrink-0 rounded-full bg-[#D4A43C]" />
+                    <span aria-hidden={true} className="size-2 sm:size-2.5 shrink-0 rounded-full bg-[#D4A43C]" />
                 </span>
             ))}
         </div>
@@ -65,7 +65,7 @@ export function RollingTextMarquee({
 
     return (
         <div 
-            className={`w-full overflow-hidden border-y border-[#e2ddd2]/40 dark:border-white/5 bg-[#f2efe9] dark:bg-[#151413] py-6 sm:py-10 select-none ${className}`}
+            className={`w-full overflow-hidden border-y border-[#e2ddd2]/40 dark:border-white/5 bg-[#f2efe9] dark:bg-[#151413] py-4 sm:py-8 select-none ${className}`}
             aria-label={items.join(', ')}
         >
             <motion.div 

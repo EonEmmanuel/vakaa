@@ -15,29 +15,21 @@ export function Navbar() {
     return (
         <header className="fixed inset-x-0 top-0 z-40 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-5 sm:pt-4 pointer-events-none">
             <FloatingIslandBar>
-                {/* Left: Mobile trigger (mobile) | Desktop Nav Links (desktop) */}
-                <div className="flex items-center gap-2 lg:gap-3 min-w-0">
-                    <div className="lg:hidden">
-                        <Suspense fallback={<div className="size-10 rounded-full animate-pulse bg-black/5" />}>
-                            <MobileNavWrapper />
-                        </Suspense>
-                    </div>
-
-                    <div className="hidden lg:flex items-center">
-                        <Suspense fallback={<div className="h-8 w-80 animate-pulse bg-black/5 rounded-full" />}>
-                            <DesktopNav />
-                        </Suspense>
-                    </div>
-                </div>
-
-                {/* Center: Brand Logo centered as requested */}
-                <div className="absolute left-1/2 -translate-x-1/2 pointer-events-auto flex items-center justify-center">
+                {/* Left: Brand Logo */}
+                <div className="flex items-center gap-2 sm:gap-4 shrink-0 pointer-events-auto">
                     <NavigationLink href="/" className="inline-block py-1 hover:opacity-90 transition-opacity select-none">
                         <VakaaLogo height={26} />
                     </NavigationLink>
                 </div>
 
-                {/* Right: Currency + Language + Search + Account + Cart */}
+                {/* Center: Desktop Nav Links (hidden on mobile) */}
+                <div className="hidden lg:flex items-center justify-center flex-1 min-w-0 px-2 xl:px-4">
+                    <Suspense fallback={<div className="h-8 w-80 animate-pulse bg-black/5 rounded-full" />}>
+                        <DesktopNav />
+                    </Suspense>
+                </div>
+
+                {/* Right: Currency + Language + Search + User + Cart + Mobile Hamburger */}
                 <div className="flex items-center gap-1 sm:gap-2 shrink-0">
                     {/* Currency Picker (desktop) */}
                     <div className="hidden lg:flex items-center">
@@ -60,17 +52,24 @@ export function Navbar() {
                         </Suspense>
                     </div>
 
-                    {/* User Account */}
-                    <div className="hidden sm:flex items-center">
+                    {/* User Account (mobile + desktop) */}
+                    <div className="flex items-center">
                         <Suspense fallback={<NavbarUserSkeleton />}>
                             <NavbarUser />
                         </Suspense>
                     </div>
 
                     {/* Cart Bag Pill */}
-                    <Suspense fallback={<div className="h-11 w-24 rounded-full bg-[#1D120A]/20 animate-pulse" />}>
+                    <Suspense fallback={<div className="h-11 sm:h-12 w-16 sm:w-24 rounded-full bg-[#1D120A]/20 animate-pulse" />}>
                         <NavbarCart />
                     </Suspense>
+
+                    {/* Mobile Menu Trigger (far right, mobile only) */}
+                    <div className="lg:hidden flex items-center">
+                        <Suspense fallback={<div className="size-11 rounded-full animate-pulse bg-black/5" />}>
+                            <MobileNavWrapper />
+                        </Suspense>
+                    </div>
                 </div>
             </FloatingIslandBar>
         </header>

@@ -110,25 +110,25 @@ export function FeaturedBagSpotlight() {
     ];
 
     return (
-        <section className="py-24 sm:py-36 bg-[#f2efe9]">
-            <div className="vakaa-container space-y-16">
+        <section className="py-12 sm:py-24 lg:py-32 bg-[#f2efe9]">
+            <div className="vakaa-container space-y-8 sm:space-y-14">
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '-100px' }}
-                    transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] as const }}
+                    viewport={{ once: true, margin: '-30px' }}
+                    transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] as const }}
                 >
-                    <div className="space-y-4">
-                        <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#D4A43C]">
+                    <div className="space-y-2 sm:space-y-3">
+                        <span className="text-[10.5px] sm:text-[11px] font-bold tracking-[0.2em] uppercase text-[#D4A43C]">
                             Créations Signatures
                         </span>
-                        <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tighter text-[#1c1b18] uppercase leading-none font-display">
+                        <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#1c1b18] uppercase leading-none font-display">
                             L&apos;Éloge du Détail
                         </h2>
                     </div>
                 </motion.div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-8 lg:gap-12 items-end">
+                <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-6 sm:gap-8 lg:gap-12 items-end">
                     {featuredBags.map((bag, idx) => (
                         <FeaturedBagCard key={bag.slug} bag={bag} idx={idx} />
                     ))}

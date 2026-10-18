@@ -58,17 +58,17 @@ export function HeroBentoGrid({ t }: HeroBentoGridProps) {
 
                 {/* Bottom: Action Buttons + Avatar Stack */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-3.5 border-t border-[#e2ddd2]/70 dark:border-[#2e2c28]">
-                    <div className="flex flex-wrap items-center gap-2.5">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
                         <Link
                             href="/search"
-                            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#1D120A] text-white hover:bg-[#3A2418] font-semibold text-xs uppercase tracking-wider transition-all duration-200 shadow-sm active:scale-[0.98] cursor-pointer"
+                            className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-full bg-[#1D120A] text-white hover:bg-[#3A2418] font-semibold text-[13px] sm:text-xs normal-case sm:uppercase tracking-normal sm:tracking-wider transition-all duration-200 shadow-sm active:scale-[0.98] cursor-pointer"
                         >
                             <span>{t.shopCollection}</span>
                             <ArrowRight className="w-3.5 h-3.5" />
                         </Link>
                         <Link
                             href="/our-story"
-                            className="inline-flex items-center justify-center px-5 py-3 rounded-full bg-white dark:bg-[#272522] border border-[#e2ddd2] dark:border-[#3a3731] text-[#1D120A] dark:text-[#fbfaf7] hover:border-[#1D120A] font-semibold text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer"
+                            className="inline-flex items-center justify-center px-4 sm:px-5 py-2.5 sm:py-3 rounded-full bg-white dark:bg-[#272522] border border-[#e2ddd2] dark:border-[#3a3731] text-[#1D120A] dark:text-[#fbfaf7] hover:border-[#1D120A] font-semibold text-[13px] sm:text-xs normal-case sm:uppercase tracking-normal sm:tracking-wider transition-all duration-200 cursor-pointer"
                         >
                             {t.ourStory}
                         </Link>
@@ -94,34 +94,34 @@ export function HeroBentoGrid({ t }: HeroBentoGridProps) {
                 <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(212,164,60,0.14)_0%,transparent_68%)]" />
 
                 {/* Top: Header with Kicker + Rotating Badge */}
-                <div className="flex items-start justify-between gap-4 z-10 pointer-events-none">
-                    <div>
+                <div className="flex items-start justify-between gap-3 sm:gap-4 z-10 pointer-events-none">
+                    <div className="min-w-0 pr-1">
                         <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#8C6D23] dark:text-[#D4A43C] font-semibold">
                             COLLECTION SIGNATURE
                         </span>
-                        <h2 className="font-display text-xl sm:text-2xl font-semibold text-[#1D120A] dark:text-[#fbfaf7] mt-0.5 tracking-tight">
+                        <h2 className="font-display text-lg sm:text-2xl font-semibold text-[#1D120A] dark:text-[#fbfaf7] mt-0.5 tracking-tight">
                             L&apos;Art du Raphia & Cuir
                         </h2>
                     </div>
 
                     {/* Circular Spinning Artisan Seal */}
                     <motion.div
-                        initial={{ scale: 0, rotate: -90 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        transition={{ delay: 0.9, type: 'spring', stiffness: 160, damping: 14 }}
-                        className="relative grid size-[84px] shrink-0 place-items-center rounded-full bg-white/75 dark:bg-[#1c1b19]/75 backdrop-blur-md"
+                        initial={{ opacity: 0, scale: 0.85 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.25, duration: 0.6, ease: [0.16, 1, 0.3, 1] as const }}
+                        className="relative grid size-14 sm:size-18 lg:size-[84px] shrink-0 place-items-center rounded-full bg-white/75 dark:bg-[#1c1b19]/75 backdrop-blur-md"
                     >
                         <svg className="absolute inset-0 size-full animate-spin [animation-duration:16s]" viewBox="0 0 100 100" aria-hidden="true">
                             <defs>
                                 <path id="hero-badge-path" d="M 50, 50 m -36, 0 a 36,36 0 1,1 72,0 a 36,36 0 1,1 -72,0" />
                             </defs>
-                            <text className="fill-[#1D120A] dark:fill-[#fbfaf7] font-mono text-[9.5px] uppercase tracking-[0.16em]">
+                            <text className="fill-[#1D120A] dark:fill-[#fbfaf7] font-mono text-[7.5px] sm:text-[9.5px] uppercase tracking-[0.16em]">
                                 <textPath href="#hero-badge-path" textLength="224" lengthAdjust="spacing">
                                     Cuir pleine fleur · Paille Bolga · Fait main ·
                                 </textPath>
                             </text>
                         </svg>
-                        <Sparkles className="size-5 text-[#1D120A] dark:text-[#fbfaf7]" aria-hidden="true" />
+                        <Sparkles className="size-3.5 sm:size-4 lg:size-5 text-[#1D120A] dark:text-[#fbfaf7]" aria-hidden="true" />
                     </motion.div>
                 </div>
 
@@ -148,15 +148,15 @@ export function HeroBentoGrid({ t }: HeroBentoGridProps) {
                 </div>
 
                 {/* Bottom: Floating Frosted Glass Capsule (Evergreen Collection Discovery) */}
-                <div className="absolute inset-x-4 bottom-4 sm:inset-x-6 sm:bottom-6 z-10 flex items-center justify-between gap-3 rounded-full bg-white/85 dark:bg-[#1c1b19]/90 p-2 pl-4 sm:pl-5 backdrop-blur-md border border-white/70 dark:border-white/10 shadow-glass">
-                    <span className="text-xs sm:text-[13px] font-medium text-[#57544c] dark:text-[#a6a29a] flex items-center gap-1.5 truncate">
+                <div className="absolute inset-x-3 bottom-3 sm:inset-x-6 sm:bottom-6 z-10 flex items-center justify-between gap-2 sm:gap-3 rounded-full bg-white/85 dark:bg-[#1c1b19]/90 p-1.5 sm:p-2 pl-3 sm:pl-5 backdrop-blur-md border border-white/70 dark:border-white/10 shadow-glass">
+                    <span className="text-[11px] sm:text-[13px] font-medium text-[#57544c] dark:text-[#a6a29a] flex items-center gap-1.5 min-w-0 truncate">
                         <Sparkles className="size-3.5 text-[#D4A43C] shrink-0" />
                         <span className="truncate">Éditions limitées & durables</span>
                     </span>
 
-                    <span className="inline-flex h-9 sm:h-10 items-center gap-1.5 rounded-full font-medium bg-[#1D120A] text-white group-hover:bg-[#3A2418] px-4 sm:px-5 text-xs sm:text-[13px] shrink-0 whitespace-nowrap transition-all duration-200 shadow-xs pointer-events-none">
+                    <span className="inline-flex h-8 sm:h-10 items-center gap-1 sm:gap-1.5 rounded-full font-medium bg-[#1D120A] text-white group-hover:bg-[#3A2418] px-3 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-[13px] shrink-0 whitespace-nowrap transition-all duration-200 shadow-xs pointer-events-none">
                         <span>Explorer</span>
-                        <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+                        <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
                     </span>
                 </div>
             </motion.div>
@@ -182,7 +182,7 @@ export function HeroBentoGrid({ t }: HeroBentoGridProps) {
                     </div>
 
                     {/* Showcase Bag Visual (Transparent Cutout) */}
-                    <div className="absolute -right-2 -bottom-2 w-40 h-40 sm:w-52 sm:h-52 transition-transform duration-500 ease-out group-hover:scale-105 pointer-events-none">
+                    <div className="absolute right-2 sm:right-4 bottom-1 sm:bottom-2 w-36 h-36 sm:w-48 sm:h-48 transition-transform duration-500 ease-out group-hover:scale-105 pointer-events-none">
                         <Image
                             src="/images/bags/maa-tote-transparent.png"
                             alt="Grand Cabas Maa"

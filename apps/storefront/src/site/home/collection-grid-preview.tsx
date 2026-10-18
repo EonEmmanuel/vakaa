@@ -17,7 +17,7 @@ export async function CollectionGridPreview() {
             bgClass: 'bg-[#dbe4d3] dark:bg-[#1c271e]',
             containerClass: 'col-span-2 lg:col-span-2 lg:row-span-2',
             minHeight: 'min-h-[300px] lg:min-h-[520px]',
-            titleClass: 'text-3xl sm:text-4xl lg:text-5xl',
+            titleClass: 'text-2xl sm:text-4xl lg:text-5xl font-semibold',
             imgPosClass: 'bottom-[4%] right-[4%] h-[74%] sm:h-[78%] w-[56%] sm:w-[60%]',
         },
         {
@@ -27,8 +27,8 @@ export async function CollectionGridPreview() {
             href: '/search?category=shoulder-bags',
             bgClass: 'bg-[#f1e7c6] dark:bg-[#2c281a]',
             containerClass: '',
-            minHeight: 'min-h-[200px] sm:min-h-[230px] lg:min-h-0',
-            titleClass: 'text-xl sm:text-2xl',
+            minHeight: 'min-h-[190px] sm:min-h-[230px] lg:min-h-0',
+            titleClass: 'text-[15px] sm:text-xl font-semibold',
             imgPosClass: 'bottom-[4%] right-[4%] h-[60%] sm:h-[65%] w-[48%] sm:w-[52%]',
         },
         {
@@ -38,8 +38,8 @@ export async function CollectionGridPreview() {
             href: '/search?category=crossbody',
             bgClass: 'bg-[#ebe2d4] dark:bg-[#27231f]',
             containerClass: '',
-            minHeight: 'min-h-[200px] sm:min-h-[230px] lg:min-h-0',
-            titleClass: 'text-xl sm:text-2xl',
+            minHeight: 'min-h-[190px] sm:min-h-[230px] lg:min-h-0',
+            titleClass: 'text-[15px] sm:text-xl font-semibold',
             imgPosClass: 'bottom-[4%] right-[4%] h-[60%] sm:h-[65%] w-[48%] sm:w-[52%]',
         },
         {
@@ -49,8 +49,8 @@ export async function CollectionGridPreview() {
             href: '/search?category=clutches',
             bgClass: 'bg-[#efded7] dark:bg-[#2b1f1d]',
             containerClass: '',
-            minHeight: 'min-h-[200px] sm:min-h-[230px] lg:min-h-0',
-            titleClass: 'text-xl sm:text-2xl',
+            minHeight: 'min-h-[190px] sm:min-h-[230px] lg:min-h-0',
+            titleClass: 'text-[15px] sm:text-xl font-semibold',
             imgPosClass: 'bottom-[4%] right-[4%] h-[60%] sm:h-[65%] w-[48%] sm:w-[52%]',
         },
         {
@@ -60,8 +60,8 @@ export async function CollectionGridPreview() {
             href: '/search?category=accessories',
             bgClass: 'bg-[#dbe3ee] dark:bg-[#1f2833]',
             containerClass: '',
-            minHeight: 'min-h-[200px] sm:min-h-[230px] lg:min-h-0',
-            titleClass: 'text-xl sm:text-2xl',
+            minHeight: 'min-h-[190px] sm:min-h-[230px] lg:min-h-0',
+            titleClass: 'text-[15px] sm:text-xl font-semibold',
             imgPosClass: 'bottom-[4%] right-[4%] h-[60%] sm:h-[65%] w-[48%] sm:w-[52%]',
         },
     ];
@@ -96,20 +96,20 @@ export async function CollectionGridPreview() {
                         <div key={idx} className={cat.containerClass}>
                             <Link
                                 href={cat.href}
-                                className={`group relative flex h-full overflow-hidden rounded-[26px] p-5 sm:p-7 ${cat.bgClass} ${cat.minHeight} border border-black/5 dark:border-white/5 shadow-tile transition-all duration-300 hover:shadow-lift`}
+                                className={`group relative flex h-full overflow-hidden rounded-[26px] p-4 sm:p-7 ${cat.bgClass} ${cat.minHeight} border border-black/5 dark:border-white/5 shadow-tile transition-all duration-300 hover:shadow-lift`}
                             >
                                 {/* Top Label & Rotating Arrow */}
-                                <div className="relative z-10 flex w-full items-start justify-between gap-2">
-                                    <div className="min-w-0 pr-2">
-                                        <p className={`font-display font-semibold tracking-tight text-[#1c1b18] dark:text-[#fbfaf7] ${cat.titleClass}`}>
+                                <div className="relative z-10 flex w-full items-start justify-between gap-1.5 sm:gap-2">
+                                    <div className="min-w-0 pr-1">
+                                        <p className={`font-display font-semibold tracking-tight text-[#1c1b18] dark:text-[#fbfaf7] leading-tight ${cat.titleClass}`}>
                                             {cat.title}
                                         </p>
-                                        <p className="mt-1 font-mono text-[11px] sm:text-[12px] uppercase tracking-wider text-[#57544c] dark:text-[#a6a29a]">
+                                        <p className="mt-1 font-mono text-[10px] sm:text-[12px] uppercase tracking-wider text-[#57544c] dark:text-[#a6a29a] truncate">
                                             {cat.subtitle}
                                         </p>
                                     </div>
-                                    <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white/85 dark:bg-white/10 text-[#1c1b18] dark:text-[#fbfaf7] transition-[transform,background-color] sm:size-11 duration-500 ease-out group-hover:-rotate-45 group-hover:bg-[#1c1b18] group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-[#1c1b18] shadow-xs">
-                                        <ArrowRight className="size-4" />
+                                    <span className="grid size-8 sm:size-10 shrink-0 place-items-center rounded-full bg-white/85 dark:bg-white/10 text-[#1c1b18] dark:text-[#fbfaf7] transition-[transform,background-color] duration-500 ease-out group-hover:-rotate-45 group-hover:bg-[#1c1b18] group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-[#1c1b18] shadow-xs">
+                                        <ArrowRight className="size-3.5 sm:size-4" />
                                     </span>
                                 </div>
 

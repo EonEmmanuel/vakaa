@@ -60,7 +60,7 @@ export function MobileNav({collections}: MobileNavProps) {
                 <Menu className="size-5" />
                 <span className="sr-only">{t('openMenu')}</span>
             </SheetTrigger>
-            <SheetContent side="left" data-lenis-prevent className="w-full sm:max-w-sm overflow-y-auto bg-[#f2efe9] dark:bg-[#151413] border-r border-[#e2ddd2] dark:border-[#2e2c28]">
+            <SheetContent side="right" data-lenis-prevent className="w-full sm:max-w-sm overflow-y-auto bg-[#f2efe9] dark:bg-[#151413] border-l border-[#e2ddd2] dark:border-[#2e2c28]">
                 <SheetHeader>
                     <SheetTitle className="font-display font-bold text-[#1c1b18] dark:text-[#fbfaf7] text-lg">{t('menu')}</SheetTitle>
                 </SheetHeader>
