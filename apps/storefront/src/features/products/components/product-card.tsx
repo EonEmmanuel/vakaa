@@ -87,9 +87,9 @@ export function ProductCard({ product: productProp, index, className }: ProductC
     const product = readFragment(ProductCardFragment, productProp);
 
     const rawPreview = normalizeAssetUrl(product.productAsset?.preview);
-    const transparentImg = TRANSPARENT_LOCAL_IMAGES[product.slug];
-    const localPrimary = PRIMARY_LOCAL_FALLBACKS[product.slug] || '/images/bags/baguette-indigo-savane-transparent.png';
-    const defaultImg = transparentImg || localPrimary || rawPreview || '/images/bags/baguette-indigo-savane-transparent.png';
+    const transparentImg = TRANSPARENT_LOCAL_IMAGES[product.slug] || PRIMARY_LOCAL_FALLBACKS[product.slug];
+    // Products not in the cutout maps show their real backend asset — never another product's image.
+    const defaultImg = transparentImg || rawPreview || '/images/bags/baguette-indigo-savane-transparent.png';
 
     const [isFavorited, setIsFavorited] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
