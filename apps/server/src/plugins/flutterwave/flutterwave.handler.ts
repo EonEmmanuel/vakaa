@@ -107,7 +107,7 @@ export const flutterwavePaymentHandler = new PaymentMethodHandler({
         const email =
             order.customer?.emailAddress ||
             (metadata.email as string) ||
-            'customer@vakaa.store';
+            'customer@example.com';
         const name =
             (order.customer ? `${order.customer.firstName} ${order.customer.lastName}`.trim() : '') ||
             (order.shippingAddress?.fullName as string) ||

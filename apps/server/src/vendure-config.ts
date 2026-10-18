@@ -9,7 +9,7 @@ import {
     StockDisplayStrategy,
     VendureConfig,
 } from '@vendure/core';
-import { defaultEmailHandlers, EmailPlugin, FileBasedTemplateLoader } from '@vendure/email-plugin';
+import { emailAddressChangeHandler, emailVerificationHandler, EmailPlugin, FileBasedTemplateLoader, orderConfirmationHandler, passwordResetHandler } from '@vendure/email-plugin';
 import { AssetServerPlugin } from '@vendure/asset-server-plugin';
 import { DashboardPlugin } from '@vendure/dashboard/plugin';
 import { GraphiqlPlugin } from '@vendure/graphiql-plugin';
@@ -34,6 +34,20 @@ try {
 }
 
 const IS_DEV = process.env.APP_ENV === 'dev';
+
+/* Per-purpose senders (all Brevo-verified senders on vakaa.online):
+   order emails FROM orders@ (global default), account emails
+   (verification / password reset / address change) FROM compte@.
+   Contact-form mail is sent by the contact plugin FROM contact@. */
+emailVerificationHandler.setFrom('{{ accountFromAddress }}');
+passwordResetHandler.setFrom('{{ accountFromAddress }}');
+emailAddressChangeHandler.setFrom('{{ accountFromAddress }}');
+const vakaaEmailHandlers = [
+    orderConfirmationHandler,
+    emailVerificationHandler,
+    passwordResetHandler,
+    emailAddressChangeHandler,
+];
 const isPlaceholderSecret = (value?: string) =>
     !value ||
     value === 'vakaa_flw_secret_hash' ||
@@ -335,10 +349,11 @@ export const config: VendureConfig = {
                       devMode: true,
                       outputPath: path.join(__dirname, '../static/email/test-emails'),
                       route: 'mailbox',
-                      handlers: defaultEmailHandlers,
+                      handlers: vakaaEmailHandlers,
                       templateLoader: new FileBasedTemplateLoader(path.join(__dirname, '../static/email/templates')),
                       globalTemplateVars: {
-                          fromAddress: process.env.EMAIL_FROM_ADDRESS || '"VAKÁA" <orders@vakaa.store>',
+                          fromAddress: process.env.EMAIL_FROM_ADDRESS || '"VAKÁA" <orders@vakaa.online>',
+                          accountFromAddress: process.env.ACCOUNT_FROM_ADDRESS || '"VAKÁA" <compte@vakaa.online>',
                           storefrontUrl: process.env.STOREFRONT_URL || 'http://localhost:3001',
                           verifyEmailAddressUrl: process.env.STOREFRONT_URL
                               ? `${process.env.STOREFRONT_URL}/verify`
@@ -365,10 +380,11 @@ export const config: VendureConfig = {
                           maxConnections: 5,
                           logging: IS_DEV,
                       },
-                      handlers: defaultEmailHandlers,
+                      handlers: vakaaEmailHandlers,
                       templateLoader: new FileBasedTemplateLoader(path.join(__dirname, '../static/email/templates')),
                       globalTemplateVars: {
-                          fromAddress: process.env.EMAIL_FROM_ADDRESS || '"VAKÁA" <orders@vakaa.store>',
+                          fromAddress: process.env.EMAIL_FROM_ADDRESS || '"VAKÁA" <orders@vakaa.online>',
+                          accountFromAddress: process.env.ACCOUNT_FROM_ADDRESS || '"VAKÁA" <compte@vakaa.online>',
                           storefrontUrl: process.env.STOREFRONT_URL || 'http://localhost:3001',
                           verifyEmailAddressUrl: process.env.STOREFRONT_URL
                               ? `${process.env.STOREFRONT_URL}/verify`

@@ -113,7 +113,7 @@ describe('VakaaInvoiceController', () => {
             getInvoicesForOrder: mock(() => Promise.resolve([])),
             createInvoicesForOrder: mock(() => Promise.resolve({ invoiceNumber: 1001 })),
             downloadInvoice: mock((_ctx: any, input: any) => {
-                if (input.customerEmail !== 'client@vakaa.store') {
+                if (input.customerEmail !== 'client@example.com') {
                     throw new Error("This order doesn't belong to customer " + input.customerEmail);
                 }
                 const stream = Readable.from(['pdf stream content']);
@@ -134,7 +134,7 @@ describe('VakaaInvoiceController', () => {
                         state: 'PaymentSettled',
                         orderPlacedAt: new Date(),
                         customer: {
-                            emailAddress: 'client@vakaa.store',
+                            emailAddress: 'client@example.com',
                         },
                     });
                 }
@@ -145,7 +145,7 @@ describe('VakaaInvoiceController', () => {
                         state: 'AddingItems',
                         orderPlacedAt: null,
                         customer: {
-                            emailAddress: 'client@vakaa.store',
+                            emailAddress: 'client@example.com',
                         },
                     });
                 }
@@ -190,7 +190,7 @@ describe('VakaaInvoiceController', () => {
     test('download: throws BadRequestException when order is not yet placed', async () => {
         const mockRes = createMockRes();
         await expect(
-            controller.download('UNPLACED_ORDER', 'client@vakaa.store', {} as any, mockRes)
+            controller.download('UNPLACED_ORDER', 'client@example.com', {} as any, mockRes)
         ).rejects.toThrow(BadRequestException);
     });
 
@@ -198,7 +198,7 @@ describe('VakaaInvoiceController', () => {
         const mockRes = createMockRes();
 
         // Customer passes uppercase email in query param
-        await controller.download('VALID_ORDER', 'CLIENT@VAKAA.STORE', {} as any, mockRes);
+        await controller.download('VALID_ORDER', 'CLIENT@EXAMPLE.COM', {} as any, mockRes);
 
         expect(mockInvoiceService.createInvoicesForOrder).toHaveBeenCalled();
         expect(mockInvoiceService.downloadInvoice).toHaveBeenCalled();
@@ -211,7 +211,7 @@ describe('VakaaInvoiceController', () => {
 
         const mockRes = createMockRes();
 
-        await controller.download('VALID_ORDER', 'client@vakaa.store', {} as any, mockRes);
+        await controller.download('VALID_ORDER', 'client@example.com', {} as any, mockRes);
 
         // createInvoicesForOrder must NOT have been called
         expect(mockInvoiceService.createInvoicesForOrder).not.toHaveBeenCalled();
@@ -229,8 +229,8 @@ describe('VakaaInvoiceController', () => {
         const mockRes1 = createMockRes();
         const mockRes2 = createMockRes();
 
-        const p1 = controller.download('VALID_ORDER', 'client@vakaa.store', {} as any, mockRes1);
-        const p2 = controller.download('VALID_ORDER', 'client@vakaa.store', {} as any, mockRes2);
+        const p1 = controller.download('VALID_ORDER', 'client@example.com', {} as any, mockRes1);
+        const p2 = controller.download('VALID_ORDER', 'client@example.com', {} as any, mockRes2);
 
         // Resolve generation
         resolveGen({ invoiceNumber: 1001 });
@@ -254,7 +254,7 @@ describe('VakaaInvoiceController', () => {
         });
 
         const mockRes = createMockRes();
-        await controller.download('VALID_ORDER', 'client@vakaa.store', {} as any, mockRes);
+        await controller.download('VALID_ORDER', 'client@example.com', {} as any, mockRes);
 
         // Should NOT trigger on-the-fly generation because worker finished saving
         expect(mockInvoiceService.createInvoicesForOrder).not.toHaveBeenCalled();

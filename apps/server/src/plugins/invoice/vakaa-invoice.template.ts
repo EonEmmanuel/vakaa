@@ -540,7 +540,7 @@ export const vakaaInvoiceTemplate = `
       <div class="concierge-desc">
         Chaque création Maison VAKÁA est façonnée avec passion par nos maîtres artisans.<br />
         Pour tout conseil d'entretien ou service après-vente :<br />
-        Courriel : <strong>contact@vakaa.online</strong> &bull; Ligne Directe : <strong>+237 6 70 00 00 00</strong>
+        Courriel : <strong>contact@vakaa.online</strong> &bull; Ligne Directe : <strong>+237 677 077 594</strong>
       </div>
     </div>
 

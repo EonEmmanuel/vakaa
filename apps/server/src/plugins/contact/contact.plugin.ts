@@ -112,8 +112,8 @@ export class ContactController {
             throw new HttpException('Unable to send message right now', HttpStatus.SERVICE_UNAVAILABLE);
         }
 
-        const inbox = process.env.CONTACT_INBOX || 'orders@vakaa.online';
-        const fromAddress = process.env.EMAIL_FROM_ADDRESS || '"VAKÁA" <orders@vakaa.online>';
+        const inbox = process.env.CONTACT_INBOX || 'contact@vakaa.online';
+        const fromAddress = process.env.CONTACT_FROM_ADDRESS || '"VAKÁA" <contact@vakaa.online>';
         const safeName = escapeHtml(name);
         const safeEmail = escapeHtml(email);
         const safeSubject = escapeHtml(subject) || '—';

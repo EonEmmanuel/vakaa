@@ -145,8 +145,8 @@ export class FlutterwaveClient {
                 customer: {
                     id: 1,
                     name: 'Test Customer',
-                    phone_number: '+237670000000',
-                    email: 'test@vakaa.store',
+                    phone_number: '+237677077594',
+                    email: 'test@example.com',
                 },
             },
         };
