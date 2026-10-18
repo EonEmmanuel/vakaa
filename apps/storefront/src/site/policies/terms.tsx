@@ -49,10 +49,10 @@ export async function TermsPage() {
                     </h2>
                     <p>
                         {isFr
-                            ? 'Les présentes Conditions Générales de Vente (CGV) régissent l\'ensemble des commandes passées sur la boutique en ligne officielle de Maison VAKÁA (vakaa.store), maison de haute maroquinerie artisanale enregistrée en République du Cameroun.'
+                            ? 'Les présentes Conditions Générales de Vente (CGV) régissent l\'ensemble des commandes passées sur la boutique en ligne officielle de Maison VAKÁA (vakaa.online), maison de haute maroquinerie artisanale enregistrée en République du Cameroun.'
                             : isDe
-                            ? 'Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Bestellungen in der offiziellen Online-Boutique von Maison VAKÁA (vakaa.store), Kunsthandwerks-Lederwarenmarke mit Sitz in der Republik Kamerun.'
-                            : 'These Terms of Sale govern all orders placed on the official online boutique of Maison VAKÁA (vakaa.store), luxury handcrafted leather goods brand registered in Cameroon.'}
+                            ? 'Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Bestellungen in der offiziellen Online-Boutique von Maison VAKÁA (vakaa.online), Kunsthandwerks-Lederwarenmarke mit Sitz in der Republik Kamerun.'
+                            : 'These Terms of Sale govern all orders placed on the official online boutique of Maison VAKÁA (vakaa.online), luxury handcrafted leather goods brand registered in Cameroon.'}
                     </p>
                 </div>
 

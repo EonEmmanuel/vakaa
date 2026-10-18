@@ -27,10 +27,10 @@ export async function ReturnsAndRefundsPage() {
             num: '01',
             title: isFr ? 'Notification sous 14 Jours' : isDe ? '14-Tage-Frist' : '14-Day Notice',
             desc: isFr
-                ? 'Contactez notre conciergerie à contact@vakaa.store ou via WhatsApp dans les 14 jours suivant la réception de votre pièce.'
+                ? 'Contactez notre conciergerie à contact@vakaa.online ou via WhatsApp dans les 14 jours suivant la réception de votre pièce.'
                 : isDe
-                ? 'Benachrichtigen Sie unser Concierge-Team innerhalb von 14 Tagen nach Erhalt unter contact@vakaa.store oder via WhatsApp.'
-                : 'Notify our concierge team at contact@vakaa.store or via WhatsApp within 14 days of delivery.',
+                ? 'Benachrichtigen Sie unser Concierge-Team innerhalb von 14 Tagen nach Erhalt unter contact@vakaa.online oder via WhatsApp.'
+                : 'Notify our concierge team at contact@vakaa.online or via WhatsApp within 14 days of delivery.',
         },
         {
             num: '02',

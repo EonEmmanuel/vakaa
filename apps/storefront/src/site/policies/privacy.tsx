@@ -74,10 +74,10 @@ export async function PrivacyPage() {
                     </h2>
                     <p>
                         {isFr
-                            ? 'Conformément aux réglementations sur la protection des données, vous disposez d\'un droit total d\'accès, de modification ou de suppression de vos données personnelles sur simple demande par e-mail à contact@vakaa.store.'
+                            ? 'Conformément aux réglementations sur la protection des données, vous disposez d\'un droit total d\'accès, de modification ou de suppression de vos données personnelles sur simple demande par e-mail à contact@vakaa.online.'
                             : isDe
-                            ? 'Gemäß den Datenschutzbestimmungen haben Sie das uneingeschränkte Recht auf Auskunft, Berichtigung oder Löschung Ihrer persönlichen Daten per E-Mail an contact@vakaa.store.'
-                            : 'Under data protection standards, you maintain full rights to inspect, update, or permanently delete your customer records by contacting contact@vakaa.store.'}
+                            ? 'Gemäß den Datenschutzbestimmungen haben Sie das uneingeschränkte Recht auf Auskunft, Berichtigung oder Löschung Ihrer persönlichen Daten per E-Mail an contact@vakaa.online.'
+                            : 'Under data protection standards, you maintain full rights to inspect, update, or permanently delete your customer records by contacting contact@vakaa.online.'}
                     </p>
                 </div>
             </div>
