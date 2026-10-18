@@ -27,11 +27,36 @@
       "delivery": {
         "title": "WELTWEITE LIEFERUNG",
         "description": "Afrika zu Ihnen nach Hause"
-      }
+      },
+      "eyebrow": "DAS VERSPRECHEN",
+      "title": "Einmal kaufen, für immer lieben",
+      "tile1Stat": "48h",
+      "tile1Title": "Sorgfältiger Versand",
+      "tile1Desc": "Auf Lager Stücke verlassen unser Atelier innerhalb von zwei Werktagen.",
+      "tile2Stat": "30 Tage",
+      "tile2Title": "Zuhause erleben",
+      "tile2Desc": "Erleben Sie Ihr Stück einen Monat lang zu Hause. Rücksendungen sind kostenlos.",
+      "tile3Stat": "10 Jahre",
+      "tile3Title": "Handwerksgarantie",
+      "tile3Desc": "Jede Naht, jedes Lederband und jedes Messingelement garantiert zehn Jahre lang.",
+      "tile4Stat": "100 %",
+      "tile4Title": "Ethisch & fair",
+      "tile4Desc": "Wildraffia nachhaltig von Hand geerntet, faire Löhne, null Plastik."
     },
     "collections": {
+      "eyebrow": "KOLLEKTIONEN",
       "title": "UNSERE KOLLEKTION ENTDECKEN",
-      "viewAll": "ALLE KOLLEKTIONEN ANZEIGEN"
+      "viewAll": "ALLE KOLLEKTIONEN ANZEIGEN",
+      "totesTitle": "Totes & Körbe",
+      "totesSubtitle": "Gewebte Architektur",
+      "shoulderTitle": "Schultertaschen",
+      "shoulderSubtitle": "Nomadische Eleganz",
+      "crossbodyTitle": "Crossbody-Taschen",
+      "crossbodySubtitle": "Freiheit in Bewegung",
+      "clutchesTitle": "Clutches & Abend",
+      "clutchesSubtitle": "Poliertes Messing & Raffia",
+      "accessoriesTitle": "Kleine Ledergüter",
+      "accessoriesSubtitle": "Schmuckfeine Veredelung"
     },
     "promise": {
       "eyebrow": "UNSER VERSPRECHEN",
