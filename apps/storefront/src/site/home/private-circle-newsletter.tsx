@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import { subscribeToNewsletter } from './subscribe-newsletter';
 
 export function PrivateCircleNewsletter() {
@@ -47,16 +46,16 @@ export function PrivateCircleNewsletter() {
                     </p>
 
                     {isSubmitted ? (
-                        <div className="inline-flex items-center gap-2.5 px-4 py-3 rounded-full bg-[#8C6D23]/10 dark:bg-[#D4A43C]/15 border border-[#8C6D23]/25 dark:border-[#D4A43C]/30 text-[#8C6D23] dark:text-[#D4A43C] text-xs sm:text-sm font-medium">
-                            <span className="text-base leading-none">✓</span>
+                        <div className="w-fit max-w-full flex items-start gap-2.5 px-4 py-3 rounded-2xl bg-[#8C6D23]/10 dark:bg-[#D4A43C]/15 border border-[#8C6D23]/25 dark:border-[#D4A43C]/30 text-[#8C6D23] dark:text-[#D4A43C] text-xs sm:text-sm font-medium">
+                            <span className="text-base leading-none mt-0.5">✓</span>
                             <span>Bienvenue dans le Cercle Privé Vakáa. Votre invitation est confirmée.</span>
                         </div>
                     ) : (
                         <div className="max-w-md space-y-2.5 pt-1">
-                            {/* Unified Luxury Pill Form */}
+                            {/* Unified Luxury Pill Form — stacked on small screens so input and button never crowd the pill edges */}
                             <form
                                 onSubmit={handleSubmit}
-                                className="flex items-center rounded-full bg-white dark:bg-black/25 border border-[#d8d2c5] dark:border-white/15 p-1 sm:p-1.5 shadow-xs focus-within:border-[#8C6D23] dark:focus-within:border-[#D4A43C] focus-within:ring-2 focus-within:ring-[#8C6D23]/15 transition-all"
+                                className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-0 rounded-2xl sm:rounded-full bg-white dark:bg-black/25 border border-[#d8d2c5] dark:border-white/15 p-2 sm:p-1.5 shadow-xs focus-within:border-[#8C6D23] dark:focus-within:border-[#D4A43C] focus-within:ring-2 focus-within:ring-[#8C6D23]/15 transition-all"
                             >
                                 <input
                                     type="email"
@@ -64,12 +63,12 @@ export function PrivateCircleNewsletter() {
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="votre@adresse.com"
                                     required
-                                    className="flex-1 min-w-0 px-3.5 sm:px-4 py-2 bg-transparent text-[#1c1b18] dark:text-[#fbfaf7] placeholder:text-[#1c1b18]/40 dark:placeholder:text-[#fbfaf7]/40 text-[13.5px] sm:text-sm font-sans focus:outline-hidden"
+                                    className="flex-1 min-w-0 px-4 py-2.5 sm:py-2 bg-transparent text-[#1c1b18] dark:text-[#fbfaf7] placeholder:text-[#1c1b18]/40 dark:placeholder:text-[#fbfaf7]/40 text-[13.5px] sm:text-sm font-sans focus:outline-hidden"
                                 />
                                 <button
                                     type="submit"
                                     disabled={isPending}
-                                    className="h-10 sm:h-11 px-5 sm:px-6 rounded-full bg-[#1c1b18] text-[#fbfaf7] dark:bg-[#fbfaf7] dark:text-[#1c1b18] hover:bg-[#8C6D23] dark:hover:bg-[#D4A43C] hover:text-[#fbfaf7] dark:hover:text-[#1c1b18] font-medium text-xs uppercase tracking-wider transition-all duration-200 shrink-0 cursor-pointer shadow-xs active:scale-95 disabled:opacity-50"
+                                    className="flex items-center justify-center h-10 sm:h-11 w-full sm:w-auto px-5 sm:px-6 sm:ml-1.5 rounded-full bg-[#1c1b18] text-[#fbfaf7] dark:bg-[#fbfaf7] dark:text-[#1c1b18] hover:bg-[#8C6D23] dark:hover:bg-[#D4A43C] hover:text-[#fbfaf7] dark:hover:text-[#1c1b18] font-medium text-xs uppercase tracking-wider transition-all duration-200 shrink-0 cursor-pointer shadow-xs active:scale-95 disabled:opacity-50"
                                 >
                                     {isPending ? '…' : (
                                         <span className="inline-flex items-center gap-1.5">
@@ -105,8 +104,9 @@ export function PrivateCircleNewsletter() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[#FAF8F5]/80 md:from-[#FAF8F5] via-[#FAF8F5]/10 md:via-transparent to-transparent dark:from-[#1a1917]/80 dark:md:from-[#1a1917] dark:via-[#1a1917]/10 dark:md:via-transparent pointer-events-none" />
 
-                    {/* Subtle Craft Origin Tag */}
-                    <div className="absolute bottom-3 right-3 sm:bottom-5 sm:right-5 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/15 text-[10.5px] font-mono uppercase tracking-[0.16em] text-white/90 shadow-xs pointer-events-none">
+                    {/* Subtle Craft Origin Tag — left side so it never collides */}
+                    {/* with the fixed WhatsApp concierge in the bottom-right corner */}
+                    <div className="absolute bottom-3 left-3 sm:bottom-5 sm:left-5 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/15 text-[10.5px] font-mono uppercase tracking-[0.16em] text-white/90 shadow-xs pointer-events-none">
                         Bolgatanga · Façonné main
                     </div>
                 </div>
