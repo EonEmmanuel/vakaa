@@ -164,7 +164,7 @@ export function RegistrationForm({ redirectTo }: RegistrationFormProps) {
                             <FormControl>
                                 <Input
                                     type="tel"
-                                    placeholder="+237 600 000 000"
+                                    placeholder="+237 677 077 594"
                                     disabled={isPending}
                                     className="h-12 px-4 rounded-xl bg-white/70 dark:bg-[#1E140C]/80 border-[#E7DED0] dark:border-[#352317] focus-visible:border-[#D4A43C] focus-visible:ring-[#D4A43C]/20 text-[#1D120A] dark:text-[#F8F4EE] placeholder:text-[#6B5E55]/50 transition-all text-sm"
                                     {...field}

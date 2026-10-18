@@ -91,21 +91,14 @@
     "title": "Nous Sommes à Votre Écoute",
     "subtitle": "Notre équipe de conciergerie est à votre disposition pour vos conseils de style, suivi de commande et demandes sur mesure.",
     "atelierTitle": "Nos Ateliers & Salons",
-    "atelierDoualaAccraTitle": "Atelier Douala / Accra",
-    "atelierDoualaAccra": "Bonapriso, Douala, Cameroun / Airport Residential Area, Accra",
-    "studioParisLondonTitle": "Studio Paris / Londres",
-    "studioParisLondon": "Mayfair, Londres & Marais, Paris",
-    "accraOffice": "Atelier Accra : Quartier Résidentiel de l'Aéroport, Accra, Ghana",
-    "londonOffice": "Studio Londres : Mayfair, Londres W1K, Royaume-Uni",
+    "atelierValue": "Douala, Cameroun — visites sur rendez-vous",
     "emailLabel": "E-mail Conciergerie",
-    "emailValue": "concierge@vakaa-outlet.com",
+    "emailValue": "orders@vakaa.online",
     "phoneLabel": "Conciergerie WhatsApp & Téléphone",
-    "phoneValue": "+44 20 7946 0912 / +237 600 000 000",
-    "phoneHours": "Du lundi au vendredi, de 9h00 à 18h00 GMT",
+    "phoneValue": "+237 677 077 594",
+    "phoneHours": "Du lundi au vendredi — réponse sous 24 heures",
     "vipAppointments": "Rendez-vous VIP en atelier sur demande",
     "stayConnected": "Restez Connecté",
-    "pressLabel": "Presse & Partenariats",
-    "pressValue": "press@vakaa-outlet.com",
     "formTitle": "Contactez-nous",
     "formName": "Nom Complet",
     "formEmail": "Adresse E-mail",
@@ -126,6 +119,6 @@
     "faq2Question": "Quelle est votre politique de retour ?",
     "faq2Answer": "Nous offrons les retours et échanges gracieux sous 14 jours pour tout article neuf dans son emballage d'origine.",
     "faq3Question": "Toutes les créations VAKAA sont-elles authentiquement faites main en Afrique ?",
-    "faq3Answer": "Oui, 100 % de nos pièces sont créées et confectionnées à la main par nos coopératives d'artisans au Ghana, au Kenya et au Nigeria."
+    "faq3Answer": "Oui, 100 % de nos pièces sont façonnées à la main par nos artisans, notamment au sein de notre atelier de Douala."
   }
 }

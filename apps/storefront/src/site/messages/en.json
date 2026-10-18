@@ -91,21 +91,14 @@
     "title": "We Are Here to Assist You",
     "subtitle": "Our concierge team is at your service for personal styling advice, order tracking, and bespoke inquiries.",
     "atelierTitle": "Our Ateliers & Offices",
-    "atelierDoualaAccraTitle": "Atelier Douala / Accra",
-    "atelierDoualaAccra": "Bonapriso, Douala, Cameroun / Airport Residential Area, Accra",
-    "studioParisLondonTitle": "Studio Paris / London",
-    "studioParisLondon": "Mayfair, London & Marais, Paris",
-    "accraOffice": "Accra Atelier: Airport Residential Area, Accra, Ghana",
-    "londonOffice": "London Studio: Mayfair, London W1K, United Kingdom",
+    "atelierValue": "Douala, Cameroun — atelier visits by appointment",
     "emailLabel": "Concierge Email",
-    "emailValue": "concierge@vakaa-outlet.com",
+    "emailValue": "orders@vakaa.online",
     "phoneLabel": "WhatsApp & Phone Concierge",
-    "phoneValue": "+44 20 7946 0912 / +237 600 000 000",
-    "phoneHours": "Monday – Friday, 9:00 AM – 6:00 PM GMT",
+    "phoneValue": "+237 677 077 594",
+    "phoneHours": "Monday – Friday — we reply within 24 hours.",
     "vipAppointments": "VIP Atelier Appointments on request",
     "stayConnected": "Stay Connected",
-    "pressLabel": "Press & Wholesale Inquiries",
-    "pressValue": "press@vakaa-outlet.com",
     "formTitle": "Get in Touch",
     "formName": "Full Name",
     "formEmail": "Email Address",
@@ -126,6 +119,6 @@
     "faq2Question": "What is your return policy?",
     "faq2Answer": "We offer complimentary 14-day returns and exchanges on all unused items in original packaging.",
     "faq3Question": "Are all VAKAA products authentically handcrafted in Africa?",
-    "faq3Answer": "Yes, 100% of our products are designed and handcrafted by artisan cooperatives across Ghana, Kenya, and Nigeria."
+    "faq3Answer": "Yes, 100% of our products are made by hand by our artisans, notably at our Douala atelier."
   }
 }

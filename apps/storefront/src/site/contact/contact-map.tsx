@@ -8,7 +8,7 @@ export function ContactMap() {
             {/* Grayscale Map Embed */}
             <iframe
                 title="Boutique & Atelier Location"
-                src="https://www.openstreetmap.org/export/embed.html?bbox=-0.1780%2C5.5900%2C-0.1650%2C5.6100&amp;layer=mapnik&amp;marker=5.6020%2C-0.1720"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=9.7000%2C4.0200%2C9.8100%2C4.0800&amp;layer=mapnik&amp;marker=4.0511%2C9.7679"
                 className="w-full h-full border-0 filter grayscale contrast-125 brightness-95 opacity-85 hover:opacity-100 transition-opacity"
                 loading="lazy"
             />
@@ -23,14 +23,14 @@ export function ContactMap() {
                 </div>
                 <div className="mt-2 bg-[#1D120A] text-white px-3.5 py-1.5 rounded-full text-xs font-semibold shadow-lg border border-white/20 whitespace-nowrap flex items-center gap-1.5">
                     <Navigation className="w-3 h-3 text-[#D4A43C]" />
-                    <span>Maison VAKAA • Flagship Atelier</span>
+                    <span>Maison VAKAA • Douala, Cameroun</span>
                 </div>
             </div>
 
             {/* Quick map control link */}
             <div className="absolute bottom-4 right-4 z-10">
                 <a
-                    href="https://maps.google.com/?q=Accra+Ghana"
+                    href="https://maps.google.com/?q=Douala,+Cameroon"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="bg-white/90 backdrop-blur-sm hover:bg-white text-[#1D120A] text-xs font-semibold px-4 py-2 rounded-full border border-[#E7DED0] shadow-sm transition-all inline-flex items-center gap-1.5"

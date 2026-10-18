@@ -117,19 +117,10 @@ export async function ContactPage() {
                         <div className="space-y-6">
                             <div>
                                 <h3 className="font-sans text-xl font-bold tracking-tight text-[#FAF8F5] mb-2">
-                                    {t('atelierDoualaAccraTitle')}
+                                    {t('atelierTitle')}
                                 </h3>
                                 <p className="text-sm text-[#FAF8F5]/80 leading-relaxed font-sans">
-                                    {t('atelierDoualaAccra')}
-                                </p>
-                            </div>
-
-                            <div>
-                                <h3 className="font-sans text-xl font-bold tracking-tight text-[#FAF8F5] mb-2">
-                                    {t('studioParisLondonTitle')}
-                                </h3>
-                                <p className="text-sm text-[#FAF8F5]/80 leading-relaxed font-sans">
-                                    {t('studioParisLondon')}
+                                    {t('atelierValue')}
                                 </p>
                             </div>
                         </div>
