@@ -14,6 +14,7 @@ import { AssetServerPlugin } from '@vendure/asset-server-plugin';
 import { DashboardPlugin } from '@vendure/dashboard/plugin';
 import { GraphiqlPlugin } from '@vendure/graphiql-plugin';
 import { VakaaBrandingPlugin } from './plugins/vakaa-branding/vakaa-branding.plugin';
+import { ContactPlugin } from './plugins/contact/contact.plugin';
 import { SebpayPlugin, sebpayPaymentHandler } from './plugins/sebpay';
 import { FlutterwavePlugin, flutterwavePaymentHandler } from './plugins/flutterwave';
 import { InvoicePlugin, LocalFileStrategy } from '@pinelab/pinelab-invoice-plugin';
@@ -300,6 +301,7 @@ export const config: VendureConfig = {
     plugins: [
         LimitedProductsPlugin,
         VakaaReviewsPlugin,
+        ContactPlugin,
         GraphiqlPlugin.init(),
         AssetServerPlugin.init({
             route: 'assets',
