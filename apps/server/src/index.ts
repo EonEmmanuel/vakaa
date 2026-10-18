@@ -57,7 +57,10 @@ process.on('warning', (warning) => {
 syncVakaaAssets();
 
 runMigrations(migrationConfig)
-    .then(() => bootstrap(config))
+    // Enable NestJS raw-body capture so signed webhooks (SebPay HMAC) can be
+    // verified against the exact bytes the provider signed. Without this,
+    // `req.rawBody` is undefined and signature checks fail in production.
+    .then(() => bootstrap(config, { nestApplicationOptions: { rawBody: true } }))
     .catch(err => {
         console.error('[Vendure Server] Fatal bootstrap error:', err);
         process.exit(1);

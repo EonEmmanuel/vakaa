@@ -11,7 +11,7 @@ import {
     TransactionalConnection,
 } from '@vendure/core';
 import { SebpayClient } from './sebpay.client';
-import { SebpayPluginOptions } from './types';
+import { SebpayPluginOptions, SEBPAY_MONEY_MINOR_FACTOR } from './types';
 
 export const SEBPAY_OPTIONS = Symbol('SEBPAY_OPTIONS');
 const loggerCtx = 'SebpayPlugin';
@@ -39,16 +39,17 @@ export class SebpayService implements OnApplicationBootstrap {
      * Auto-provisions the SebPay payment method if not already present.
      */
     private async autoProvisionPaymentMethod() {
+        const enabled = this.options.enabled === true;
         try {
             const ctx = await this.requestContextService.create({ apiType: 'admin' });
-            const methods = await this.paymentMethodService.findAll(ctx);
-            const exists = methods.items.some((m) => m.code === 'sebpay');
+            const methods = await this.paymentMethodService.findAll(ctx, { take: 100 });
+            const existing = methods.items.find((m) => m.code === 'sebpay');
 
-            if (!exists) {
-                Logger.info('Auto-provisioning SebPay payment method in default channel...', loggerCtx);
+            if (!existing) {
+                Logger.info(`Auto-provisioning SebPay payment method in default channel (enabled=${enabled})...`, loggerCtx);
                 await this.paymentMethodService.create(ctx, {
                     code: 'sebpay',
-                    enabled: true,
+                    enabled,
                     handler: {
                         code: 'sebpay',
                         arguments: [
@@ -70,7 +71,20 @@ export class SebpayService implements OnApplicationBootstrap {
                         },
                     ],
                 });
-                Logger.info('SebPay payment method provisioned successfully.', loggerCtx);
+                Logger.info(`SebPay payment method provisioned (enabled=${enabled}).`, loggerCtx);
+                return;
+            }
+
+            // Keep the existing row in sync with the SEBPAY_ENABLED flag so the
+            // integration can be paused/resumed purely through configuration.
+            // A disabled method is omitted from `eligiblePaymentMethods`, which
+            // removes it from checkout entirely.
+            if (existing.enabled !== enabled) {
+                await this.paymentMethodService.update(ctx, { id: existing.id, enabled });
+                Logger.info(
+                    `SebPay payment method ${enabled ? 'enabled' : 'disabled'} (was ${existing.enabled}).`,
+                    loggerCtx
+                );
             }
         } catch (err) {
             Logger.warn(`Could not auto-provision SebPay payment method: ${err instanceof Error ? err.message : String(err)}`, loggerCtx);
@@ -122,14 +136,20 @@ export class SebpayService implements OnApplicationBootstrap {
         const remoteStatus = statusResponse.data.status;
 
         if (remoteStatus === 'approved') {
-            // Amount verification constraint from payments-engineering
+            // Amount verification constraint from payments-engineering.
+            // SebPay reports amounts in major units; Vendure stores minor units,
+            // so normalize the provider amount into Vendure's minor-unit space
+            // before comparing (otherwise every approved payment mismatches).
             const paidAmount = statusResponse.data.amount;
-            if (paidAmount && Math.abs(paidAmount - payment.amount) > 1) {
-                Logger.error(
-                    `Amount mismatch on payment ${payment.id}: expected ${payment.amount}, received ${paidAmount}`,
-                    loggerCtx
-                );
-                return { settled: false, status: 'amount_mismatch' };
+            if (paidAmount) {
+                const paidAmountMinor = Math.round(paidAmount * SEBPAY_MONEY_MINOR_FACTOR);
+                if (Math.abs(paidAmountMinor - payment.amount) > 1) {
+                    Logger.error(
+                        `Amount mismatch on payment ${payment.id}: expected ${payment.amount} minor units, received ${paidAmountMinor} minor units (provider reported ${paidAmount})`,
+                        loggerCtx
+                    );
+                    return { settled: false, status: 'amount_mismatch' };
+                }
             }
 
             Logger.info(`Settling payment ${payment.id} for order ${payment.order?.code}...`, loggerCtx);

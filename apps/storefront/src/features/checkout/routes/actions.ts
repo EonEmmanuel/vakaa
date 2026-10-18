@@ -193,20 +193,39 @@ export async function transitionToArrangingPayment() {
     }
 }
 
-export type PlaceOrderResult = {
-    success: true;
-    orderCode: string;
-    redirectUrl?: string | null;
-};
+export type PlaceOrderResult =
+    | {
+          success: true;
+          orderCode: string;
+          redirectUrl?: string | null;
+      }
+    | {
+          success: false;
+          errorCode: string;
+          message: string;
+      };
 
 export async function placeOrder(
     paymentMethodCode: string,
     paymentMetadata?: Record<string, unknown>,
     currentState?: string
 ): Promise<PlaceOrderResult> {
-    // 1. Transition the order to ArrangingPayment state if not already in that state
+    // 1. Transition the order to ArrangingPayment state if not already in that state.
+    //    Failures are returned (never thrown) so the real reason is visible in
+    //    production instead of being masked as a generic React error #441.
     if (currentState !== 'ArrangingPayment') {
-        await transitionToArrangingPayment();
+        try {
+            await transitionToArrangingPayment();
+        } catch (error) {
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : 'Impossible d\'initialiser l\'état du paiement. Veuillez réessayer.';
+            console.error(
+                `[placeOrder] Order state transition failed (method="${paymentMethodCode}"): ${message}`
+            );
+            return { success: false, errorCode: 'STATE_TRANSITION_FAILED', message };
+        }
     }
 
     // 2. Prepare metadata based on payment method
@@ -239,17 +258,34 @@ export async function placeOrder(
 
     const orderResult = result.data?.addPaymentToOrder;
     if (!orderResult || orderResult.__typename !== 'Order') {
+        let errorCode = 'PAYMENT_FAILED';
+        let message: string;
+
         if (orderResult) {
-            const errorResult = orderResult;
-            const detailedMessage =
-                ('paymentErrorMessage' in errorResult && typeof (errorResult as Record<string, unknown>).paymentErrorMessage === 'string'
-                    ? ((errorResult as Record<string, unknown>).paymentErrorMessage as string)
-                    : null) || errorResult.message;
-            throw new Error(
-                `Failed to place order: ${errorResult.errorCode} - ${detailedMessage}`
-            );
+            errorCode = orderResult.errorCode;
+            message =
+                ('paymentErrorMessage' in orderResult &&
+                typeof (orderResult as Record<string, unknown>).paymentErrorMessage === 'string'
+                    ? ((orderResult as Record<string, unknown>).paymentErrorMessage as string)
+                    : null) || orderResult.message;
+        } else if (result.error?.message) {
+            errorCode =
+                result.error.kind === 'graphql'
+                    ? 'GRAPHQL_ERROR'
+                    : result.error.kind.toUpperCase();
+            message = result.error.message;
+        } else {
+            message =
+                'Le serveur n\'a pas répondu lors de la validation du paiement. Veuillez vérifier votre connexion et réessayer.';
         }
-        throw new Error('Le serveur n\'a pas répondu lors de la validation du paiement. Veuillez vérifier votre connexion et réessayer.');
+
+        // Log the real cause server-side (visible in the Next.js/Vercel function
+        // logs) so a production failure is diagnosable rather than a masked error.
+        console.error(
+            `[placeOrder] Payment failed (method="${paymentMethodCode}", code="${errorCode}"): ${message}`
+        );
+
+        return { success: false, errorCode, message };
     }
 
     const order = orderResult;
@@ -272,16 +308,26 @@ export async function placeOrder(
     const metaRecord = typeof parsedMetadata === 'object' && parsedMetadata !== null ? (parsedMetadata as Record<string, unknown>) : null;
     const metaPublic = metaRecord && typeof metaRecord.public === 'object' && metaRecord.public !== null ? (metaRecord.public as Record<string, unknown>) : null;
     const paymentLink = (typeof metaRecord?.link === 'string' ? metaRecord.link : null) || (typeof metaPublic?.link === 'string' ? metaPublic.link : null);
+    // SebPay returns a `provider_link` (e.g. Wave) that the customer MUST open to
+    // validate the payment.
+    const sebpayProviderLink =
+        (typeof metaRecord?.providerLink === 'string' ? metaRecord.providerLink : null) ||
+        (typeof metaPublic?.providerLink === 'string' ? metaPublic.providerLink : null);
+
+    const isHttpUrl = (value: unknown): value is string =>
+        typeof value === 'string' && (value.startsWith('http://') || value.startsWith('https://'));
+
+    const redirectUrl =
+        paymentMethodCode === 'flutterwave' && isHttpUrl(paymentLink)
+            ? paymentLink
+            : paymentMethodCode === 'sebpay' && isHttpUrl(sebpayProviderLink)
+            ? sebpayProviderLink
+            : null;
 
     return {
         success: true,
         orderCode,
-        redirectUrl:
-            paymentMethodCode === 'flutterwave' &&
-            typeof paymentLink === 'string' &&
-            (paymentLink.startsWith('http://') || paymentLink.startsWith('https://'))
-                ? paymentLink
-                : null,
+        redirectUrl,
     };
 }
 

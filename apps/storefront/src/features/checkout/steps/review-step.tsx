@@ -32,14 +32,27 @@ export default function ReviewStep({ onComplete: _onComplete, onEditStep }: Revi
     setErrorMessage(null);
     try {
       const result = await placeOrderAction(selectedPaymentMethodCode, paymentMetadata, order?.state);
-      if (result?.redirectUrl) {
+
+      if (!result.success) {
+        console.error('Error placing order:', result.errorCode, result.message);
+        setErrorMessage(result.message);
+        setLoading(false);
+        return;
+      }
+
+      if (result.redirectUrl) {
+        if (selectedPaymentMethodCode === 'sebpay') {
+          // SebPay's provider_link (e.g. Wave) must be opened so the customer can
+          // validate. Open it in a new tab and keep this tab on the confirmation
+          // page, where the SebPay reconciler polls for settlement.
+          window.open(result.redirectUrl, '_blank', 'noopener,noreferrer');
+          router.push(`/order-confirmation/${result.orderCode}`);
+          return;
+        }
         window.location.assign(result.redirectUrl);
         return;
       }
-      if (result?.orderCode) {
-        router.push(`/order-confirmation/${result.orderCode}`);
-        return;
-      }
+      router.push(`/order-confirmation/${result.orderCode}`);
     } catch (error) {
       if (error instanceof Error && error.message.includes('NEXT_REDIRECT')) {
         throw error;

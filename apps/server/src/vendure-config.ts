@@ -391,6 +391,9 @@ export const config: VendureConfig = {
             isSandbox: process.env.SEBPAY_SANDBOX === 'true' || IS_DEV,
             webhookUrl: process.env.SEBPAY_WEBHOOK_URL || '',
             mockMode: !process.env.SEBPAY_SECRET_KEY && IS_DEV,
+            // Paused by default until the provider is verified. Flip
+            // SEBPAY_ENABLED=true to re-enable the payment method.
+            enabled: process.env.SEBPAY_ENABLED === 'true',
         }),
         FlutterwavePlugin.init({
             publicKey: process.env.FLW_PUBLIC_KEY || '',

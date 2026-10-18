@@ -13,6 +13,7 @@ import { PrintReceiptButton } from '@/features/orders/print-receipt-button';
 import {TrustBar} from '@/components/shared/trust-bar';
 import { DecorativeDotCluster } from '@/components/ui/decorative-dot-cluster';
 import { FlutterwaveReconciler } from './flutterwave-reconciler';
+import { SebpayReconciler } from './sebpay-reconciler';
 import { generateInvoiceToken } from '../lib/invoice-security';
 
 const GetOrderByCodeQuery = graphql(`
@@ -64,6 +65,8 @@ const GetOrderByCodeQuery = graphql(`
                 method
                 state
                 amount
+                transactionId
+                metadata
             }
             customer {
                 id
@@ -74,6 +77,44 @@ const GetOrderByCodeQuery = graphql(`
         }
     }
 `);
+
+/**
+ * Resolves the identifier SebPay's reconciliation endpoint understands
+ * (the provider transaction id, falling back to the external reference we sent).
+ */
+function resolveSebpayIdentifier(payment: {
+    transactionId?: string | null;
+    metadata?: unknown;
+}): string | undefined {
+    let meta: Record<string, unknown> | null = null;
+    const raw = payment.metadata;
+    if (typeof raw === 'string') {
+        try {
+            meta = JSON.parse(raw) as Record<string, unknown>;
+        } catch {
+            meta = null;
+        }
+    } else if (raw && typeof raw === 'object') {
+        meta = raw as Record<string, unknown>;
+    }
+
+    const publicMeta =
+        meta && typeof meta.public === 'object' && meta.public !== null
+            ? (meta.public as Record<string, unknown>)
+            : null;
+
+    const candidates = [
+        payment.transactionId,
+        meta?.transactionId,
+        publicMeta?.transactionId,
+        meta?.externalReference,
+        publicMeta?.externalReference,
+    ];
+
+    return candidates.find(
+        (value): value is string => typeof value === 'string' && value.length > 0
+    );
+}
 
 interface OrderConfirmationProps {
     paramsPromise: Promise<{ locale: string; code: string }>;
@@ -137,10 +178,20 @@ export async function OrderConfirmation({ paramsPromise, searchParamsPromise }: 
     const invoiceToken = generateInvoiceToken(order.code, customerEmail);
     const invoiceDownloadUrl = `/invoice/${order.code}?token=${invoiceToken}`;
 
+    // SebPay settles via webhook; this provides a client-side polling fallback.
+    const primaryPayment = order.payments && order.payments.length > 0 ? order.payments[0] : null;
+    const sebpayIdentifier =
+        primaryPayment && primaryPayment.method === 'sebpay'
+            ? resolveSebpayIdentifier(primaryPayment)
+            : undefined;
+
     return (
         <div className="min-h-screen bg-[#FAF8F5] text-[#1D120A] flex flex-col">
             {!isCancelled && (
                 <FlutterwaveReconciler transactionId={transactionId} orderCode={order.code} />
+            )}
+            {!isCancelled && sebpayIdentifier && (
+                <SebpayReconciler identifier={sebpayIdentifier} orderCode={order.code} />
             )}
             {/* 1. Hero Breadcrumbs Header Banner */}
             <section className="relative w-full overflow-hidden bg-[#FAF8F5] border-b border-[#E7DED0]/60 pt-28 sm:pt-32 pb-12 sm:pb-16 text-center transition-colors">
