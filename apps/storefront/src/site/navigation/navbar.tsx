@@ -34,8 +34,8 @@ export function Navbar() {
                     </NavigationLink>
                 </div>
 
-                {/* Row: Desktop Nav Links (anchored left, xl and up) */}
-                <div className="hidden xl:flex items-center min-w-0 px-2 xl:px-4">
+                {/* Row: Desktop Nav Links (anchored left flush with the island edge, xl and up) */}
+                <div className="hidden xl:flex items-center min-w-0">
                     <Suspense fallback={<div className="h-8 w-80 animate-pulse bg-black/5 rounded-full" />}>
                         <DesktopNav />
                     </Suspense>
