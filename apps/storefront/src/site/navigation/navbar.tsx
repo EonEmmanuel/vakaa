@@ -23,14 +23,14 @@ export function Navbar() {
                 {/* Row: Brand Logo (side-anchored, below lg) */}
                 <div className="flex lg:hidden items-center gap-2 sm:gap-4 shrink-0 pointer-events-auto">
                     <NavigationLink href="/" className="inline-block py-1 hover:opacity-90 transition-opacity select-none">
-                        <VakaaLogo height={26} />
+                        <VakaaLogo height={26} imgClassName="h-6 sm:h-7" />
                     </NavigationLink>
                 </div>
 
                 {/* Overlay: Brand Logo (exactly centered, lg and up) */}
                 <div className="hidden lg:absolute lg:left-1/2 lg:top-1/2 lg:flex lg:-translate-x-1/2 lg:-translate-y-1/2 lg:items-center pointer-events-auto">
                     <NavigationLink href="/" className="inline-block py-1 hover:opacity-90 transition-opacity select-none">
-                        <VakaaLogo height={26} />
+                        <VakaaLogo height={26} imgClassName="h-6 sm:h-7" />
                     </NavigationLink>
                 </div>
 

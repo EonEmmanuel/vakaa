@@ -4,10 +4,13 @@ interface VakaaLogoProps {
     className?: string;
     variant?: 'auto' | 'light' | 'dark' | 'gold';
     height?: number;
+    /** Overrides the default height ladder (h-6 sm:h-7 md:h-8) on the rendered logo image(s). */
+    imgClassName?: string;
 }
 
-export function VakaaLogo({ className = '', variant = 'auto', height = 28 }: VakaaLogoProps) {
+export function VakaaLogo({ className = '', variant = 'auto', height = 28, imgClassName }: VakaaLogoProps) {
     const width = Math.round(height * 3.21);
+    const sizeClasses = imgClassName ?? 'h-6 sm:h-7 md:h-8';
 
     if (variant === 'gold') {
         return (
@@ -19,7 +22,7 @@ export function VakaaLogo({ className = '', variant = 'auto', height = 28 }: Vak
                     height={height}
                     priority
                     style={{ width: 'auto', height: 'auto' }}
-                    className="h-6 sm:h-7 md:h-8 w-auto object-contain"
+                    className={`${sizeClasses} w-auto object-contain`}
                 />
             </div>
         );
@@ -35,7 +38,7 @@ export function VakaaLogo({ className = '', variant = 'auto', height = 28 }: Vak
                     height={height}
                     priority
                     style={{ width: 'auto', height: 'auto' }}
-                    className="h-6 sm:h-7 md:h-8 w-auto object-contain"
+                    className={`${sizeClasses} w-auto object-contain`}
                 />
             </div>
         );
@@ -51,7 +54,7 @@ export function VakaaLogo({ className = '', variant = 'auto', height = 28 }: Vak
                     height={height}
                     priority
                     style={{ width: 'auto', height: 'auto' }}
-                    className="h-6 sm:h-7 md:h-8 w-auto object-contain"
+                    className={`${sizeClasses} w-auto object-contain`}
                 />
             </div>
         );
@@ -67,7 +70,7 @@ export function VakaaLogo({ className = '', variant = 'auto', height = 28 }: Vak
                 height={height}
                 priority
                 style={{ width: 'auto', height: 'auto' }}
-                className="dark:hidden h-6 sm:h-7 md:h-8 w-auto object-contain"
+                className={`dark:hidden ${sizeClasses} w-auto object-contain`}
             />
             <Image
                 src="/images/vakaa-logo-light.png"
@@ -76,7 +79,7 @@ export function VakaaLogo({ className = '', variant = 'auto', height = 28 }: Vak
                 height={height}
                 priority
                 style={{ width: 'auto', height: 'auto' }}
-                className="hidden dark:block h-6 sm:h-7 md:h-8 w-auto object-contain"
+                className={`hidden dark:block ${sizeClasses} w-auto object-contain`}
             />
         </div>
     );
