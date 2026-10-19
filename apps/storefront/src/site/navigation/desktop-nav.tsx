@@ -59,7 +59,7 @@ export function DesktopNav() {
                         <li key={item.href} onMouseEnter={() => setHovered(item.href)}>
                             <Link
                                 href={item.href}
-                                className={`relative isolate block rounded-full px-3 xl:px-3.5 py-1.5 transition-colors cursor-pointer select-none whitespace-nowrap ${
+                                className={`relative isolate flex h-12 items-center rounded-full px-3 xl:px-3.5 transition-colors cursor-pointer select-none whitespace-nowrap ${
                                     active
                                         ? 'text-white dark:text-[#1c1b18] font-bold'
                                         : 'text-[#57544c] hover:text-[#1c1b18] dark:text-[#a6a29a] dark:hover:text-[#fbfaf7] font-medium'
