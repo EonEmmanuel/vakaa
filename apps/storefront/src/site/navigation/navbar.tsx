@@ -12,33 +12,45 @@ import { NavbarUserSkeleton } from '@/site/navigation/skeletons/navbar-user-skel
 import { FloatingIslandBar } from '@/site/navigation/floating-island-bar';
 
 export function Navbar() {
+    // Island row zones:
+    // - Below lg: brand side-anchored left, actions right (unchanged).
+    // - lg+: brand wordmark exactly centered (absolute overlay);
+    //   inline nav links only appear from xl up, where they can never
+    //   collide with the centered wordmark in any locale.
     return (
         <header className="fixed inset-x-0 top-0 z-40 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-5 sm:pt-4 pointer-events-none">
             <FloatingIslandBar>
-                {/* Left: Brand Logo */}
-                <div className="flex items-center gap-2 sm:gap-4 shrink-0 pointer-events-auto">
+                {/* Row: Brand Logo (side-anchored, below lg) */}
+                <div className="flex lg:hidden items-center gap-2 sm:gap-4 shrink-0 pointer-events-auto">
                     <NavigationLink href="/" className="inline-block py-1 hover:opacity-90 transition-opacity select-none">
                         <VakaaLogo height={26} />
                     </NavigationLink>
                 </div>
 
-                {/* Center: Desktop Nav Links (hidden on mobile) */}
-                <div className="hidden lg:flex items-center justify-center flex-1 min-w-0 px-2 xl:px-4">
+                {/* Overlay: Brand Logo (exactly centered, lg and up) */}
+                <div className="hidden lg:absolute lg:left-1/2 lg:top-1/2 lg:flex lg:-translate-x-1/2 lg:-translate-y-1/2 lg:items-center pointer-events-auto">
+                    <NavigationLink href="/" className="inline-block py-1 hover:opacity-90 transition-opacity select-none">
+                        <VakaaLogo height={26} />
+                    </NavigationLink>
+                </div>
+
+                {/* Row: Desktop Nav Links (anchored left, xl and up) */}
+                <div className="hidden xl:flex items-center min-w-0 px-2 xl:px-4">
                     <Suspense fallback={<div className="h-8 w-80 animate-pulse bg-black/5 rounded-full" />}>
                         <DesktopNav />
                     </Suspense>
                 </div>
 
-                {/* Right: Currency + Language + Search + User + Cart + Mobile Hamburger */}
-                <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-                    {/* Currency Picker (desktop) */}
+                {/* Row: Currency + Language + Search + User + Cart + Mobile Menu */}
+                <div className="flex items-center gap-1 sm:gap-2 shrink-0 ml-auto">
+                    {/* Currency Picker (lg and up) */}
                     <div className="hidden lg:flex items-center">
                         <Suspense fallback={<div className="w-14 h-8 animate-pulse bg-black/5 rounded-full" />}>
                             <CurrencyPickerWrapper />
                         </Suspense>
                     </div>
 
-                    {/* Language Picker (tablet + desktop) */}
+                    {/* Language Picker (tablet and up) */}
                     <div className="hidden sm:flex items-center">
                         <Suspense fallback={<div className="w-12 h-8 animate-pulse bg-black/5 rounded-full" />}>
                             <LanguagePicker />
@@ -64,8 +76,8 @@ export function Navbar() {
                         <NavbarCart />
                     </Suspense>
 
-                    {/* Mobile Menu Trigger (far right, mobile only) */}
-                    <div className="lg:hidden flex items-center">
+                    {/* Mobile Menu Trigger (below xl, hamburger right) */}
+                    <div className="xl:hidden flex items-center">
                         <Suspense fallback={<div className="size-11 rounded-full animate-pulse bg-black/5" />}>
                             <MobileNavWrapper />
                         </Suspense>
