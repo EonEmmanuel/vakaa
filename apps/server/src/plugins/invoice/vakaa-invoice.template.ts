@@ -10,7 +10,9 @@ export const vakaaInvoiceTemplate = `
   <style>
     @page {
       size: A4;
-      margin: 12mm 14mm 12mm 14mm;
+      /* Full-bleed: the paper background paints the entire sheet edge to
+         edge; whitespace is handled inside the body instead. */
+      margin: 0;
     }
     * {
       box-sizing: border-box;
@@ -34,18 +36,18 @@ export const vakaaInvoiceTemplate = `
       color: var(--ink);
       background: var(--paper);
       margin: 0;
-      padding: 0;
+      padding: 10mm 13mm 0 13mm;
       font-size: 10.5px;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
-      /* Print: stretch the sheet to the full A4 content box and let the
-         footer ride the bottom edge via margin-top:auto. */
-      min-height: 100%;
+      /* Print: the sheet always occupies the full physical A4 height (border-
+         box lets the padding live inside that height), the invisible spacer
+         below the items absorbs leftover space, and the legal footer rides
+         the bottom edge. */
+      min-height: 297mm;
+      box-sizing: border-box;
       display: flex;
       flex-direction: column;
-    }
-    html {
-      height: 100%;
     }
     .font-serif { font-family: 'Playfair Display', Georgia, serif; }
     .font-mono { font-family: 'Space Grotesk', monospace; }
@@ -387,12 +389,19 @@ export const vakaaInvoiceTemplate = `
       letter-spacing: -0.01em;
     }
 
+    /* 4b. INVISIBLE SPACER: absorbs leftover page height so the totals and
+       the concierge note settle near the bottom of the sheet, invoice-form
+       style, whatever the item count is. */
+    .sheet-spacer {
+      flex: 1 1 auto;
+    }
+
     /* 5. LEGAL FOOTER */
     .legal-footer {
       margin-top: auto;
       border-top: 1px solid var(--border-card);
       padding-top: 14px;
-      padding-bottom: 2px;
+      padding-bottom: 6mm;
       text-align: center;
       font-size: 9px;
       color: var(--ink-muted);
@@ -550,6 +559,7 @@ export const vakaaInvoiceTemplate = `
   </section>
 
   <!-- 4. BOTTOM SECTION: CONCIERGE & TOTALS -->
+  <div class="sheet-spacer"></div>
   <section class="summary-grid">
     <div class="concierge-box">
       <div class="handwritten-thanks font-hand">Merci beaucoup !</div>
