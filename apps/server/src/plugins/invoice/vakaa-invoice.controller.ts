@@ -167,7 +167,9 @@ export class VakaaInvoiceController {
                 if (!res.headersSent) {
                     res.setHeader('Content-Type', 'application/pdf');
                     res.setHeader('Content-Disposition', `inline; filename="Facture-VAKAA-${order.code}.pdf"`);
-                    res.setHeader('Cache-Control', 'private, max-age=86400, no-transform');
+                    // no-cache: see r2-invoice-storage.strategy.ts — regeneration
+                    // replaces the object behind the same URL.
+                    res.setHeader('Cache-Control', 'private, no-cache');
                 }
                 streamOrRedirect.on('error', (streamErr: any) => {
                     Logger.error(

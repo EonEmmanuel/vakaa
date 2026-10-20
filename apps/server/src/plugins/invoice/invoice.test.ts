@@ -70,7 +70,7 @@ describe('R2InvoiceStorageStrategy', () => {
         expect(stream).toBeDefined();
         expect(headers['Content-Type']).toBe('application/pdf');
         expect(headers['Content-Disposition']).toBe('inline; filename="Facture-VAKAA-1001.pdf"');
-        expect(headers['Cache-Control']).toBe('private, max-age=86400, no-transform');
+        expect(headers['Cache-Control']).toBe('private, no-cache');
     });
 
     test('streamFile: falls back to local file if R2 throws and local file exists', async () => {

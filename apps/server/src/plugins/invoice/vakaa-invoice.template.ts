@@ -38,6 +38,14 @@ export const vakaaInvoiceTemplate = `
       font-size: 10.5px;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
+      /* Print: stretch the sheet to the full A4 content box and let the
+         footer ride the bottom edge via margin-top:auto. */
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    html {
+      height: 100%;
     }
     .font-serif { font-family: 'Playfair Display', Georgia, serif; }
     .font-mono { font-family: 'Space Grotesk', monospace; }
@@ -81,26 +89,26 @@ export const vakaaInvoiceTemplate = `
     .doc-meta-section {
       text-align: right;
     }
-    .doc-title {
-      font-size: 34px;
+    .doc-kicker {
+      display: block;
+      font-size: 10px;
       font-weight: 800;
-      line-height: 1;
-      letter-spacing: -0.01em;
-      color: var(--ink);
+      letter-spacing: 0.34em;
       text-transform: uppercase;
-      margin: 0;
+      color: var(--gold-dark);
+      margin-bottom: 7px;
     }
     .doc-number-badge {
       display: inline-block;
-      margin-top: 6px;
+      margin-top: 0;
       background: var(--surface-card);
       border: 1px solid var(--border-card);
-      padding: 3px 10px;
+      padding: 4px 12px;
       border-radius: 4px;
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 800;
       color: var(--ink);
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
     }
     .meta-table {
       margin-top: 8px;
@@ -381,8 +389,10 @@ export const vakaaInvoiceTemplate = `
 
     /* 5. LEGAL FOOTER */
     .legal-footer {
+      margin-top: auto;
       border-top: 1px solid var(--border-card);
       padding-top: 14px;
+      padding-bottom: 2px;
       text-align: center;
       font-size: 9px;
       color: var(--ink-muted);
@@ -421,10 +431,10 @@ export const vakaaInvoiceTemplate = `
 
     <div class="doc-meta-section">
       {{#if isCreditInvoice}}
-        <h1 class="doc-title font-serif" style="color: #991B1B;">AVOIR</h1>
+        <span class="doc-kicker" style="color: #991B1B;">Avoir</span>
         <div class="doc-number-badge" style="color: #991B1B; border-color: #F87171;">N° AV-{{ invoiceNumber }}</div>
       {{else}}
-        <h1 class="doc-title font-serif">FACTURE</h1>
+        <span class="doc-kicker">Facture</span>
         <div class="doc-number-badge">N° {{ invoicePrefix }}{{ invoiceNumber }}</div>
       {{/if}}
       <div class="meta-table">

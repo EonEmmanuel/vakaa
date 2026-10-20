@@ -1,4 +1,4 @@
-import { RequestContext, Injector, Order, EntityHydrator, translateEntity } from '@vendure/core';
+import { RequestContext, Injector, Order, ID, TransactionalConnection, ProductVariant, Payment, ShippingLine, translateEntity } from '@vendure/core';
 import { LoadDataFn } from '@pinelab/pinelab-invoice-plugin';
 
 const ZERO_DECIMAL_CURRENCIES = new Set(['XAF', 'XOF', 'GNF', 'RWF', 'BIF', 'KMF', 'DJF']);
@@ -51,20 +51,49 @@ export const vakaaInvoiceLoadDataFn: LoadDataFn = async (
 
     const currency = order.currencyCode || 'XAF';
 
-    // The invoice worker hands us the order with only the relations pinelab
-    // loads — assets and payments are not among them. Without hydration the
-    // thumbnails render empty (fallback box) and the payment reference is
-    // blank, so load what the template needs before formatting.
-    const entityHydrator = injector.get(EntityHydrator);
-    await entityHydrator.hydrate(ctx, order, {
-        relations: [
-            'lines.featuredAsset',
-            'lines.productVariant.featuredAsset',
-            'lines.productVariant.product.featuredAsset',
-            'payments',
-            'shippingLines.shippingMethod',
-        ],
+    // The invoice worker passes a lightly-loaded order — assets, payments and
+    // shipping methods are not on it. Hydrating the object proved unreliable
+    // depending on how pinelab constructs it, so load exactly what the
+    // template needs straight from the repositories and key everything by id.
+    const conn = injector.get(TransactionalConnection);
+    const variantIds: ID[] = order.lines
+        .map((line) => line.productVariant?.id)
+        .filter((id): id is ID => typeof id === 'string');
+    const variants = variantIds.length
+        ? await conn.getRepository(ctx, ProductVariant).find({
+              where: variantIds.map((id) => ({ id })),
+              relations: ['featuredAsset', 'product.featuredAsset'],
+          })
+        : [];
+    const previewByVariantId = new Map<string, string>();
+    for (const variant of variants) {
+        const preview = variant.featuredAsset?.preview || variant.product?.featuredAsset?.preview || '';
+        if (preview) {
+            previewByVariantId.set(String(variant.id), preview);
+        }
+    }
+
+    // Prefer the settled payment: declined rows created during retries must
+    // not end up on the invoice as the method or transaction reference.
+    const paymentRows = await conn.getRepository(ctx, Payment).find({
+        where: { order: { id: order.id } },
     });
+    const payment = paymentRows.find((row) => row.state === 'Settled') || paymentRows[0] || null;
+    const paymentMethodName = payment
+        ? payment.method === 'sebpay'
+            ? 'Mobile Money (Orange / MTN / Moov / Wave)'
+            : payment.method === 'flutterwave'
+            ? 'Carte Bancaire / Mobile Money'
+            : payment.method
+        : 'Paiement Sécurisé';
+
+    const shippingRows = await conn.getRepository(ctx, ShippingLine).find({
+        where: { order: { id: order.id } },
+        relations: ['shippingMethod'],
+    });
+    const shippingMethodName = shippingRows[0]?.shippingMethod
+        ? translateEntity(shippingRows[0].shippingMethod, ctx.languageCode).name
+        : 'Livraison Express VAKÁA';
 
     // Format line items
     const formattedLines = order.lines.map((line) => {
@@ -78,7 +107,7 @@ export const vakaaInvoiceLoadDataFn: LoadDataFn = async (
             name: line.productVariant?.product?.name || productName,
             variantName,
             sku: line.productVariant?.sku || 'VAK-ART',
-            thumbnail: line.productVariant?.featuredAsset?.preview || line.featuredAsset?.preview || '',
+            thumbnail: previewByVariantId.get(String(line.productVariant?.id ?? '')) || '',
             // Only the real atelier material, never an invented claim.
             material: customFields?.material || '',
             quantity: line.quantity,
@@ -86,24 +115,6 @@ export const vakaaInvoiceLoadDataFn: LoadDataFn = async (
             linePrice: formatCurrency(line.linePriceWithTax, currency),
         };
     });
-
-    // Determine payment method label
-    const payment = order.payments && order.payments.length > 0 ? order.payments[0] : null;
-    let paymentMethodName = 'Paiement Sécurisé';
-    if (payment) {
-        if (payment.method === 'sebpay') {
-            paymentMethodName = 'Mobile Money (Orange / MTN / Moov / Wave)';
-        } else if (payment.method === 'flutterwave') {
-            paymentMethodName = 'Carte Bancaire / Mobile Money';
-        } else {
-            paymentMethodName = payment.method;
-        }
-    }
-
-    // Shipping method
-    const shippingMethodName = order.shippingLines && order.shippingLines.length > 0
-        ? order.shippingLines[0].shippingMethod.name
-        : 'Livraison Express VAKÁA';
 
     // Discounts
     const discountTotal = (order.subTotalWithTax + order.shippingWithTax) - order.totalWithTax;

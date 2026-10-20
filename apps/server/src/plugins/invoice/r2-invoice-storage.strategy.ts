@@ -130,7 +130,7 @@ export class R2InvoiceStorageStrategy implements LocalStorageStrategy {
                 res.set({
                     'Content-Type': 'application/pdf',
                     'Content-Disposition': `inline; filename="Facture-VAKAA-${invoice.invoiceNumber}.pdf"`,
-                    'Cache-Control': 'private, max-age=86400, no-transform',
+                    'Cache-Control': 'private, no-cache',
                     ...(result.ContentLength ? { 'Content-Length': String(result.ContentLength) } : {}),
                 });
             }
