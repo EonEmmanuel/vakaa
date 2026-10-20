@@ -42,6 +42,7 @@ const IS_DEV = process.env.APP_ENV === 'dev';
 emailVerificationHandler.setFrom('{{ accountFromAddress }}');
 passwordResetHandler.setFrom('{{ accountFromAddress }}');
 emailAddressChangeHandler.setFrom('{{ accountFromAddress }}');
+orderConfirmationHandler.setSubject('Confirmation de commande #{{ order.code }} — Maison VAKÁA');
 const vakaaEmailHandlers = [
     orderConfirmationHandler,
     emailVerificationHandler,

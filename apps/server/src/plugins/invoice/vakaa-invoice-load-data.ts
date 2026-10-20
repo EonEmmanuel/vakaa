@@ -1,24 +1,28 @@
 import { RequestContext, Injector, Order, translateEntity } from '@vendure/core';
 import { LoadDataFn } from '@pinelab/pinelab-invoice-plugin';
 
+const ZERO_DECIMAL_CURRENCIES = new Set(['XAF', 'XOF', 'GNF', 'RWF', 'BIF', 'KMF', 'DJF']);
+
+/**
+ * Formats a Vendure amount (stored in minor units, x100) for display.
+ * Zero-decimal currencies (FCFA family) print as "35 000 FCFA"; others
+ * print with two decimals.
+ */
 function formatCurrency(amount: number, currencyCode: string = 'XAF'): string {
     const code = (currencyCode || 'XAF').toUpperCase();
-    const isZeroDecimal = ['XAF', 'XOF', 'GNF', 'RWF', 'BIF', 'KMF', 'DJF'].includes(code);
+    const major = amount / 100;
+    const label = code === 'XAF' || code === 'XOF' ? 'FCFA' : code;
 
-    if (isZeroDecimal) {
-        return new Intl.NumberFormat('fr-FR', {
-            style: 'currency',
-            currency: code,
+    if (ZERO_DECIMAL_CURRENCIES.has(code)) {
+        return `${new Intl.NumberFormat('fr-FR', {
             maximumFractionDigits: 0,
-        }).format(amount);
+        }).format(major)} ${label}`;
     }
 
-    return new Intl.NumberFormat('fr-FR', {
-        style: 'currency',
-        currency: code,
+    return `${new Intl.NumberFormat('fr-FR', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-    }).format(amount / 100);
+    }).format(major)} ${label}`;
 }
 
 export const vakaaInvoiceLoadDataFn: LoadDataFn = async (
@@ -53,12 +57,15 @@ export const vakaaInvoiceLoadDataFn: LoadDataFn = async (
         const variantName = line.productVariant?.product?.name && line.productVariant?.name !== line.productVariant?.product?.name
             ? line.productVariant.name
             : '';
+        const customFields = line.productVariant?.customFields as { material?: string } | undefined;
 
         return {
             name: line.productVariant?.product?.name || productName,
             variantName,
             sku: line.productVariant?.sku || 'VAK-ART',
             thumbnail: line.productVariant?.featuredAsset?.preview || line.featuredAsset?.preview || '',
+            // Only the real atelier material, never an invented claim.
+            material: customFields?.material || '',
             quantity: line.quantity,
             unitPrice: formatCurrency(line.unitPriceWithTax, currency),
             linePrice: formatCurrency(line.linePriceWithTax, currency),
@@ -98,6 +105,7 @@ export const vakaaInvoiceLoadDataFn: LoadDataFn = async (
             formattedShipping: formatCurrency(order.shippingWithTax, currency),
             formattedDiscount,
             formattedTotal: formatCurrency(order.totalWithTax, currency),
+            paymentTransactionId: payment?.transactionId || null,
             paymentMethodName,
             shippingMethodName,
         };
@@ -121,6 +129,7 @@ export const vakaaInvoiceLoadDataFn: LoadDataFn = async (
         formattedShipping: formatCurrency(order.shippingWithTax, currency),
         formattedDiscount,
         formattedTotal: formatCurrency(-order.totalWithTax, currency),
+        paymentTransactionId: payment?.transactionId || null,
         paymentMethodName,
         shippingMethodName,
     };

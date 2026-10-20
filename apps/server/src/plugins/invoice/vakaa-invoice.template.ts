@@ -209,14 +209,15 @@ export const vakaaInvoiceTemplate = `
       border-collapse: collapse;
     }
     .items-table thead th {
-      background: var(--ink);
-      color: #FAF8F5;
-      font-size: 9px;
+      background: #FFFFFF;
+      color: var(--gold-dark);
+      font-size: 8.5px;
       font-weight: 800;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      padding: 10px 14px;
+      padding: 12px 14px;
       text-align: left;
+      border-bottom: 1px solid var(--border-dark);
     }
     .items-table thead th.text-center { text-align: center; }
     .items-table thead th.text-right { text-align: right; }
@@ -358,7 +359,7 @@ export const vakaaInvoiceTemplate = `
     .grand-total-row {
       margin-top: 8px;
       padding-top: 10px;
-      border-top: 1.5px solid var(--ink);
+      border-top: 1.5px solid var(--gold);
       display: flex;
       justify-content: space-between;
       align-items: baseline;
@@ -445,7 +446,7 @@ export const vakaaInvoiceTemplate = `
   <section class="cards-grid">
     <div class="client-card">
       <div class="card-title-bar">
-        <span class="card-heading">👤 FACTURÉ À</span>
+        <span class="card-heading">Facturé à</span>
         <span class="card-status-note">Client Vérifié</span>
       </div>
       <div>
@@ -470,15 +471,17 @@ export const vakaaInvoiceTemplate = `
 
     <div class="client-card">
       <div class="card-title-bar">
-        <span class="card-heading">📦 LIVRAISON & RÈGLEMENT</span>
+        <span class="card-heading">Livraison &amp; Règlement</span>
         <span class="card-status-note" style="color: #1E6B24;">Paiement Sécurisé</span>
       </div>
       <div>
         <div class="card-main-name">{{ shippingMethodName }}</div>
         <div class="card-detail-line">
           <strong>Mode de règlement :</strong> {{ paymentMethodName }}<br />
+          {{#if paymentTransactionId}}
+            <strong>Réf. transaction :</strong> <span class="font-mono">{{ paymentTransactionId }}</span><br />
+          {{/if}}
           <strong>Devise de transaction :</strong> {{ order.currencyCode }}<br />
-          <strong>Atelier expéditeur :</strong> Atelier Principal &bull; Douala Bonanjo<br />
           <strong>Remise :</strong> En main propre sous coffret d'art VAKÁA
         </div>
       </div>
@@ -520,7 +523,11 @@ export const vakaaInvoiceTemplate = `
               {{#if variantName}}
                 Finition Atelier : {{ variantName }} &bull;
               {{/if}}
-              Raphia naturel & cuirs nobles tannage végétal.
+              {{#if material}}
+                {{ material }}
+              {{else}}
+                Création artisanale Maison VAKÁA.
+              {{/if}}
             </div>
           </td>
           <td class="item-qty">{{ quantity }}</td>
@@ -568,12 +575,12 @@ export const vakaaInvoiceTemplate = `
 
   <!-- 5. LEGAL FOOTER -->
   <footer class="legal-footer">
-    <div class="legal-company-name">MAISON VAKÁA S.A.R.L. &bull; HAUTE MAROQUINERIE D'ART AFRICAINE</div>
+    <div class="legal-company-name">MAISON VAKÁA &bull; HAUTE MAROQUINERIE D'ART</div>
     <div class="legal-addresses">
-      Atelier Principal : Rue des Palmiers, Bonanjo, Douala, Cameroun &bull; Bureau International : 24 Rue de la Paix, 75002 Paris
+      Atelier &amp; boutique : Douala, Cameroun &bull; contact@vakaa.online &bull; +237 677 077 594
     </div>
     <div class="legal-registration">
-      Capital Social : 10.000.000 XAF &bull; RCCM : RC/DLA/2024/B/1842 &bull; NUI : M05241892401 &bull; Document officiel tenant lieu de reçu fiscal d'acquisition
+      Document tenant lieu de reçu &bull; Mentions légales et numéros d'enregistrement disponibles sur demande
     </div>
   </footer>
 
