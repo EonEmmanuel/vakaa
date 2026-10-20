@@ -11,6 +11,7 @@ import {
     resolveCorridorCurrency,
     SEBPAY_MINIMUM_AMOUNT,
     SEBPAY_MONEY_MINOR_FACTOR,
+    SEBPAY_PENDING_TTL_MS,
     toLocalPhone,
     type SebpayCollectionRequest,
     type SebpayCollectionResponseData,
@@ -227,7 +228,18 @@ export const sebpayPaymentHandler = new PaymentMethodHandler({
                 const alreadyClaimed = priorSebpayPayments.some(
                     (p) => p.transactionId === existingData.transaction_id
                 );
-                if (existingData.status === 'approved' || existingData.status === 'pending') {
+                // SebPay keeps a collection 'pending' long after its USSD prompt
+                // has expired (observed live: status frozen at 'pending',
+                // created_at unchanged for tens of minutes). A stale pending can
+                // no longer be completed by the customer, so adopting it would
+                // strand the order in PaymentAuthorized forever. Treat pendings
+                // older than the TTL as dead and start a fresh collection. When
+                // created_at is absent (older API shapes), keep adopting.
+                const stalePending =
+                    existingData.status === 'pending' &&
+                    !!existingData.created_at &&
+                    Date.now() - Date.parse(existingData.created_at) > SEBPAY_PENDING_TTL_MS;
+                if ((existingData.status === 'approved' || existingData.status === 'pending') && !stalePending) {
                     if (alreadyClaimed) {
                         // A payment row already holds this provider transaction;
                         // another Authorized row would double-count the covered
@@ -264,8 +276,16 @@ export const sebpayPaymentHandler = new PaymentMethodHandler({
                         }),
                     };
                 }
-                if (existingData.status === 'rejected') {
-                    // Genuinely rejected before: allow one retry with a fresh ref.
+                if (existingData.status === 'rejected' || stalePending) {
+                    // Genuinely rejected, or a pending that outlived the USSD
+                    // prompt: allow a retry with a fresh ref.
+                    if (stalePending) {
+                        Logger.warn(
+                            `Order ${order.code}: SebPay collection ${existingData.transaction_id} ` +
+                                `still 'pending' past its TTL; starting a fresh collection.`,
+                            loggerCtx
+                        );
+                    }
                     externalReference =
                         metadata.external_reference || `VAKAA-${order.code}-r${Date.now().toString(36)}`;
                     collectionRequest.external_reference = externalReference;

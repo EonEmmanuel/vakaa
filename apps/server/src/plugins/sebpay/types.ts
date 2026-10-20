@@ -41,6 +41,9 @@ export interface SebpayCollectionResponseData {
     currency: string;
     provider_link?: string;
     message?: string;
+    /** ISO timestamp (live API); used to detect stale pendings. */
+    created_at?: string;
+    updated_at?: string;
 }
 
 export interface SebpayCollectionResponse {
@@ -89,6 +92,14 @@ export const SEBPAY_MONEY_MINOR_FACTOR = 100;
  * instead of an opaque carrier error.
  */
 export const SEBPAY_MINIMUM_AMOUNT = 100;
+
+/**
+ * How long a SebPay collection may stay 'pending' and still be adopted on
+ * retry. Real USSD prompts live for roughly a minute; a pending older than
+ * this can no longer be approved by the customer, so it is treated as dead
+ * and a fresh collection is created instead.
+ */
+export const SEBPAY_PENDING_TTL_MS = 10 * 60 * 1000;
 
 /**
  * ITU country dialling codes for the corridors Vakaa supports. Used to
