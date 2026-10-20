@@ -76,7 +76,7 @@ describe('sebpayPaymentHandler.createPayment idempotency', () => {
         const body = JSON.parse((fetchMock.mock.calls[0][1] as any).body);
         expect(body.external_reference).toBe('VAKAA-ORDER1');
         expect(body.amount).toBe(1000);
-        expect(body.phone).toBe('22997000000');
+        expect(body.phone).toBe('97000000');
         expect(body.currency).toBe('XOF');
     });
 

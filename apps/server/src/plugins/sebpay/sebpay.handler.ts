@@ -9,8 +9,9 @@ import {
 import { SebpayClient } from './sebpay.client';
 import {
     resolveCorridorCurrency,
+    SEBPAY_MINIMUM_AMOUNT,
     SEBPAY_MONEY_MINOR_FACTOR,
-    toInternationalPhone,
+    toLocalPhone,
     type SebpayCollectionRequest,
     type SebpayCollectionResponseData,
 } from './types';
@@ -141,10 +142,10 @@ export const sebpayPaymentHandler = new PaymentMethodHandler({
             order.customer?.phoneNumber ||
             order.shippingAddress?.phoneNumber ||
             '';
-        // SebPay requires an international number without the "+". The
-        // storefront collects a local number ("sans indicatif"), so prepend the
-        // country's dialling code when it is missing.
-        const phone = toInternationalPhone(country, String(rawPhone));
+        // SebPay requires the LOCAL subscriber number: digits only, without the
+        // country dial code ("indicatif") — e.g. Cameroun 677077594. Desktop
+        // sources may carry a full international number; both normalize below.
+        const phone = toLocalPhone(country, String(rawPhone));
 
         if (!phone) {
             return {
@@ -166,6 +167,16 @@ export const sebpayPaymentHandler = new PaymentMethodHandler({
         // 3. Amount scaling: Vendure stores prices in minor units (hundredths).
         // Convert to major units for SebPay collection API (e.g. 176000 -> 1760 XAF).
         const chargeAmount = Math.round(amount / SEBPAY_MONEY_MINOR_FACTOR);
+
+        // SebPay rejects amounts under 10 units at the carrier stage — catch it
+        // early with an explicit, provider-neutral message.
+        if (chargeAmount < SEBPAY_MINIMUM_AMOUNT) {
+            return {
+                amount,
+                state: 'Declined',
+                errorMessage: `Payment amount is below the accepted minimum of ${SEBPAY_MINIMUM_AMOUNT} ${currency}.`,
+            };
+        }
 
         // 4. Idempotency guards -------------------------------------------------
         // Vendure may invoke createPayment more than once for the same order (a

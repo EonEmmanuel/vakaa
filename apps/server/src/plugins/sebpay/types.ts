@@ -81,6 +81,12 @@ export interface SebpayOperator {
 export const SEBPAY_MONEY_MINOR_FACTOR = 100;
 
 /**
+ * SebPay's collections API rejects any amount below 10 units (carrier-side
+ * validation: "amount must not be less than 10"), in the corridor currency.
+ */
+export const SEBPAY_MINIMUM_AMOUNT = 10;
+
+/**
  * ITU country dialling codes for the corridors Vakaa supports. Used to
  * normalize a locally-entered Mobile Money number into the international
  * format SebPay requires (without the leading "+").
@@ -104,18 +110,20 @@ export const COUNTRY_DIAL_CODES: Record<string, string> = {
 };
 
 /**
- * Normalizes a phone number to international format without the leading "+"
- * (e.g. "97000000" with country "BJ" -> "22997000000"). If the number already
- * begins with the country's dialling code it is returned unchanged, so this is
- * safe whether the client sends a local or an already-international number.
+ * SebPay expects the customer's Mobile Money number in LOCAL subscriber
+ * format: digits only, no dial code ("indicatif"), no "+". Examples:
+ * Benin 97000000, Cameroun 677077594 (9 digits). The carrier rejects
+ * international formats ("le numero de telephone ne doit contenir que des
+ * chiffres ... ne doit pas contenir d indicatif de pays"), so numbers that
+ * already start with the country's dial code are stripped down to local.
  */
-export function toInternationalPhone(countryCode: string, rawPhone: string): string {
+export function toLocalPhone(countryCode: string, rawPhone: string): string {
     const digits = (rawPhone || '').replace(/\D/g, '');
     const dialCode = COUNTRY_DIAL_CODES[(countryCode || '').toUpperCase()];
-    if (!dialCode) {
-        return digits;
+    if (dialCode && digits.startsWith(dialCode)) {
+        return digits.slice(dialCode.length);
     }
-    return digits.startsWith(dialCode) ? digits : `${dialCode}${digits}`;
+    return digits;
 }
 
 /**
