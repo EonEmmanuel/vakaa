@@ -38,8 +38,8 @@ export function OrderDetail({ orderPromise }: OrderDetailProps) {
     }
 
     const invoiceDownloadUrl = invoiceToken
-        ? `/invoice/${order.code}?token=${invoiceToken}`
-        : `/invoice/${order.code}`;
+        ? `/invoice/${order.code}?token=${invoiceToken}&v=2`
+        : `/invoice/${order.code}?v=2`;
 
     // Milestone tracking calculations
     const getActiveStep = (state: string): number => {

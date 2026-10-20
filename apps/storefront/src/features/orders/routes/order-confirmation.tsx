@@ -176,7 +176,7 @@ export async function OrderConfirmation({ paramsPromise, searchParamsPromise }: 
 
     const customerEmail = order.customer?.emailAddress || '';
     const invoiceToken = generateInvoiceToken(order.code, customerEmail);
-    const invoiceDownloadUrl = `/invoice/${order.code}?token=${invoiceToken}`;
+    const invoiceDownloadUrl = `/invoice/${order.code}?token=${invoiceToken}&v=2`;
 
     // SebPay settles via webhook; this provides a client-side polling fallback.
     const primaryPayment = order.payments && order.payments.length > 0 ? order.payments[0] : null;

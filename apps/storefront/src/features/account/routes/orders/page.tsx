@@ -107,7 +107,7 @@ export default async function OrdersPage(props: PageProps<'/[locale]/account/ord
                 <div className="space-y-6">
                     {orders.map((order) => {
                         const invoiceToken = generateInvoiceToken(order.code, customerEmail);
-                        const invoiceDownloadUrl = `/invoice/${order.code}?token=${invoiceToken}`;
+                        const invoiceDownloadUrl = `/invoice/${order.code}?token=${invoiceToken}&v=2`;
                         const latestPayment = order.payments?.[order.payments.length - 1];
                         const paymentMethodLabel = latestPayment?.method
                             ? latestPayment.method === 'flutterwave'

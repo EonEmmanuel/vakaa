@@ -47,7 +47,11 @@ export async function GET(
         const headers = new Headers();
         headers.set('Content-Type', 'application/pdf');
         headers.set('Content-Disposition', `inline; filename="Facture-VAKAA-${code}.pdf"`);
-        headers.set('Cache-Control', 'private, max-age=86400, no-transform');
+        // no-store, not max-age: invoices can be regenerated behind the same
+        // URL, and a day-long browser cache served stale PDFs (missing
+        // design fixes and images) with no way to tell. Invoices are small;
+        // re-fetching on every click is cheap and always correct.
+        headers.set('Cache-Control', 'private, no-store');
 
         return new NextResponse(backendResponse.body, {
             status: 200,
