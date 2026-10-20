@@ -81,10 +81,14 @@ export interface SebpayOperator {
 export const SEBPAY_MONEY_MINOR_FACTOR = 100;
 
 /**
- * SebPay's collections API rejects any amount below 10 units (carrier-side
- * validation: "amount must not be less than 10"), in the corridor currency.
+ * SebPay's collections API rejects any amount below 10 units (its own
+ * validation: "amount must not be less than 10"). Additionally the mobile
+ * money carriers reject small amounts downstream (MTN CM declined 40 with a
+ * generic "not authorized"); amounts >= 100 were confirmed accepted on the
+ * CM corridor. The guard uses 100 so customers get an early, clear decline
+ * instead of an opaque carrier error.
  */
-export const SEBPAY_MINIMUM_AMOUNT = 10;
+export const SEBPAY_MINIMUM_AMOUNT = 100;
 
 /**
  * ITU country dialling codes for the corridors Vakaa supports. Used to
