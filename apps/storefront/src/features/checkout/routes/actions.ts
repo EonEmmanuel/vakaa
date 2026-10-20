@@ -11,6 +11,7 @@ import {
     GetEligibleShippingMethodsQuery,
 } from '@/features/checkout/graphql';
 import {CreateCustomerAddressMutation} from '@/features/account/graphql';
+import {redirect} from 'next/navigation';
 import {updateTag} from 'next/cache';
 import {setAuthToken} from '@/platform/vendure/auth-token';
 import {getActiveCurrencyCode} from '@/features/currency/currency-server';
@@ -291,10 +292,6 @@ export async function placeOrder(
     const order = orderResult;
     const orderCode = order.code;
 
-    // Invalidate cached cart and active-order tags
-    updateTag('cart');
-    updateTag('active-order');
-
     // If payment method provided an external checkout link (e.g. Flutterwave hosted payment)
     const payments = order.payments;
     const latestPayment = payments && payments.length > 0 ? payments[payments.length - 1] : null;
@@ -323,6 +320,23 @@ export async function placeOrder(
             : paymentMethodCode === 'sebpay' && isHttpUrl(sebpayProviderLink)
             ? sebpayProviderLink
             : null;
+
+    // Flutterwave hands the whole tab to its hosted payment page. Redirecting
+    // from inside the server action (redirect throws NEXT_REDIRECT, which the
+    // caller re-throws) avoids the race where the payment already settled and
+    // the session cart emptied: the tag invalidation below would re-render
+    // /checkout in the action response and bounce the browser to /cart just
+    // before the external redirect fires. redirect() accepts absolute external
+    // URLs from Server Functions (see Next docs on redirecting).
+    if (paymentMethodCode === 'flutterwave' && isHttpUrl(redirectUrl)) {
+        redirect(redirectUrl);
+    }
+
+    // Invalidate cached cart and active-order tags — only for flows that stay
+    // in the app (SebPay opens the provider link in a new tab; the others push
+    // in-app navigation).
+    updateTag('cart');
+    updateTag('active-order');
 
     return {
         success: true,

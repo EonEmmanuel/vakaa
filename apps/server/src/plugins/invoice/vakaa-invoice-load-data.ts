@@ -1,4 +1,4 @@
-import { RequestContext, Injector, Order, translateEntity } from '@vendure/core';
+import { RequestContext, Injector, Order, EntityHydrator, translateEntity } from '@vendure/core';
 import { LoadDataFn } from '@pinelab/pinelab-invoice-plugin';
 
 const ZERO_DECIMAL_CURRENCIES = new Set(['XAF', 'XOF', 'GNF', 'RWF', 'BIF', 'KMF', 'DJF']);
@@ -50,6 +50,21 @@ export const vakaaInvoiceLoadDataFn: LoadDataFn = async (
     });
 
     const currency = order.currencyCode || 'XAF';
+
+    // The invoice worker hands us the order with only the relations pinelab
+    // loads — assets and payments are not among them. Without hydration the
+    // thumbnails render empty (fallback box) and the payment reference is
+    // blank, so load what the template needs before formatting.
+    const entityHydrator = injector.get(EntityHydrator);
+    await entityHydrator.hydrate(ctx, order, {
+        relations: [
+            'lines.featuredAsset',
+            'lines.productVariant.featuredAsset',
+            'lines.productVariant.product.featuredAsset',
+            'payments',
+            'shippingLines.shippingMethod',
+        ],
+    });
 
     // Format line items
     const formattedLines = order.lines.map((line) => {
