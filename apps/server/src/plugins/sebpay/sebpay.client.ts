@@ -32,7 +32,7 @@ export class SebpayClient {
                 method: 'POST',
                 headers,
                 body: JSON.stringify(request),
-                signal: AbortSignal.timeout(15000),
+                signal: AbortSignal.timeout(60000),
             });
 
             const data = (await response.json()) as SebpayCollectionResponse;
@@ -63,7 +63,7 @@ export class SebpayClient {
             const response = await fetch(url, {
                 method: 'GET',
                 headers,
-                signal: AbortSignal.timeout(15000),
+                signal: AbortSignal.timeout(20000),
             });
 
             const data = (await response.json()) as SebpayCollectionResponse;
